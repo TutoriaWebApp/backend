@@ -1,0 +1,44 @@
+# Django specific
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+db.sqlite3
+*.sqlite3
+media/
+*.env
+venv/*
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# If using Django Debug Toolbar
+debug_toolbar/
+
+# Local development settings
+local_settings.py
+
+# macOS specific
+.DS_Store
+
+# Windows specific
+Thumbs.db
+
+# Visual Studio Code #
+.vscode/*
+.history
+# !.vscode/settings.json
+# !.vscode/tasks.json
+# !.vscode/launch.json
+# !.vscode/extensions.json
