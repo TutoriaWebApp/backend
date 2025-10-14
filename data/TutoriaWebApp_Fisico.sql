@@ -1,0 +1,225 @@
+-- ---------------------- -- ---------------------- --
+--              SCRIPT DE CRIAÇÃO (DDL)             --
+-- Data de criacao...: 30/09/2025                   --
+-- Autores...........: Lucas Spinosa dos Santos     --
+--                     Rodrigo Carvalho dos Santos  --
+--                                                  --
+-- Banco de Dados....: MySQL                        --
+-- Base de Dados.....: tutoriadb;                   --
+--                                                  --
+-- PROJETO => 01 Base de Dados                      --
+--            11 ENTIDADES                          --
+--            02 relacionamentos                    --
+--                                                  --
+-- ---------------------- -- ---------------------- --
+
+CREATE DATABASE IF NOT EXISTS tutoriadb;
+USE tutoriadb;
+
+-- ENTIDADES
+
+CREATE TABLE IF NOT EXISTS
+USUARIO (
+    usuarioId   INT          NOT NULL AUTO_INCREMENT,
+    pontuacao   INT UNSIGNED NOT NULL DEFAULT 0,
+    email       VARCHAR(256) NOT NULL,
+    senha       VARCHAR(256) NOT NULL,
+    nomePerfil  VARCHAR(100) NOT NULL,
+    cidade      VARCHAR(80)  NOT NULL,
+    estado      CHAR(2)      NOT NULL,
+    urlFoto	    VARCHAR(256) NOT NULL,
+
+    CONSTRAINT USUARIO_PK
+        PRIMARY KEY (usuarioId),
+
+    CONSTRAINT USUARIO_UK
+        UNIQUE KEY (email)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+CONQUISTA (
+    conquistaId INT          NOT NULL AUTO_INCREMENT,
+    pontos      INT          NOT NULL,
+    titulo      VARCHAR(32)  NOT NULL,
+    descricao   VARCHAR(64)  NOT NULL,
+    urlImagem   VARCHAR(256) NOT NULL,
+
+    CONSTRAINT CONQUISTA_PK
+        PRIMARY KEY (conquistaId),
+
+    CONSTRAINT CONQUISTA_UK
+        UNIQUE KEY (titulo)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+AVALIACAO_APRENDIZ (
+    usuarioId  INT    NOT NULL,
+    nota       INT(1) NOT NULL,
+    comentario VARCHAR(200),
+
+    CONSTRAINT AVALIACAO_APRENDIZ_USUARIO_FK
+        FOREIGN KEY (usuarioId)
+        REFERENCES USUARIO (usuarioId)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+TUTOR (
+    tutorId     INT          NOT NULL AUTO_INCREMENT,
+    usuarioId   INT          NOT NULL,
+
+    CONSTRAINT TUTOR_PK
+        PRIMARY KEY (tutorId),
+
+    CONSTRAINT TUTOR_USUARIO_FK
+        FOREIGN KEY (usuarioId)
+        REFERENCES USUARIO (usuarioId)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+AVALIACAO_TUTOR (
+    tutorId    INT    NOT NULL,
+    nota       INT(1) NOT NULL,
+    comentario VARCHAR(200),
+
+    CONSTRAINT AVALIACAO_TUTOR_USUARIO_FK
+        FOREIGN KEY (tutorId)
+        REFERENCES TUTOR (tutorId)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+AREA (
+    areaId   INT         NOT NULL AUTO_INCREMENT,
+    nomeArea VARCHAR(60) NOT NULL,
+
+    CONSTRAINT AREA_PK
+        PRIMARY KEY (areaId),
+
+    CONSTRAINT AREA_UK
+        UNIQUE KEY (nomeArea)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+ESPECIALIDADE (
+    especialidadeId   INT          NOT NULL,
+    areaId            INT          NOT NULL,
+    nomeEspecialidade VARCHAR(100) NOT NULL,
+
+    CONSTRAINT ESPECIALIDADE_PK
+        PRIMARY KEY (especialidadeId),
+
+    CONSTRAINT ESPECIALIDADE_UK
+        UNIQUE KEY (areaId, nomeEspecialidade),
+
+    CONSTRAINT ESPECIALIDADE_AREA_FK
+        FOREIGN KEY (areaId)
+        REFERENCES AREA (areaId)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+SESSAO (
+    sessaoId      INT  NOT NULL AUTO_INCREMENT,
+    tutorId       INT  NOT NULL,
+    horarioInicio TIME NOT NULL,
+    horarioFim    TIME NOT NULL,
+    dia           ENUM('SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM')  NOT NULL,
+
+    CONSTRAINT SESSAO_PK
+        PRIMARY KEY (sessaoId),
+
+    CONSTRAINT SESSAO_TUTOR_FK
+        FOREIGN KEY (tutorId)
+        REFERENCES TUTOR (tutorId),
+
+    CONSTRAINT SESSAO_UK
+        UNIQUE KEY (tutorId, dia, horarioInicio)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+SOLICITACAO (
+    usuarioId   INT  NOT NULL AUTO_INCREMENT,
+    sessaoId    INT  NOT NULL,
+    dataCriacao TIME NOT NULL,
+    validade    TIME NOT NULL,
+
+    estado   ENUM('ACEITO', 'PENDENTE', 'RECUSADO', 'RECORRENTE') NOT NULL
+    DEFAULT 'PENDENTE',
+
+    CONSTRAINT SOLICITACAO_PK
+        PRIMARY KEY (usuarioId, sessaoId),
+
+    CONSTRAINT SOLICITACAO_USUARIO_FK
+        FOREIGN KEY (usuarioId)
+        REFERENCES USUARIO (usuarioId),
+
+    CONSTRAINT SOLICITACAO_SESSAO_FK
+        FOREIGN KEY (sessaoId)
+        REFERENCES SESSAO (sessaoId)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+CHAT (
+    chatId    INT NOT NULL AUTO_INCREMENT,
+    tutorId   INT NOT NULL,
+    usuarioId INT NOT NULL,
+
+    CONSTRAINT CHAT_PK
+        PRIMARY KEY (chatId),
+
+    CONSTRAINT CHAT_UK
+        UNIQUE KEY (tutorId, usuarioId),
+
+    CONSTRAINT CHAT_TUTOR_FK
+        FOREIGN KEY (tutorId)
+        REFERENCES TUTOR (tutorId),
+
+    CONSTRAINT CHAT_USUARIO_FK
+        FOREIGN KEY (usuarioId)
+        REFERENCES USUARIO (usuarioId)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+MENSAGEM (
+    chatId   INT          NOT NULL,
+    conteudo VARCHAR(200) NOT NULL,
+    horario  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT MENSAGEM
+        FOREIGN KEY (chatId)
+        REFERENCES CHAT (chatId)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+-- Tabela de relacionamentos
+
+CREATE TABLE IF NOT EXISTS
+consegue (
+    usuarioId   INT NOT NULL,
+    conquistaId INT NOT NULL,
+
+    CONSTRAINT consegue_UK
+        UNIQUE KEY (usuarioId, conquistaId),
+
+    CONSTRAINT consegue_USUARIO_FK
+        FOREIGN KEY (usuarioId)
+        REFERENCES USUARIO (usuarioId),
+
+    CONSTRAINT consegue_CONQUISTA_FK
+        FOREIGN KEY (conquistaId)
+        REFERENCES CONQUISTA (conquistaId)
+) ENGINE=InnoDB;
+
+CREATE TABLE IF NOT EXISTS
+contem (
+    especialidadeId INT NOT NULL,
+    tutorId         INT NOT NULL,
+
+    CONSTRAINT contem_UK
+        UNIQUE KEY (especialidadeId, tutorId),
+
+    CONSTRAINT contem_ESPECIALIDADE_FK
+        FOREIGN KEY (especialidadeId)
+        REFERENCES ESPECIALIDADE (especialidadeId),
+
+    CONSTRAINT contem_TUTOR_FK
+        FOREIGN KEY (tutorId)
+        REFERENCES TUTOR (tutorId)
+) ENGINE=InnoDB, AUTO_INCREMENT=1;

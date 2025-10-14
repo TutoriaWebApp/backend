@@ -1,12 +1,18 @@
 services:
     mysql-image:
         container_name: mysql_db
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
         image: mysql:8.0
         env_file: ./env/.env
+        environment:
+            LANG: pt_BR.UTF-8
+            LC_ALL: pt_BR.UTF-8
+            TZ: America/Sao_Paulo
         ports:
             - "${MYSQL_PORT}:3306"
         volumes:
             - db_data:/var/lib/mysql
+            - ./data/:/docker-entrypoint-initdb.d
 
     django-image:
         build:
@@ -24,9 +30,9 @@ services:
         environment:
             DATABASE_HOST: 'mysql-image'
             DATABASE_PORT: '${MYSQL_PORT}'
-            DATABASE_NAME: '${MYSQL_DATABASE}'
+            DATABASE_NAME: 'tutoriadb'
             DATABASE_USER: 'root'
-            DATABASE_PASSWORD: '${MYSQL_ROOTPASSWORD}'
+            DATABASE_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
 
 volumes:
     db_data:
