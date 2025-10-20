@@ -1,0 +1,16 @@
+{% extends 'project/base.html' %}
+{% block content %}
+
+    <h2>{% if object %}Editar Usuário{% else %}Cadastrar Novo Usuário{% endif %}</h2>
+    <hr>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+        <a href="{% url 'dashboard:usuario_list' %}" class="btn btn-secondary">Cancelar</a>
+    </form>
+
+{% endblock %}
