@@ -8,6 +8,10 @@ router = DefaultRouter()
 
 router.register(r'usuarios', api_views.UsuarioViewSet, basename='usuario')
 
+router.register(r'conquistas', api_views.ConquistaViewSet, basename='conquista')
+
+router.register(r'consegue', api_views.consegueViewSet, basename='consegue')
+
 urlpatterns = [
     path('', include(router.urls)),
 	path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
