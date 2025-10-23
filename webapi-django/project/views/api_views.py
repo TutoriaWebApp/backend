@@ -1,7 +1,7 @@
 from rest_framework import viewsets
-from project.models import Usuario, Conquista, consegue
-from project.serializers import UsuarioSerializer, ConquistaSerializer, consegueSerializer
 from rest_framework.permissions import IsAuthenticated
+from project.models import *
+from project.serializers import *
 
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
@@ -16,4 +16,9 @@ class ConquistaViewSet(viewsets.ReadOnlyModelViewSet):
 class consegueViewSet(viewsets.ModelViewSet):
 	queryset = consegue.objects.all()
 	serializer_class = consegueSerializer
+	permission_classes = [IsAuthenticated]
+
+class TutorViewSet(viewsets.ModelViewSet):
+	queryset = Tutor.objects.all()
+	serializer_class = TutorSerializer
 	permission_classes = [IsAuthenticated]

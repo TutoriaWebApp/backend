@@ -67,4 +67,16 @@ class Migration(migrations.Migration):
                 'unique_together': {('usuarioId', 'conquistaId')},
             },
         ),
+        migrations.CreateModel(
+            name='Tutor',
+            fields=[
+                ('id', models.AutoField(db_column='tutorId', primary_key=True, serialize=False)),
+                ('usuarioId', models.OneToOneField(db_column='usuarioId', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
+            ],
+            options={
+                'verbose_name': 'TUTOR',
+                'verbose_name_plural': 'TUTORES',
+                'db_table': 'TUTOR',
+            },
+        ),
     ]

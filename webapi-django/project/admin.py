@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from project.forms import UsuarioCreateForm, UsuarioUpdateForm
-from project.models import Usuario, Conquista, consegue
+from project.models import *
 
 class UsuarioAdmin(UserAdmin):
 	model = Usuario
@@ -72,3 +72,4 @@ class UsuarioAdmin(UserAdmin):
 admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Conquista)
 admin.site.register(consegue)
+admin.site.register(Tutor)

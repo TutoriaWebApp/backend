@@ -12,6 +12,8 @@ router.register(r'conquistas', api_views.ConquistaViewSet, basename='conquista')
 
 router.register(r'consegue', api_views.consegueViewSet, basename='consegue')
 
+router.register(r'tutores', api_views.TutorViewSet, basename='tutor')
+
 urlpatterns = [
     path('', include(router.urls)),
 	path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
