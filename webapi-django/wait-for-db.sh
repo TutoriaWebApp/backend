@@ -2,8 +2,10 @@
 set -e
 
 host="$1"
-port="$2"
 shift
+port="$1"
+shift
+MYSQL_PASSWORD="$1"
 shift
 cmd="$@"
 
@@ -15,7 +17,10 @@ done
 
 echo "✅ MySQL disponível, iniciando Django..."
 
-# python manage.py migrate project --fake-initial
 python manage.py migrate
+
+mysql --skip-ssl-verify-server-cert --force --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < TutoriaWebApp_Atualiza.sql
+
+mysql --skip-ssl-verify-server-cert --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < TutoriaWebApp_Popula.sql
 
 exec $cmd

@@ -8,18 +8,19 @@ services:
             LANG: pt_BR.UTF-8
             LC_ALL: pt_BR.UTF-8
             TZ: America/Sao_Paulo
+            MYSQL_DATABASE: tutoriadb
+            MYSQL_HOST: mysql-image
         ports:
             - "${MYSQL_PORT}:3306"
         volumes:
             - db_data:/var/lib/mysql
-            - ./data/:/docker-entrypoint-initdb.d
 
     django-image:
         build:
             context: ./webapi-django
             dockerfile: Dockerfile
         container_name: django_api
-        command: ["./wait-for-db.sh", "mysql-image", "3306", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+        command: ["./wait-for-db.sh", "mysql-image", "3306", "${MYSQL_ROOT_PASSWORD}", "python", "manage.py", "runserver", "0.0.0.0:8000"]
         volumes:
             - ./webapi-django:/app
         ports:

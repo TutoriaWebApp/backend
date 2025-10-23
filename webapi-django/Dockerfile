@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
 	netcat-openbsd python3-dev \
 	build-essential pkg-config \
 	default-libmysqlclient-dev \
+	default-mysql-client \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 
