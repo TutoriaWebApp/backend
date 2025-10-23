@@ -19,8 +19,10 @@ echo "✅ MySQL disponível, iniciando Django..."
 
 python manage.py migrate
 
-mysql --skip-ssl-verify-server-cert --force --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < TutoriaWebApp_Atualiza.sql
+mysql --skip-ssl-verify-server-cert --force --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < data/TutoriaWebApp_Fisico.sql
 
-mysql --skip-ssl-verify-server-cert --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < TutoriaWebApp_Popula.sql
+mysql --skip-ssl-verify-server-cert --force --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < data/TutoriaWebApp_Atualiza.sql
+
+mysql --skip-ssl-verify-server-cert --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < data/TutoriaWebApp_Popula.sql
 
 exec $cmd
