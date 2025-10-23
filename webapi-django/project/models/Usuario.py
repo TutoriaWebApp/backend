@@ -5,36 +5,32 @@ from .managers import UsuarioManager # Importe o novo manager
 # O modelo Conquista não muda, então não precisamos importá-lo aqui
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
-    # Mapeando os campos do seu script SQL
-    # usuarioId -> Django cria o 'id' (PK) automaticamente
-    id = models.AutoField(primary_key=True, db_column='usuarioId')
-    pontuacao = models.PositiveIntegerField(default=0)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=256, db_column='senha')
-    nomePerfil = models.CharField(max_length=100)
-    cidade = models.CharField(max_length=80)
-    estado = models.CharField(max_length=2)
-    urlFoto = models.URLField(max_length=256)
+	id = models.AutoField(primary_key=True, db_column='usuarioId')
+	pontuacao = models.PositiveIntegerField(default=0)
+	email = models.EmailField(unique=True)
+	password = models.CharField(max_length=256, db_column='senha')
+	nomePerfil = models.CharField(max_length=100)
+	cidade = models.CharField(max_length=80)
+	estado = models.CharField(max_length=2)
+	urlFoto = models.URLField(max_length=256)
 
-    # Campos necessários para o funcionamento do Django Admin e Auth
-    is_staff = models.BooleanField(default=False)
-    is_superuser = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
-    date_joined = models.DateTimeField(auto_now_add=True)
-    last_login = models.DateTimeField(auto_now_add=True)
+	# Campos necessários para o funcionamento do Django Admin e Auth
+	is_staff = models.BooleanField(default=False)
+	is_superuser = models.BooleanField(default=False)
+	is_active = models.BooleanField(default=True)
+	date_joined = models.DateTimeField(auto_now_add=True)
+	last_login = models.DateTimeField(auto_now_add=True)
 
-    # Conectando o manager customizado
-    objects = UsuarioManager()
+	objects = UsuarioManager()
 
-    # Campo usado para o login
-    USERNAME_FIELD = 'email'
-    # Campos requeridos ao criar um superusuário via linha de comando
-    REQUIRED_FIELDS = ['nomePerfil', 'cidade', 'estado']
+	USERNAME_FIELD = 'email'
+	# Campos requeridos ao criar um superusuário via linha de comando
+	REQUIRED_FIELDS = ['nomePerfil', 'cidade', 'estado']
 
-    def __str__(self):
-        return self.email
+	def __str__(self):
+		return self.email
 
-    class Meta:
-        db_table = 'USUARIO'
-        verbose_name = 'USUARIO'
-        verbose_name_plural = 'USUARIOS'
+	class Meta:
+		db_table = 'USUARIO'
+		verbose_name = 'USUARIO'
+		verbose_name_plural = 'USUARIOS'

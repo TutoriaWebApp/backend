@@ -1,21 +1,22 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from project.views import api_views
-
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from project.views.api_views import *
 
 router = DefaultRouter()
 
-router.register(r'usuarios', api_views.UsuarioViewSet, basename='usuario')
+router.register(r'usuarios', UsuarioViewSet, basename='usuario')
 
-router.register(r'conquistas', api_views.ConquistaViewSet, basename='conquista')
+router.register(r'conquistas', ConquistaViewSet, basename='conquista')
 
-router.register(r'consegue', api_views.consegueViewSet, basename='consegue')
+router.register(r'consegue', consegueViewSet, basename='consegue')
 
-router.register(r'tutores', api_views.TutorViewSet, basename='tutor')
+router.register(r'tutores', TutorViewSet, basename='tutor')
 
 urlpatterns = [
     path('', include(router.urls)),
+	path('conquistas/usuario/<int:usuarioId>', Usuario_conseguiu_Conquista.as_view(), name='conquistas_do_usuario'),
 	path('token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
 	path('token/refresh', TokenRefreshView.as_view(), name='token_refresh')
 ]

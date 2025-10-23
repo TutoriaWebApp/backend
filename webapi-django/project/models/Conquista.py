@@ -1,4 +1,5 @@
 from django.db import models
+from .Usuario import Usuario
 
 class Conquista(models.Model):
 	id        = models.AutoField(primary_key=True, db_column='conquistaId')
@@ -6,6 +7,12 @@ class Conquista(models.Model):
 	descricao = models.CharField(max_length=64)
 	urlImagem = models.CharField(max_length=256)
 	pontos    = models.IntegerField()
+
+	usuarios  = models.ManyToManyField(
+		Usuario,
+		through='consegue',
+		related_name='conquistas'
+	)
 
 	def __str__(self):
 		return self.titulo
