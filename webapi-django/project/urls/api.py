@@ -14,6 +14,8 @@ router.register(r'consegue', consegueViewSet, basename='consegue')
 
 router.register(r'tutores', TutorViewSet, basename='tutor')
 
+router.register(r'sessoes', SessaoViewSet, basename='sessoes')
+
 urlpatterns = [
     path('', include(router.urls)),
 	path('conquistas/usuario/<int:usuarioId>', Usuario_conseguiu_Conquista.as_view(), name='conquistas_do_usuario'),

@@ -2,5 +2,12 @@ from .Usuario import Usuario
 from .Conquista import Conquista
 from .consegue import consegue
 from .Tutor import Tutor
+from .Sessao import Sessao
 
-__all__ = ['Usuario', 'Conquista', 'consegue', 'Tutor']
+__all__ = [
+	'Usuario',
+	'Conquista',
+	'consegue',
+	'Tutor',
+	'Sessao'
+]

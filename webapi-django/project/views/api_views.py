@@ -33,3 +33,8 @@ class TutorViewSet(viewsets.ModelViewSet):
 	queryset = Tutor.objects.all()
 	serializer_class = TutorSerializer
 	permission_classes = [IsAuthenticated]
+
+class SessaoViewSet(viewsets.ModelViewSet):
+	queryset = Sessao.objects.all()
+	serializer_class = SessaoSerializer
+	permission_classes = [IsAuthenticated]
