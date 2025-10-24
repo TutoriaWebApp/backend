@@ -6,7 +6,7 @@ from .managers import UsuarioManager # Importe o novo manager
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
 	id = models.AutoField(primary_key=True, db_column='usuarioId')
-	pontuacao = models.PositiveIntegerField(default=0)
+	pontuacao = models.PositiveIntegerField(default=0, db_default=0)
 	email = models.EmailField(unique=True)
 	password = models.CharField(max_length=256, db_column='senha')
 	nomePerfil = models.CharField(max_length=100)
@@ -15,11 +15,11 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 	urlFoto = models.URLField(max_length=256)
 
 	# Campos necessários para o funcionamento do Django Admin e Auth
-	is_staff = models.BooleanField(default=False)
-	is_superuser = models.BooleanField(default=False)
-	is_active = models.BooleanField(default=True)
+	is_staff = models.BooleanField(default=False, db_default=False)
+	is_superuser = models.BooleanField(default=False, db_default=False)
+	is_active = models.BooleanField(default=True, db_default=True)
 	date_joined = models.DateTimeField(auto_now_add=True)
-	last_login = models.DateTimeField(auto_now_add=True)
+	last_login = models.DateTimeField(null=True)
 
 	objects = UsuarioManager()
 

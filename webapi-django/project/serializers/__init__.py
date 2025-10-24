@@ -3,6 +3,7 @@ from .Conquista import ConquistaSerializer, ConquistaUsuarioSerializer
 from .consegue import consegueSerializer
 from .Tutor import TutorSerializer
 from .Sessao import SessaoSerializer
+from .Solicitacao import SolicitacaoSerializer
 
 __all__ = [
 	'UsuarioSerializer',
@@ -10,5 +11,6 @@ __all__ = [
 	'ConquistaUsuarioSerializer',
 	'consegueSerializer',
 	'TutorSerializer',
-	'SessaoSerializer'
+	'SessaoSerializer',
+	'SolicitacaoSerializer'
 ]

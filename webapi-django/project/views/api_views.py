@@ -38,3 +38,8 @@ class SessaoViewSet(viewsets.ModelViewSet):
 	queryset = Sessao.objects.all()
 	serializer_class = SessaoSerializer
 	permission_classes = [IsAuthenticated]
+
+class SolicitacaoViewSet(viewsets.ModelViewSet):
+	queryset = Solicitacao.objects.all()
+	serializer_class = SolicitacaoSerializer
+	permission_classes = [IsAuthenticated]

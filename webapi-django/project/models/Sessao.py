@@ -12,6 +12,7 @@ class Sessao(models.Model):
 		DOMINGO = 'DOM', 'Domingo'
 
 	id = models.AutoField(primary_key=True, db_column='sessaoId')
+
 	tutorId = models.ForeignKey(
 		Tutor,
 		on_delete=models.CASCADE,

@@ -3,11 +3,13 @@ from .Conquista import Conquista
 from .consegue import consegue
 from .Tutor import Tutor
 from .Sessao import Sessao
+from .Solicitacao import Solicitacao
 
 __all__ = [
 	'Usuario',
 	'Conquista',
 	'consegue',
 	'Tutor',
-	'Sessao'
+	'Sessao',
+	'Solicitacao',
 ]
