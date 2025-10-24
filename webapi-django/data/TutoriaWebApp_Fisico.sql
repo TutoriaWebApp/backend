@@ -143,10 +143,11 @@ SESSAO (
 
 CREATE TABLE IF NOT EXISTS
 SOLICITACAO (
-    usuarioId   INT  NOT NULL AUTO_INCREMENT,
-    sessaoId    INT  NOT NULL,
-    dataCriacao TIME NOT NULL,
-    validade    TIME NOT NULL,
+    solicitacaoId INT  NOT NULL AUTO_INCREMENT,
+    usuarioId     INT  NOT NULL,
+    sessaoId      INT  NOT NULL,
+    dataCriacao   TIME NOT NULL,
+    validade      TIME NOT NULL,
 
     estado   ENUM('ACEITO', 'PENDENTE', 'RECUSADO', 'RECORRENTE') NOT NULL
     DEFAULT 'PENDENTE',

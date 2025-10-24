@@ -70,11 +70,11 @@ INSERT INTO SESSAO (tutorId, horarioInicio, horarioFim, dia) VALUES
 (4, '15:00:00', '17:00:00', 'SEX');
 
 INSERT INTO SOLICITACAO (usuarioId, sessaoId, dataCriacao, validade, estado) VALUES
-(2, 1, '08:30:00', '10:00:00', 'ACEITO'),
-(3, 2, '13:00:00', '15:00:00', 'PENDENTE'),
-(4, 3, '09:00:00', '12:00:00', 'ACEITO'),
-(5, 4, '08:45:00', '11:00:00', 'RECUSADO'),
-(1, 5, '15:30:00', '17:00:00', 'RECORRENTE');
+(2, 1, '2025-10-24 08:30:00', '2025-10-25 10:00:00', 'ACEITO'),
+(3, 2, '2025-10-24 13:00:00', '2025-10-25 15:00:00', 'PENDENTE'),
+(4, 3, '2025-10-24 09:00:00', '2025-10-25 12:00:00', 'ACEITO'),
+(5, 4, '2025-10-24 08:45:00', '2025-10-25 11:00:00', 'RECUSADO'),
+(1, 5, '2025-10-24 15:30:00', '2025-10-25 17:00:00', 'RECORRENTE');
 
 INSERT INTO CHAT (tutorId, usuarioId) VALUES
 (1, 2),
