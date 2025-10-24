@@ -17,6 +17,9 @@ class consegue(models.Model):
 
 	dataObtido = models.DateTimeField()
 
+	def __str__(self):
+		return f"[{self.usuarioId}\n -> {self.conquistaId}]"
+
 	class Meta:
 		unique_together = ('usuarioId', 'conquistaId')
 		db_table = 'consegue'

@@ -27,6 +27,9 @@ class Sessao(models.Model):
 		choices=DiaSemana.choices,
 	)
 
+	def __str__(self):
+		return f"[{self.tutorId}]({self.dia} {self.horarioInicio})"
+
 	class Meta:
 		unique_together = ('tutorId', 'horarioInicio', 'dia')
 		db_table = 'SESSAO'

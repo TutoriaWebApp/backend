@@ -10,6 +10,9 @@ class Tutor(models.Model):
 		db_column='usuarioId'
 	)
 
+	def __str__(self):
+		return f"{self.usuarioId}"
+
 	class Meta:
 		db_table = 'TUTOR'
 		verbose_name = 'TUTOR'
