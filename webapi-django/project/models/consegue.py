@@ -15,7 +15,7 @@ class consegue(models.Model):
 		db_column='conquistaId'
 	)
 
-	dataObtido = models.DateTimeField()
+	dataObtido = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
 		return f"[{self.usuarioId}\n -> {self.conquistaId}]"

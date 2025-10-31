@@ -4,4 +4,5 @@ from project.models import Solicitacao
 class SolicitacaoSerializer(serializers.ModelSerializer):
 	class Meta:
 		model  = Solicitacao
-		fields = ['usuarioId', 'sessaoId', 'estado']
+		fields = '__all__'
+		read_only_fields = ['id', 'usuarioId', 'validade', 'estado']
