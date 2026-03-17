@@ -27,7 +27,8 @@ USUARIO (
     nomePerfil  VARCHAR(100) NOT NULL,
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
-    urlFoto	    VARCHAR(256) NOT NULL,
+    urlFoto	    VARCHAR(256),
+    nascimento  DATE         NOT NULL,
 
     -- Campos obrigatórios para o Django
     is_active       TINYINT(1)  DEFAULT 1,
@@ -48,7 +49,7 @@ CONQUISTA (
     conquistaId INT          NOT NULL AUTO_INCREMENT,
     pontos      INT          NOT NULL,
     titulo      VARCHAR(32)  NOT NULL,
-    descricao   VARCHAR(64)  NOT NULL,
+    descricao   VARCHAR(64),
     urlImagem   VARCHAR(256) NOT NULL,
 
     CONSTRAINT CONQUISTA_PK
@@ -107,7 +108,7 @@ AREA (
 
 CREATE TABLE IF NOT EXISTS
 ESPECIALIDADE (
-    especialidadeId   INT          NOT NULL,
+    especialidadeId   INT          NOT NULL AUTO_INCREMENT,
     areaId            INT          NOT NULL,
     nomeEspecialidade VARCHAR(100) NOT NULL,
 
@@ -143,14 +144,15 @@ SESSAO (
 
 CREATE TABLE IF NOT EXISTS
 SOLICITACAO (
-    solicitacaoId INT  NOT NULL AUTO_INCREMENT,
-    usuarioId     INT  NOT NULL,
-    sessaoId      INT  NOT NULL,
-    dataCriacao   TIME NOT NULL,
-    validade      TIME NOT NULL,
+    solicitacaoId   INT  NOT NULL AUTO_INCREMENT,
+    usuarioId       INT  NOT NULL,
+    sessaoId        INT  NOT NULL,
+    especialidadeId INT  NOT NULL,
+    dataCriacao     TIME NOT NULL,
+    dataSessao      DATE NOT NULL,
+    validade        TIME NOT NULL,
 
-    estado   ENUM('ACEITO', 'PENDENTE', 'RECUSADO', 'RECORRENTE') NOT NULL
-    DEFAULT 'PENDENTE',
+    estado   ENUM('ACEITO', 'PENDENTE', 'RECUSADO', 'RECORRENTE') NOT NULL DEFAULT 'PENDENTE',
 
     CONSTRAINT SOLICITACAO_PK
         PRIMARY KEY (usuarioId, sessaoId),
@@ -161,7 +163,11 @@ SOLICITACAO (
 
     CONSTRAINT SOLICITACAO_SESSAO_FK
         FOREIGN KEY (sessaoId)
-        REFERENCES SESSAO (sessaoId)
+        REFERENCES SESSAO (sessaoId),
+
+    CONSTRAINT SESSAO_ESPECIALIDADE_FK
+        FOREIGN KEY (especialidadeId)
+        REFERENCES ESPECIALIDADE (especialidadeId)
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
@@ -187,9 +193,13 @@ CHAT (
 
 CREATE TABLE IF NOT EXISTS
 MENSAGEM (
-    chatId   INT          NOT NULL,
-    conteudo VARCHAR(200) NOT NULL,
-    horario  DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    mensagemId INT          NOT NULL AUTO_INCREMENT,
+    chatId     INT          NOT NULL,
+    conteudo   VARCHAR(200) NOT NULL,
+    horario    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT MENSAGEM_PK
+        PRIMARY KEY (mensagemId),
 
     CONSTRAINT MENSAGEM
         FOREIGN KEY (chatId)

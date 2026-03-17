@@ -10,7 +10,6 @@ from project.serializers import *
 class UsuarioViewSet(viewsets.ModelViewSet):
     queryset = Usuario.objects.all()
     serializer_class = UsuarioSerializer
-    permission_classes = [IsAuthenticated]
 
 class Usuario_conseguiu_Conquista(generics.ListAPIView):
 	serializer_class = ConquistaUsuarioSerializer

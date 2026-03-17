@@ -15,15 +15,15 @@
 
 USE tutoriadb;
 
-INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, urlFoto, is_active, is_staff, is_superuser) VALUES
-('admin@tutoria.com', 'pbkdf2_sha256$1000000$zZBLgMtlMlfKvomGWZKEKt$ifR7/CLjG7xZUl6+iFjJ0W3mXON2p3smJGnn2XuBUSY=', 'Admin', 'Não Aplicado', 'NA', 'https://picsum.photos/100?1', 1, 1, 1);
+INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, urlFoto, aniversario, is_active, is_staff, is_superuser) VALUES
+('admin@tutoria.com', 'pbkdf2_sha256$1000000$zZBLgMtlMlfKvomGWZKEKt$ifR7/CLjG7xZUl6+iFjJ0W3mXON2p3smJGnn2XuBUSY=', 'Admin', 'Não Aplicado', 'NA', 'https://picsum.photos/100?1', '1971-03-15', 1, 1, 1);
 
-INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, urlFoto) VALUES
-('ana.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ana Lima', 'Curitiba', 'PR', 'https://picsum.photos/100?2'),
-('joao.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'João Silva', 'São Paulo', 'SP', 'https://picsum.photos/100?3'),
-('maria.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', 'https://picsum.photos/100?4'),
-('carlos.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Carlos Souza', 'Belo Horizonte', 'MG', 'https://picsum.photos/100?5'),
-('paula.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Paula Mendes', 'Salvador', 'BA', 'https://picsum.photos/100?6');
+INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, urlFoto, aniversario) VALUES
+('ana.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ana Lima', 'Curitiba', 'PR', 'https://picsum.photos/100?2', '1985-03-05'),
+('joao.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'João Silva', 'São Paulo', 'SP', 'https://picsum.photos/100?3', '1990-01-03'),
+('maria.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', 'https://picsum.photos/100?4', '1979-03-05'),
+('carlos.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Carlos Souza', 'Belo Horizonte', 'MG', 'https://picsum.photos/100?5', '1988-02-18'),
+('paula.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Paula Mendes', 'Salvador', 'BA', 'https://picsum.photos/100?6', '1988-01-05');
 
 INSERT INTO CONQUISTA (pontos, titulo, descricao, urlImagem) VALUES
 (100, 'A primeira de muitas!', 'Realize sua primeira sessão de tutoria!', 'https://picsum.photos/100?6'),

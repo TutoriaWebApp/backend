@@ -92,6 +92,23 @@ DATABASES = {
 	}
 }
 
+if os.environ.get('EMAIL_SENDER'):
+	EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+	EMAIL_HOST = os.environ.get('EMAIL_HOST')
+	EMAIL_PORT = os.environ.get('EMAIL_PORT')
+	EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+	EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+	EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+	print('LOG: E-mails configurados para envio via SMTP.')
+
+else:
+	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+	EMAIL_HOST_USER = 'console@mail.com'
+	print('LOG: E-mails configurados para exibição no CONSOLE.')
+
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
@@ -112,7 +129,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
 	'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+		'config.authenticate.WebTutoriaJWTAuthentication',
     )
 }
 
@@ -149,6 +167,6 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  
+    "http://localhost:3000",
     "http://127.0.0.1:3000",
 ]
