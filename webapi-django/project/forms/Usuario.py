@@ -12,7 +12,7 @@ class UsuarioCreateForm(UserCreationForm):
 			'nomePerfil',
 			'cidade',
 			'estado',
-			'urlFoto'
+			'aniversario',
 		]
 
 class UsuarioUpdateForm(UserChangeForm):
@@ -27,7 +27,7 @@ class UsuarioUpdateForm(UserChangeForm):
 			'pontuacao',
 			'cidade',
 			'estado',
-			'urlFoto',
+			'aniversario',
 			'is_active',
-			'is_staff'
+			'is_staff',
 		]

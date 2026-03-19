@@ -1,12 +1,13 @@
-from .Usuario import UsuarioSerializer
-from .Conquista import ConquistaSerializer, ConquistaUsuarioSerializer
-from .consegue import consegueSerializer
+from .Usuario import UsuarioSerializer, UsuarioRegistroSerializer, UsuarioAlteraSenhaSerializer
+from .Conquista import ConquistaSerializer, ConquistaUsuarioSerializer, consegueSerializer
 from .Tutor import TutorSerializer
 from .Sessao import SessaoSerializer
 from .Solicitacao import SolicitacaoSerializer
 
 __all__ = [
 	'UsuarioSerializer',
+	'UsuarioRegistroSerializer',
+	'UsuarioAlteraSenhaSerializer',
 	'ConquistaSerializer',
 	'ConquistaUsuarioSerializer',
 	'consegueSerializer',

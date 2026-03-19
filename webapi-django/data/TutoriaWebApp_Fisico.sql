@@ -27,7 +27,6 @@ USUARIO (
     nomePerfil  VARCHAR(100) NOT NULL,
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
-    urlFoto	    VARCHAR(256),
     nascimento  DATE         NOT NULL,
 
     -- Campos obrigatórios para o Django

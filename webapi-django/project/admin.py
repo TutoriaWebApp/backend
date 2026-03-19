@@ -9,7 +9,7 @@ class UsuarioAdmin(UserAdmin):
 	"""
 	Listagem de Usuários na página de Admin
 	"""
-	list_display = ('email', 'nomePerfil', 'cidade', 'estado', 'is_staff', 'date_joined')
+	list_display = ('email', 'nomePerfil', 'cidade', 'estado', 'aniversario', 'is_staff', 'date_joined')
 	readonly_fields = ('last_login', 'date_joined')
 	search_fields = ('email', 'nomePerfil')
 	ordering = ('-date_joined',)
@@ -29,7 +29,8 @@ class UsuarioAdmin(UserAdmin):
 				'nomePerfil',
 				'cidade',
 				'estado',
-				'urlFoto',
+				'aniversario',
+				# 'urlFoto',
 				'password1',
 				'password2'
 			),
@@ -50,7 +51,8 @@ class UsuarioAdmin(UserAdmin):
                 'pontuacao',
                 'cidade',
                 'estado',
-                'urlFoto'
+				'aniversario',
+                # 'urlFoto'
 			)
 		}),
         ('Permissões', {

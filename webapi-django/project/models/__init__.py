@@ -1,6 +1,5 @@
 from .Usuario import Usuario
-from .Conquista import Conquista
-from .consegue import consegue
+from .Conquista import Conquista, consegue
 from .Tutor import Tutor
 from .Sessao import Sessao
 from .Solicitacao import Solicitacao
