@@ -10,6 +10,13 @@ services:
             TZ: America/Sao_Paulo
             MYSQL_DATABASE: tutoriadb
             MYSQL_HOST: mysql-image
+            EMAIL_SENDER: BREVO
+            EMAIL_HOST: smtp-relay.brevo.com
+            EMAIL_PORT: 587
+            EMAIL_USE_TLS: False
+            EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+            EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+
         ports:
             - "${MYSQL_PORT}:3306"
         volumes:
@@ -31,6 +38,12 @@ services:
             DATABASE_HOST: 'mysql-image'
             DATABASE_PORT: '3306'
             DATABASE_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+            EMAIL_SENDER: ${EMAIL_SENDER}
+            EMAIL_HOST: smtp-relay.brevo.com
+            EMAIL_PORT: 587
+            EMAIL_USE_TLS: False
+            EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+            EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
 
 volumes:
     db_data:

@@ -92,7 +92,7 @@ DATABASES = {
 	}
 }
 
-if os.environ.get('EMAIL_SENDER'):
+if os.environ.get('EMAIL_SENDER') == 'BREVO':
 	EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 	EMAIL_HOST = os.environ.get('EMAIL_HOST')
 	EMAIL_PORT = os.environ.get('EMAIL_PORT')
@@ -138,7 +138,7 @@ from datetime import timedelta
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(minutes=15),
 }
 
 AUTH_USER_MODEL = 'project.Usuario'
