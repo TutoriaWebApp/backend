@@ -23,7 +23,7 @@ class LogInView(APIView):
 		user = authenticate(username=username, password=password)
 
 		if user is None:
-			return Response({"Credenciais inválidas"}, status=404)
+			return Response({"mensagem": "Credenciais inválidas"}, status=404)
 
 		refresh = RefreshToken.for_user(user)
 
@@ -33,7 +33,8 @@ class LogInView(APIView):
 			key='access_token',
 			value=str(refresh.access_token),
 			httponly=True,
-			secure=True,
+			#secure=True, ----- Só deixar True quando for HTTPS
+			secure=False,
 			samesite='Lax'
 		)
 
