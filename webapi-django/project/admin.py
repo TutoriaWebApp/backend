@@ -30,7 +30,7 @@ class UsuarioAdmin(UserAdmin):
 				'cidade',
 				'estado',
 				'aniversario',
-				# 'urlFoto',
+				# 'fotoURL',
 				'password1',
 				'password2'
 			),
@@ -52,7 +52,7 @@ class UsuarioAdmin(UserAdmin):
                 'cidade',
                 'estado',
 				'aniversario',
-                # 'urlFoto'
+                # 'fotoURL'
 			)
 		}),
         ('Permissões', {

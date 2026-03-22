@@ -13,8 +13,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 	cidade = models.CharField(max_length=80)
 	estado = models.CharField(max_length=2)
 	aniversario = models.DateField(blank=True, null=True, db_default=None, default=None)
-	# urlFoto = models.URLField(blank=True, max_length=256)
-
 	# Campos necessários para o funcionamento do Django Admin e Auth
 	is_staff = models.BooleanField(default=False, db_default=False)
 	is_superuser = models.BooleanField(default=False, db_default=False)

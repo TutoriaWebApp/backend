@@ -48,7 +48,6 @@ class UsuarioManager(BaseUserManager):
             cidade,
             estado,
             aniversario,
-            urlFoto='N/A',
             password=password,
             **extra_fields
         )

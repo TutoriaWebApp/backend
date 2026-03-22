@@ -39,7 +39,7 @@ class Migration(migrations.Migration):
                 ('nomePerfil', models.CharField(max_length=100)),
                 ('cidade', models.CharField(max_length=80)),
                 ('estado', models.CharField(max_length=2)),
-                # ('urlFoto', models.URLField(max_length=256, db_default='', default='', blank=True)),
+                # ('fotoURL', models.URLField(max_length=256, db_default='', default='', blank=True)),
                 ('aniversario', models.DateField(blank=True, null=True, db_default=None, default=None)),
                 ('is_staff', models.BooleanField(db_default=False, default=False)),
                 ('is_superuser', models.BooleanField(db_default=False, default=False)),

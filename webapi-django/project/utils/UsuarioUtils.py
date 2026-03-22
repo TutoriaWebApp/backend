@@ -17,7 +17,7 @@ def get_fotoUrl(email, request):
 	if arquivo_existe:
 		foto = os.path.basename(arquivo_existe[0])
 		if request:
-			return request.build_absolute_uri(f'{settings.MEDIA_URL}/perfis/{foto}')
+			return request.build_absolute_uri(f'{settings.MEDIA_URL}perfis/{foto}')
 	return None
 
 
