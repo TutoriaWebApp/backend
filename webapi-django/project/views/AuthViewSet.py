@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
 from django.contrib.auth.tokens import default_token_generator
@@ -21,11 +22,14 @@ class LogInView(APIView):
 		password = request.data.get('password')
 
 		user = authenticate(username=username, password=password)
-
+		
 		if user is None:
 			return Response({"mensagem": "Credenciais inválidas"}, status=404)
 
 		refresh = RefreshToken.for_user(user)
+
+		access_expiry = int(settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME').total_seconds())
+		refresh_expiry = int(settings.SIMPLE_JWT.get('REFRESH_TOKEN_LIFETIME').total_seconds())
 
 		response = Response({"mensagem": "Login com sucesso"}, status=200)
 
@@ -35,7 +39,8 @@ class LogInView(APIView):
 			httponly=True,
 			#secure=True, ----- Só deixar True quando for HTTPS
 			secure=False,
-			samesite='Lax'
+			samesite='Lax',
+			max_age=access_expiry
 		)
 
 		response.set_cookie(
@@ -43,7 +48,8 @@ class LogInView(APIView):
 			value=str(refresh),
 			httponly=True,
 			secure=False,
-			samesite='Lax'
+			samesite='Lax',
+			max_age=refresh_expiry
 		)
 		return response
 
