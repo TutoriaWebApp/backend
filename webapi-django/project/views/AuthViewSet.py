@@ -96,7 +96,7 @@ class PasswordResetView(APIView):
 			token = default_token_generator.make_token(user)
 			uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-			reset_url = f"http://localhost:3000/reset-password/{uid}/{token}"
+			reset_url = f"http://localhost:3000/redefinir-senha/{uid}/{token}"
 
 			print(f'De: {EMAIL_HOST_USER}')
 			print(f'Para: {user.nomePerfil} {email}')
@@ -108,7 +108,7 @@ class PasswordResetView(APIView):
 				fail_silently=False,
 			)
 
-		return Response({"mensagem": "Se este e-mail estiver cadastrado, um link será enviado para a recuperação de sua senha"}, status=200)
+		return Response({"mensagem": "Se este e-mail estiver cadastrado, um link será enviado para a recuperação de sua senha."}, status=200)
 
 class PasswordResetConfirmView(APIView):
 	permission_classes = [AllowAny]
