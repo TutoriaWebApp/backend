@@ -1,4 +1,5 @@
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken, AuthenticationFailed
 
 class WebTutoriaJWTAuthentication(JWTAuthentication):
 	def authenticate(self, request):
@@ -7,5 +8,9 @@ class WebTutoriaJWTAuthentication(JWTAuthentication):
 		if token is None:
 			return None
 
-		validate_token = self.get_validated_token(token)
-		return self.get_user(validate_token), validate_token
+		try:
+			token_valido = self.get_validated_token(token)
+			usuario = self.get_user(token_valido)
+			return usuario, token_valido
+		except (InvalidToken, AuthenticationFailed):
+			return None
