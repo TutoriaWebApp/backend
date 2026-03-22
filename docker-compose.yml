@@ -30,6 +30,7 @@ services:
         command: ["./wait-for-db.sh", "mysql-image", "3306", "${MYSQL_ROOT_PASSWORD}", "python", "manage.py", "runserver", "0.0.0.0:8000"]
         volumes:
             - ./webapi-django:/app
+            - ./media:/app/media
         ports:
             - "8000:8000"
         depends_on:

@@ -17,7 +17,7 @@ cp env/.env.example env/.env
 Para executar o programa inicie o docker
 
 ```
-docker-compose --env-file /env/.env up --build -d
+docker-compose --env-file ./env/.env up --build -d
 ```
 
 ## Endpoints de [localhost:8080/v1](http://localhost:8080/v1)
