@@ -1,8 +1,8 @@
 from django.db import models
-from .Sessao import Sessao
-from .Usuario import Usuario
+from .SessaoModel import SessaoModel
+from .UsuarioModel import UsuarioModel
 
-class Solicitacao(models.Model):
+class SolicitacaoModel(models.Model):
 	class EstadoSolicitacao(models.TextChoices):
 		ACEITO     = 'ACEITO', 'Solicitação Aceita'
 		PENDENTE   = 'PENDENTE', 'Tutor precisa aceitar'
@@ -15,13 +15,13 @@ class Solicitacao(models.Model):
 	estado      = models.CharField(max_length=10, choices=EstadoSolicitacao)
 
 	usuarioId = models.ForeignKey(
-		Usuario,
+		UsuarioModel,
 		on_delete=models.CASCADE,
 		db_column='usuarioId'
 	)
 
 	sessaoId = models.ForeignKey(
-		Sessao,
+		SessaoModel,
 		on_delete=models.CASCADE,
 		db_column='sessaoId'
 	)

@@ -20,7 +20,7 @@ router.register(r'solicitacao', SolicitacaoViewSet, basename='solicitacoes')
 
 urlpatterns = [
     path('', include(router.urls)),
-	path('conquistas/usuario/<int:usuarioId>', Usuario_conseguiu_Conquista.as_view(), name='conquistas_do_usuario'),
+	path('conquistas/usuario/<int:usuarioId>', Usuario_conseguiu_ConquistaView.as_view(), name='conquistas_do_usuario'),
 	path('usuarios/novo', UsuarioRegistroView.as_view(), name='criar_novo_usuario'),
 	path('usuarios/altera-senha', UsuarioAlteraSenhaView.as_view(), name='altera_a_senha'),
 	path('login', LogInView.as_view(), name='logar_usuario'),

@@ -1,7 +1,7 @@
 from django.db import models
-from .Tutor import Tutor
+from .TutorModel import TutorModel
 
-class Sessao(models.Model):
+class SessaoModel(models.Model):
 	class DiaSemana(models.TextChoices):
 		SEGUNDA = 'SEG', 'Segunda-feira'
 		TERCA = 'TER', 'Terça-feira'
@@ -14,7 +14,7 @@ class Sessao(models.Model):
 	id = models.AutoField(primary_key=True, db_column='sessaoId')
 
 	tutorId = models.ForeignKey(
-		Tutor,
+		TutorModel,
 		on_delete=models.CASCADE,
 		db_column='tutorId',
 		related_name='sessoes'

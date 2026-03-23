@@ -1,17 +1,17 @@
 from rest_framework import serializers
-from project.models import Conquista, consegue
+from project.models import ConquistaModel, consegueModel
 
 class ConquistaSerializer(serializers.ModelSerializer):
 	class Meta:
-		model  = Conquista
+		model  = ConquistaModel
 		fields = '__all__'
 
 class ConquistaUsuarioSerializer(serializers.ModelSerializer):
 	class Meta:
-		model  = Conquista
+		model  = ConquistaModel
 		fields = ['titulo', 'descricao', 'urlImagem', 'pontos']
 
 class consegueSerializer(serializers.ModelSerializer):
 	class Meta:
-		model = consegue
+		model = consegueModel
 		fields = '__all__'

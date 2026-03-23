@@ -1,11 +1,10 @@
-from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from project.models import Usuario
+from project.models import UsuarioModel
 
 class UsuarioCreateForm(UserCreationForm):
 
 	class Meta(UserCreationForm.Meta):
-		model = Usuario
+		model = UsuarioModel
 
 		fields = [
 			'email',
@@ -20,7 +19,7 @@ class UsuarioUpdateForm(UserChangeForm):
 	password = None
 
 	class Meta(UserChangeForm.Meta):
-		model = Usuario
+		model = UsuarioModel
 		fields = [
 			'email',
 			'nomePerfil',

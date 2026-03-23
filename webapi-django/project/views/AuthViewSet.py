@@ -12,7 +12,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from config.settings import EMAIL_HOST_USER
-from project.models.Usuario import Usuario
+from project.models.UsuarioModel import UsuarioModel
 
 class LogInView(APIView):
 	permission_classes = [AllowAny]
@@ -22,7 +22,7 @@ class LogInView(APIView):
 		password = request.data.get('password')
 
 		user = authenticate(username=username, password=password)
-		
+
 		if user is None:
 			return Response({"mensagem": "Credenciais inválidas"}, status=404)
 
@@ -89,7 +89,7 @@ class PasswordResetView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request):
 		email = request.data.get('email')
-		user = Usuario.objects.filter(email=email).first()
+		user = UsuarioModel.objects.filter(email=email).first()
 
 		print(f"Sending email to: {email}")
 		if user:
@@ -119,8 +119,8 @@ class PasswordResetConfirmView(APIView):
 
 		try:
 			uid = force_str(urlsafe_base64_decode(uidb64))
-			user = Usuario.objects.get(pk=uid)
-		except (TypeError, ValueError, OverflowError, Usuario.DoesNotExist):
+			user = UsuarioModel.objects.get(pk=uid)
+		except (TypeError, ValueError, OverflowError, UsuarioModel.DoesNotExist):
 			user = None
 
 		if user is None or not default_token_generator.check_token(user, token):

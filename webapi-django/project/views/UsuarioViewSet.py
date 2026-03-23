@@ -10,13 +10,13 @@ from project.models import *
 from project.serializers import *
 
 class UsuarioViewSet(viewsets.ModelViewSet):
-	queryset = Usuario.objects.all()
+	queryset = UsuarioModel.objects.all()
 	serializer_class = UsuarioSerializer
 	permission_classes = [IsAuthenticated]
 	http_method_names = ['get', 'put']
 
 class UsuarioRegistroView(generics.CreateAPIView):
-	queryset = Usuario.objects.all()
+	queryset = UsuarioModel.objects.all()
 	serializer_class = UsuarioRegistroSerializer
 	permission_classes = [AllowAny]
 	http_method_names = ['post']

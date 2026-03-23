@@ -7,7 +7,7 @@ from project.models import *
 from project.serializers import *
 
 class SolicitacaoViewSet(viewsets.ModelViewSet):
-	queryset = Solicitacao.objects.all()
+	queryset = SolicitacaoModel.objects.all()
 	serializer_class = SolicitacaoSerializer
 	permission_classes = [IsAuthenticated]
 
@@ -19,5 +19,5 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 			usuarioId=logged_user,
 			dataCriacao=dataCriacao,
 			validade=validade,
-			estado=Solicitacao.EstadoSolicitacao.PENDENTE
+			estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
 		)

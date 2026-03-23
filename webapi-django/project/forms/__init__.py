@@ -1,1 +1,1 @@
-from .Usuario import UsuarioCreateForm, UsuarioUpdateForm
+from .UsuarioForm import UsuarioCreateForm, UsuarioUpdateForm

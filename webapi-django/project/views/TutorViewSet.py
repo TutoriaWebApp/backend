@@ -5,6 +5,6 @@ from project.models import *
 from project.serializers import *
 
 class TutorViewSet(viewsets.ModelViewSet):
-	queryset = Tutor.objects.all()
+	queryset = TutorModel.objects.all()
 	serializer_class = TutorSerializer
 	permission_classes = [IsAuthenticated]

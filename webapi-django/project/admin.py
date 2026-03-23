@@ -4,7 +4,7 @@ from project.forms import UsuarioCreateForm, UsuarioUpdateForm
 from project.models import *
 
 class UsuarioAdmin(UserAdmin):
-	model = Usuario
+	model = UsuarioModel
 
 	"""
 	Listagem de Usuários na página de Admin
@@ -71,9 +71,9 @@ class UsuarioAdmin(UserAdmin):
 
 
 # Registrando os modelos
-admin.site.register(Usuario, UsuarioAdmin)
-admin.site.register(Conquista)
-admin.site.register(consegue)
-admin.site.register(Tutor)
-admin.site.register(Sessao)
-admin.site.register(Solicitacao)
+admin.site.register(UsuarioModel, UsuarioAdmin)
+admin.site.register(ConquistaModel)
+admin.site.register(consegueModel)
+admin.site.register(TutorModel)
+admin.site.register(SessaoModel)
+admin.site.register(SolicitacaoModel)

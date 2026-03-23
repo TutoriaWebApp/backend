@@ -5,6 +5,6 @@ from project.models import *
 from project.serializers import *
 
 class SessaoViewSet(viewsets.ModelViewSet):
-	queryset = Sessao.objects.all()
+	queryset = SessaoModel.objects.all()
 	serializer_class = SessaoSerializer
 	permission_classes = [IsAuthenticated]

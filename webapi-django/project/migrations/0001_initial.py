@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Conquista',
+            name='ConquistaModel',
             fields=[
                 ('id', models.AutoField(db_column='conquistaId', primary_key=True, serialize=False)),
                 ('titulo', models.CharField(max_length=32)),
@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Usuario',
+            name='UsuarioModel',
             fields=[
                 ('id', models.AutoField(db_column='usuarioId', primary_key=True, serialize=False)),
                 ('pontuacao', models.PositiveIntegerField(db_default=0, default=0)),
@@ -56,11 +56,11 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='consegue',
+            name='consegueModel',
             fields=[
                 ('id', models.AutoField(db_column='consegueId', primary_key=True, serialize=False)),
                 ('dataObtido', models.DateTimeField()),
-                ('conquistaId', models.ForeignKey(db_column='conquistaId', on_delete=django.db.models.deletion.CASCADE, to='project.conquista')),
+                ('conquistaId', models.ForeignKey(db_column='conquistaId', on_delete=django.db.models.deletion.CASCADE, to='project.conquistaModel')),
                 ('usuarioId', models.ForeignKey(db_column='usuarioId', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={
@@ -69,12 +69,12 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.AddField(
-            model_name='conquista',
+            model_name='conquistaModel',
             name='usuarios',
-            field=models.ManyToManyField(related_name='conquistas', through='project.consegue', to=settings.AUTH_USER_MODEL),
+            field=models.ManyToManyField(related_name='conquistas', through='project.consegueModel', to=settings.AUTH_USER_MODEL),
         ),
         migrations.CreateModel(
-            name='Tutor',
+            name='TutorModel',
             fields=[
                 ('id', models.AutoField(db_column='tutorId', primary_key=True, serialize=False)),
                 ('usuarioId', models.OneToOneField(db_column='usuarioId', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
@@ -86,13 +86,13 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Sessao',
+            name='SessaoModel',
             fields=[
                 ('id', models.AutoField(db_column='sessaoId', primary_key=True, serialize=False)),
                 ('horarioInicio', models.TimeField()),
                 ('horarioFim', models.TimeField()),
                 ('dia', models.CharField(choices=[('SEG', 'Segunda-feira'), ('TER', 'Terça-feira'), ('QUA', 'Quarta-feira'), ('QUI', 'Quinta-feira'), ('SEX', 'Sexta-feira'), ('SAB', 'Sábado'), ('DOM', 'Domingo')], max_length=3)),
-                ('tutorId', models.ForeignKey(db_column='tutorId', on_delete=django.db.models.deletion.CASCADE, related_name='sessoes', to='project.tutor')),
+                ('tutorId', models.ForeignKey(db_column='tutorId', on_delete=django.db.models.deletion.CASCADE, related_name='sessoes', to='project.tutorModel')),
             ],
             options={
                 'verbose_name': 'SESSAO',
@@ -102,13 +102,13 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
-            name='Solicitacao',
+            name='SolicitacaoModel',
             fields=[
                 ('id', models.AutoField(db_column='solicitacaoId', primary_key=True, serialize=False)),
                 ('dataCriacao', models.DateTimeField(auto_now_add=True)),
                 ('validade', models.DateTimeField(null=True)),
                 ('estado', models.CharField(choices=[('ACEITO', 'Solicitação Aceita'), ('PENDENTE', 'Tutor precisa aceitar'), ('RECUSADO', 'Solicitação recusada'), ('RECORRENTE', 'Solicitação recorrente')], max_length=10)),
-                ('sessaoId', models.ForeignKey(db_column='sessaoId', on_delete=django.db.models.deletion.CASCADE, to='project.sessao')),
+                ('sessaoId', models.ForeignKey(db_column='sessaoId', on_delete=django.db.models.deletion.CASCADE, to='project.sessaoModel')),
                 ('usuarioId', models.ForeignKey(db_column='usuarioId', on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
             options={

@@ -1,5 +1,5 @@
 from .AuthViewSet import *
-from .UsuarioView import *
+from .UsuarioViewSet import *
 from .ConquistaViewSet import *
 from .SessaoViewSet import *
 from .SolicitacaoViewSet import *
@@ -15,7 +15,7 @@ __all__ = [
 	'UsuarioViewSet',
 	'UsuarioAlteraSenhaView',
 	'UsuarioRegistroView',
-	'Usuario_conseguiu_Conquista',
+	'Usuario_conseguiu_ConquistaView',
 
 	'ConquistaViewSet',
 	'consegueViewSet',

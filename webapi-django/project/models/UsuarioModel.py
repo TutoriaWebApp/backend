@@ -1,10 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
-from .managers import UsuarioManager # Importe o novo manager
+from config.manager import UsuarioManager
 
-# O modelo Conquista não muda, então não precisamos importá-lo aqui
-
-class Usuario(AbstractBaseUser, PermissionsMixin):
+class UsuarioModel(AbstractBaseUser, PermissionsMixin):
 	id = models.AutoField(primary_key=True, db_column='usuarioId')
 	pontuacao = models.PositiveIntegerField(default=0, db_default=0)
 	email = models.EmailField(unique=True)
@@ -13,6 +11,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
 	cidade = models.CharField(max_length=80)
 	estado = models.CharField(max_length=2)
 	aniversario = models.DateField(blank=True, null=True, db_default=None, default=None)
+
 	# Campos necessários para o funcionamento do Django Admin e Auth
 	is_staff = models.BooleanField(default=False, db_default=False)
 	is_superuser = models.BooleanField(default=False, db_default=False)

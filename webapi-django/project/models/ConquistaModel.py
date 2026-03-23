@@ -1,7 +1,7 @@
 from django.db import models
-from .Usuario import Usuario
+from .UsuarioModel import UsuarioModel
 
-class Conquista(models.Model):
+class ConquistaModel(models.Model):
 	id        = models.AutoField(primary_key=True, db_column='conquistaId')
 	titulo    = models.CharField(max_length=32)
 	descricao = models.CharField(max_length=64)
@@ -9,8 +9,8 @@ class Conquista(models.Model):
 	pontos    = models.IntegerField()
 
 	usuarios  = models.ManyToManyField(
-		Usuario,
-		through='consegue',
+		UsuarioModel,
+		through='consegueModel',
 		related_name='conquistas'
 	)
 
@@ -22,16 +22,16 @@ class Conquista(models.Model):
 		verbose_name = 'CONQUISTA'
 		verbose_name_plural = 'CONQUISTAS'
 
-class consegue(models.Model):
+class consegueModel(models.Model):
 	id = models.AutoField(primary_key=True, db_column='consegueId')
 
 	usuarioId = models.ForeignKey(
-		Usuario,
+		UsuarioModel,
 		on_delete=models.CASCADE,
 		db_column='usuarioId')
 
 	conquistaId = models.ForeignKey(
-		Conquista,
+		ConquistaModel,
 		on_delete=models.CASCADE,
 		db_column='conquistaId'
 	)

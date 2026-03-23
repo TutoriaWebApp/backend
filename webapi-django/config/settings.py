@@ -143,7 +143,7 @@ SIMPLE_JWT = {
     "REFRESH_TOKEN_LIFETIME": timedelta(hours=3),
 }
 
-AUTH_USER_MODEL = 'project.Usuario'
+AUTH_USER_MODEL = 'project.UsuarioModel'
 LOGIN_URL = 'admin/login'
 
 # Internationalization

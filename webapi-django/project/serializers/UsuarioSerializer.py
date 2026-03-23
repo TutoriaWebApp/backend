@@ -1,7 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from project.models import Usuario
+from project.models import UsuarioModel
 from project.utils import UsuarioUtils
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -9,7 +9,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 	foto = serializers.ImageField(write_only=True, required=False)
 
 	class Meta:
-		model = Usuario
+		model = UsuarioModel
 		fields = [
 			'email',
 			'nomePerfil',
@@ -22,7 +22,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 		]
 		read_only_fields = ['pontuacao', 'fotoURL']
 
-	def create(self):
+	def create(self, validated_data):
 		"""
 		Mensagem de erro caso queira utilizar esta rota para POST
 		"""
@@ -61,7 +61,7 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
 	foto = serializers.ImageField(write_only=True, required=False)
 
 	class Meta:
-		model = Usuario
+		model = UsuarioModel
 		fields = [
 			'email',
 			'password',
@@ -75,7 +75,7 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		foto_file = validated_data.pop('foto', None)
 
-		user = Usuario.objects.create_user(**validated_data)
+		user = UsuarioModel.objects.create_user(**validated_data)
 
 		if foto_file:
 			UsuarioUtils.set_fotoUrl(user.email, foto_file)
