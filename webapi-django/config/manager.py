@@ -5,7 +5,7 @@ class UsuarioManager(BaseUserManager):
     Manager customizado para o nosso modelo Usuario,
     onde o email é o identificador único para autenticação.
     """
-    def create_user(self, email, nomePerfil, cidade, estado, aniversario, password=None, **extra_fields):
+    def create_user(self, email, nomePerfil, cidade, estado, password=None, **extra_fields):
         """
         Cria e salva um Usuário com o email e senha fornecidos.
         """
@@ -18,7 +18,6 @@ class UsuarioManager(BaseUserManager):
             nomePerfil=nomePerfil,
             cidade=cidade,
             estado=estado,
-            aniversario=aniversario,
             **extra_fields
         )
 
@@ -26,7 +25,7 @@ class UsuarioManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, email, nomePerfil, cidade, estado, aniversario, password=None, **extra_fields):
+    def create_superuser(self, email, nomePerfil, cidade, estado, password=None, **extra_fields):
         """
         Cria e salva um Superusuário.
         """
@@ -47,7 +46,6 @@ class UsuarioManager(BaseUserManager):
             nomePerfil,
             cidade,
             estado,
-            aniversario,
             password=password,
             **extra_fields
         )

@@ -11,7 +11,6 @@ class UsuarioCreateForm(UserCreationForm):
 			'nomePerfil',
 			'cidade',
 			'estado',
-			'aniversario',
 		]
 
 class UsuarioUpdateForm(UserChangeForm):
