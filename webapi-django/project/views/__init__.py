@@ -15,6 +15,7 @@ __all__ = [
 	'UsuarioViewSet',
 	'UsuarioAlteraSenhaView',
 	'UsuarioRegistroView',
+	'UsuarioPerfilLogadoView',
 	'Usuario_conseguiu_ConquistaView',
 
 	'ConquistaViewSet',

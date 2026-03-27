@@ -39,6 +39,38 @@ class UsuarioRegistroView(generics.CreateAPIView):
 
 
 @extend_schema(
+	summary="Exibe/edita informações sobre o Usuário logado",
+	description="Este endpoint exibe/edita um usuário cadastrado na plataforma",
+	request=UsuarioSerializer,
+	responses=UsuarioSerializer,
+	tags=['02. Usuário Logado']
+)
+class UsuarioPerfilLogadoView(APIView):
+	permission_classes = [IsAuthenticated]
+	serializer_class = UsuarioSerializer
+	http_method_names = ['get', 'patch']
+
+	def get(self, request):
+		user = request.user
+		try:
+			serializer = UsuarioSerializer(user, context={'request':request})
+		except () as err:
+			return Response({'mensagem': err})
+		return Response(serializer.data, status=200)
+
+	def patch(self, request):
+		try:
+			serialiazer = UsuarioSerializer(request.user, request.data, partial=True)
+			if not serialiazer.is_valid():
+				return Response({'mensagem': 'Se fodeu Serializer não é válido', 'data': serialiazer.data})
+			serialiazer.save()
+		except () as err:
+			return Response({'mensagem': 'Não foi possível realizar alterações para o usuário', 'erro': f'{err}'}, status=400)
+		return Response(serialiazer.data, status=200)
+
+
+
+@extend_schema(
 	summary="Altera a senha",
 	description="Este endpoint é para confirmar a senha antiga, antes de alterar a senha do Usuário",
 	request=UsuarioAlteraSenhaSerializer,

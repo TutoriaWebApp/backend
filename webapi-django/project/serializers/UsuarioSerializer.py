@@ -6,7 +6,7 @@ from project.utils import UsuarioUtils
 
 class UsuarioSerializer(serializers.ModelSerializer):
 	fotoURL = serializers.SerializerMethodField()
-	foto = serializers.ImageField(write_only=True, required=False)
+	foto = serializers.ImageField(allow_null=True, write_only=True, required=False)
 
 	class Meta:
 		model = UsuarioModel
@@ -40,12 +40,6 @@ class UsuarioSerializer(serializers.ModelSerializer):
 		"""
 		Atualiza os dados do Usuário logado
 		"""
-		request = self.context.get('request')
-		if instance != request.user:
-			raise serializers.ValidationError(
-				"Você não tem permissão para atualizar outros usuários."
-			)
-
 		foto_arquivo = validated_data.pop('foto', None)
 
 		if foto_arquivo:

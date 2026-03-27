@@ -163,22 +163,12 @@ class UsuarioRegistroSerializerTest(TestCase):
 			response.is_valid()
 			response.save()
 
-	def test_UsuarioSerializer_put(self):
-		media_root = tempfile.mkdtemp()
-		with override_settings(MEDIA_ROOT=media_root):
-			request = self.factory.put('/')
-			request.user = self.user
-			serializer = UsuarioSerializer(self.user, context={'request': request})
-			data = {'NomePerfil': 'Seu Zé', 'foto': _foto}
-			UsuarioAtualizado = serializer.update(self.user, data)
-			self.assertEqual('test@example.com', UsuarioAtualizado.email)
-			self.assertIn('test@example.com', serializer.data['fotoURL'])
-	pass
+
 
 class UsuarioViewSetTest(APITestCase):
 	def setUp(self):
 		self.client = APIClient()
-		self.user = UsuarioModel.objects.create_user(
+		self.logado = UsuarioModel.objects.create_user(
 			email=_email,
 			password=_password,
 			nomePerfil=_nomePerfil,
@@ -187,11 +177,37 @@ class UsuarioViewSetTest(APITestCase):
 			aniversario=_aniversario,
 		)
 
-		self.client.force_authenticate(user=self.user)
+		self.deslogado = UsuarioModel.objects.create_user(
+			email='deslogado@tutoria.com',
+			password=_password,
+			nomePerfil='Deslogado',
+			estado=_estado,
+			cidade=_cidade,
+			aniversario=_aniversario,
+		)
+
+		self.client.force_authenticate(user=self.logado)
 
 	def test_pesquisar_Usuario(self):
-		url = f'/v1/usuarios/{self.user.id}/'
+		url = f'/v1/usuarios/1'
+		response = self.client.get(url)
+
+	def test_autorizar_dados_UsuarioLogado(self):
+		url = f'/v1/perfil'
 		response = self.client.get(url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(_email, response.data['email'])
-		print(response.data)
+
+	def test_UsuarioSerializer_patch(self):
+		media_root = tempfile.mkdtemp()
+		with override_settings(MEDIA_ROOT=media_root):
+			url = f'/v1/perfil'
+			data = {
+				'nomePerfil': 'seuZé',
+				'foto': _foto
+			}
+			response = self.client.patch(url, data, format='multipart')
+			self.assertIn(_email, response.data['fotoURL'])
+			self.assertEqual('seuZé', response.data['nomePerfil'])
+
+	pass
