@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'drf_spectacular',
 	'project.apps.ProjectConfig',
 	'rest_framework',
 	'rest_framework_simplejwt',
@@ -133,7 +134,21 @@ REST_FRAMEWORK = {
 	'DEFAULT_AUTHENTICATION_CLASSES': (
         # 'rest_framework_simplejwt.authentication.JWTAuthentication',
 		'config.authenticate.WebTutoriaJWTAuthentication',
-    )
+    ),
+	'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+}
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Minha API de Tutoria',
+    'DESCRIPTION': 'Documentação das rotas do projeto',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+	'SERVER_AUTHENTICATION': 'config.authenticate.WebTutoriaJWTAuthentication',
+	'SECURITY': [{'WebTutoriaAuth': []},],
+	'SWAGGER_UI_SETTINGS': {
+		'operationsSorter': 'alpha',
+		'tagsSorter': 'alpha',
+	},
 }
 
 from datetime import timedelta

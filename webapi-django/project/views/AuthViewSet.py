@@ -5,6 +5,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes, force_str
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from django.core.mail import send_mail
+
+from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -14,6 +16,34 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from config.settings import EMAIL_HOST_USER
 from project.models.UsuarioModel import UsuarioModel
 
+@extend_schema(
+	summary="Fazer Login",
+	description="Este endpoint recebe os dados do usuário para realizar Login.",
+	request={
+		'application/json': {
+			'type': 'object',
+			'properties': {
+				'username': {'type': 'string', 'example': 'ana.lima@testmail.com'},
+				'password': {'type': 'string', 'example': 'S3nh4Mu170F0r73!'},
+			}
+		}
+	},
+	responses={
+		201: {
+			'type': 'object',
+			'properties': {
+				'mensagem': {'type': 'string', 'example': 'Login com sucesso'}
+			}
+		},
+		404: {
+			'type': 'object',
+			'properties': {
+				'mensagem': {'type': 'string', 'example': 'Credenciais inválidas'}
+			}
+		},
+	},
+	tags=['01. Autenticação do Usuário']
+)
 class LogInView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request):
@@ -53,6 +83,25 @@ class LogInView(APIView):
 		)
 		return response
 
+@extend_schema(
+	summary="Refresca o token de login do Usuário",
+	description="Este endpoint recebe Cookies do Usuário e atualiza o dado de refresh_token.",
+	responses={
+		201: {
+			'type': 'object',
+			'properties': {
+				'mensagem': {'type': 'string', 'example': 'Token renovado com sucesso'}
+			}
+		},
+		404: {
+			'type': 'object',
+			'properties': {
+				'mensagem': {'type': 'string', 'example': 'Não foi possível encontrar Token de Autenticação'}
+			}
+		},
+	},
+	tags=['01. Autenticação do Usuário']
+)
 class LoginRefreshView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request):
@@ -77,6 +126,19 @@ class LoginRefreshView(APIView):
 		except TokenError:
 			return Response({"mensagem": "Token inválido ou expirado"}, status=401)
 
+@extend_schema(
+	summary="Logout do Usuário",
+	description="Este endpoint recebe Cookies do Usuário e os remove.",
+	responses={
+		201: {
+			'type': 'object',
+			'properties': {
+				'mensagem': {'type': 'string', 'example': 'Logout realizado com sucesso'}
+			}
+		},
+	},
+	tags=['01. Autenticação do Usuário']
+)
 class LogOutView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request):
@@ -85,6 +147,27 @@ class LogOutView(APIView):
 		response.delete_cookie('refresh_token')
 		return response
 
+@extend_schema(
+	summary="Requisição para alterar a senha",
+	description="Este endpoint recebe e-mail do Usuário e caso este usuário esteja cadastrado envia um email com o link de confirmação de alteração de senha.",
+	request={
+		'application/json': {
+			'type': 'object',
+			'properties': {
+				'email': {'type': 'string', 'example': 'ana.lima@testmail.com'},
+			}
+		}
+	},
+	responses={
+		200: {
+			'type': 'object',
+			'properties': {
+				'mensagem': {'type': 'string', 'example': 'Se este e-mail estiver cadastrado, um link será enviado para a recuperação de sua senha.'}
+			}
+		},
+	},
+	tags=['01. Autenticação do Usuário']
+)
 class PasswordResetView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request):
@@ -110,6 +193,35 @@ class PasswordResetView(APIView):
 
 		return Response({"mensagem": "Se este e-mail estiver cadastrado, um link será enviado para a recuperação de sua senha."}, status=200)
 
+@extend_schema(
+	summary="Confirma a alteração de senha",
+	description="Este endpoint recebe uid, token e a nova senha. Caso o uid e o token sejam válidos, a senha é alterada",
+	request={
+		'application/json': {
+			'type': 'object',
+			'properties': {
+				'uid': {'type': 'string'},
+				'token': {'type': 'string'},
+				'new_password': {'type': 'string'},
+			}
+		}
+	},
+	responses={
+		200: {
+			'type': 'object',
+			'properties': {
+				'mensagem': {'type': 'string', 'example': 'Senha alterada com sucesso!'}
+			}
+		},
+		400: {
+			'type': 'object',
+			'properties': {
+				'mensagem': {'type': 'string', 'example': 'Link inválido ou expirado'}
+			}
+		},
+	},
+	tags=['01. Autenticação do Usuário']
+)
 class PasswordResetConfirmView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request):
@@ -124,7 +236,7 @@ class PasswordResetConfirmView(APIView):
 			user = None
 
 		if user is None or not default_token_generator.check_token(user, token):
-			return Response({"mensagem": "Link inválido ou experido"}, status=400)
+			return Response({"mensagem": "Link inválido ou experado"}, status=400)
 
 		update_last_login(None, user)
 		user.set_password(new_password)
