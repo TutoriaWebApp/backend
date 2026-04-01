@@ -113,13 +113,15 @@ class LoginRefreshView(APIView):
 		try:
 			refresh = RefreshToken(token)
 			response = Response({"mensagem": "Token renovado com sucesso"}, status=200)
+			access_expiry = int(settings.SIMPLE_JWT.get('ACCESS_TOKEN_LIFETIME').total_seconds())
 
 			response.set_cookie(
 				key='access_token',
 				value=str(refresh.access_token),
 				httponly=True,
 				secure=False,
-				samesite='Lax'
+				samesite='Lax',
+				max_age=access_expiry
 			)
 			return response
 
