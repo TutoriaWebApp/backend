@@ -1,5 +1,5 @@
 from datetime import date
-from django.test import TestCase
+from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
@@ -24,7 +24,7 @@ class LogInViewTest(APITestCase):
 
     def test_login_success(self):
         """Testa login com credenciais válidas"""
-        url = '/api/login/'
+        url = reverse('logar_usuario')
         data = {'username': 'test@example.com', 'password': 'testpass123'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -34,7 +34,7 @@ class LogInViewTest(APITestCase):
 
     def test_login_invalid_credentials(self):
         """Testa login com credenciais inválidas"""
-        url = '/api/login/'
+        url = reverse('logar_usuario')
         data = {'username': 'test@example.com', 'password': 'wrongpass'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
@@ -55,13 +55,13 @@ class LoginRefreshViewTest(APITestCase):
     def test_refresh_valid_token(self):
         """Testa refresh com token válido"""
         # Primeiro, fazer login para obter o refresh token
-        login_url = '/api/login/'
+        login_url = reverse('logar_usuario')
         data = {'username': 'test@example.com', 'password': 'testpass123'}
         login_response = self.client.post(login_url, data)
         self.assertEqual(login_response.status_code, status.HTTP_200_OK)
 
         # Agora, refresh
-        url = '/api/login/refresh/'
+        url = reverse('refrescar_token_de_acesso')
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('mensagem', response.data)
@@ -69,14 +69,14 @@ class LoginRefreshViewTest(APITestCase):
 
     def test_refresh_no_token(self):
         """Testa refresh sem token"""
-        url = '/api/login/refresh/'
+        url = reverse('refrescar_token_de_acesso')
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertIn('mensagem', response.data)
 
     def test_refresh_invalid_token(self):
         """Testa refresh com token inválido"""
-        url = '/api/login/refresh/'
+        url = reverse('refrescar_token_de_acesso')
         self.client.cookies['refresh_token'] = 'invalid_token'
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
@@ -98,7 +98,7 @@ class LogOutViewTest(APITestCase):
     def test_logout(self):
         """Testa logout"""
         # Primeiro, fazer login
-        login_url = '/api/login/'
+        login_url = reverse('logar_usuario')
         data = {'username': 'test@example.com', 'password': 'testpass123'}
         login_response = self.client.post(login_url, data)
         self.assertEqual(login_response.status_code, status.HTTP_200_OK)
@@ -108,14 +108,14 @@ class LogOutViewTest(APITestCase):
         self.assertIn('refresh_token', self.client.cookies)
 
         # Agora, logout
-        url = '/api/logout/'
+        url = reverse('deslogar_usuario')
         response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('mensagem', response.data)
 
-        # Verificar se cookies foram deletados
-        self.assertNotIn('access_token', response.cookies)
-        self.assertNotIn('refresh_token', response.cookies)
+        # Verificar se cookies foram deletados (valor deve ser vazio)
+        self.assertEqual(response.cookies['access_token'].value, '')
+        self.assertEqual(response.cookies['refresh_token'].value, '')
 
 
 class PasswordResetViewTest(APITestCase):
@@ -133,7 +133,7 @@ class PasswordResetViewTest(APITestCase):
     @patch('project.views.AuthViewSet.send_mail')
     def test_password_reset_existing_email(self, mock_send_mail):
         """Testa reset de senha com email existente"""
-        url = '/api/reset-password/request/'
+        url = reverse('resetar_senha')
         data = {'email': 'test@example.com'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -143,12 +143,11 @@ class PasswordResetViewTest(APITestCase):
     @patch('project.views.AuthViewSet.send_mail')
     def test_password_reset_non_existing_email(self, mock_send_mail):
         """Testa reset de senha com email não existente"""
-        url = '/api/reset-password/request/'
+        url = reverse('resetar_senha')
         data = {'email': 'nonexistent@example.com'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertIn('mensagem', response.data)
-        # Mesmo assim, send_mail é chamado? No código, if user: send_mail
         mock_send_mail.assert_not_called()
 
 
@@ -168,7 +167,7 @@ class PasswordResetConfirmViewTest(APITestCase):
         """Testa confirmação de reset com uid e token válidos"""
         token = default_token_generator.make_token(self.user)
         uid = urlsafe_base64_encode(force_bytes(self.user.pk))
-        url = '/api/reset-password/confirm/'
+        url = reverse('confirmar_alteracao_de_senha')
         data = {'uid': uid, 'token': token, 'new_password': 'newpass123'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -180,7 +179,7 @@ class PasswordResetConfirmViewTest(APITestCase):
         """Testa confirmação de reset com uid inválido"""
         token = default_token_generator.make_token(self.user)
         uid = urlsafe_base64_encode(force_bytes(999))  # ID inválido
-        url = '/api/reset-password/confirm/'
+        url = reverse('confirmar_alteracao_de_senha')
         data = {'uid': uid, 'token': token, 'new_password': 'newpass123'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -189,7 +188,7 @@ class PasswordResetConfirmViewTest(APITestCase):
     def test_password_reset_confirm_invalid_token(self):
         """Testa confirmação de reset com token inválido"""
         uid = urlsafe_base64_encode(force_bytes(self.user.pk))
-        url = '/api/reset-password/confirm/'
+        url = reverse('confirmar_alteracao_de_senha')
         data = {'uid': uid, 'token': 'invalid-token', 'new_password': 'newpass123'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
