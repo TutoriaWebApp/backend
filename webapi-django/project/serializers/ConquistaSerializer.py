@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from project.models import ConquistaModel, consegueModel
+from project.models import *
 
 class ConquistaSerializer(serializers.ModelSerializer):
 	class Meta:

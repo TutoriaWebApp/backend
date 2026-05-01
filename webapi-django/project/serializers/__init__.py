@@ -1,17 +1,23 @@
-from .UsuarioSerializer import UsuarioSerializer, UsuarioRegistroSerializer, UsuarioAlteraSenhaSerializer
-from .ConquistaSerializer import ConquistaSerializer, ConquistaUsuarioSerializer, consegueSerializer
-from .TutorSerializer import TutorSerializer
-from .SessaoSerializer import SessaoSerializer
-from .SolicitacaoSerializer import SolicitacaoSerializer
+from .UsuarioSerializer import *
+from .ConquistaSerializer import *
+from .TutorSerializer import *
+from .SessaoSerializer import *
 
 __all__ = [
 	'UsuarioSerializer',
+	'UsuarioPublicoSerializer',
 	'UsuarioRegistroSerializer',
 	'UsuarioAlteraSenhaSerializer',
+
 	'ConquistaSerializer',
 	'ConquistaUsuarioSerializer',
 	'consegueSerializer',
+
 	'TutorSerializer',
+	'AgendaSerializer',
 	'SessaoSerializer',
-	'SolicitacaoSerializer'
+	'SolicitacaoSerializer',
+	'AreaSerializer',
+	'EspecialidadeSerializer',
+	'ContemSerializer',
 ]

@@ -1,7 +1,7 @@
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
-from project.models import UsuarioModel
+from project.models import *
 from project.utils import UsuarioUtils
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -11,6 +11,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = UsuarioModel
 		fields = [
+			'id',
 			'email',
 			'nomePerfil',
 			'estado',
@@ -23,23 +24,14 @@ class UsuarioSerializer(serializers.ModelSerializer):
 		read_only_fields = ['pontuacao', 'fotoURL']
 
 	def create(self, validated_data):
-		"""
-		Mensagem de erro caso queira utilizar esta rota para POST
-		"""
 		raise serializers.ValidationError(
 			"Criação de usuário não permitida por esta rota."
 		)
 
 	def get_fotoURL(self, obj):
-		"""
-		Retorna se o Usuário tem uma foto
-		"""
 		return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
 
 	def update(self, instance, validated_data):
-		"""
-		Atualiza os dados do Usuário logado
-		"""
 		foto_arquivo = validated_data.pop('foto', None)
 
 		if foto_arquivo:
@@ -48,7 +40,23 @@ class UsuarioSerializer(serializers.ModelSerializer):
 		return super().update(instance, validated_data)
 
 
+class UsuarioPublicoSerializer(serializers.ModelSerializer):
+	fotoURL = serializers.SerializerMethodField()
 
+	class Meta:
+		model = UsuarioModel
+		fields = [
+			'id',
+			'nomePerfil',
+			'estado',
+			'cidade',
+			'pontuacao',
+			'fotoURL'
+		]
+		read_only_fields = ['id', 'email', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL']
+
+	def get_fotoURL(self, obj):
+		return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
 
 class UsuarioRegistroSerializer(serializers.ModelSerializer):
 	password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
