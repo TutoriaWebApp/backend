@@ -2,7 +2,6 @@ from .AuthViewSet import *
 from .UsuarioViewSet import *
 from .ConquistaViewSet import *
 from .SessaoViewSet import *
-from .SolicitacaoViewSet import *
 from .TutorViewSet import *
 
 __all__ = [
@@ -20,7 +19,11 @@ __all__ = [
 
 	'ConquistaViewSet',
 	'consegueViewSet',
+	'AgendaViewSet',
 	'SessaoViewSet',
 	'SolicitacaoViewSet',
 	'TutorViewSet',
+	'AreaViewSet',
+	'EspecialidadeViewSet',
+	'ContemViewSet',
 ]

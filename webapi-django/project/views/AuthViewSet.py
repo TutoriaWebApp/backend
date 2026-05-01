@@ -14,7 +14,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from config.settings import EMAIL_HOST_USER
-from project.models.UsuarioModel import UsuarioModel
+from project.models import *
 
 @extend_schema(
 	summary="Fazer Login",

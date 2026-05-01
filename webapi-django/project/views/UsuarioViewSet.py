@@ -12,13 +12,13 @@ from project.serializers import *
 @extend_schema(
 	summary="Lista Usuário da plataforma",
 	description="Este endpoint lista todos os usuários préviamente cadastrado na plataforma",
-	request=UsuarioSerializer,
-	responses=UsuarioSerializer,
+	request=UsuarioPublicoSerializer,
+	responses=UsuarioPublicoSerializer,
 	tags=['02. Usuário']
 )
 class UsuarioViewSet(viewsets.ModelViewSet):
 	queryset = UsuarioModel.objects.all()
-	serializer_class = UsuarioSerializer
+	serializer_class = UsuarioPublicoSerializer
 	http_method_names = ['get']
 
 
@@ -43,7 +43,7 @@ class UsuarioRegistroView(generics.CreateAPIView):
 	description="Este endpoint exibe/edita um usuário cadastrado na plataforma",
 	request=UsuarioSerializer,
 	responses=UsuarioSerializer,
-	tags=['02. Usuário Logado']
+	tags=['02. Usuário']
 )
 class UsuarioPerfilLogadoView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -60,11 +60,11 @@ class UsuarioPerfilLogadoView(APIView):
 
 	def patch(self, request):
 		try:
-			serialiazer = UsuarioSerializer(request.user, request.data, partial=True)
+			serialiazer = UsuarioSerializer(request.user, request.data, partial=True, context={'request': request})
 			if not serialiazer.is_valid():
-				return Response({'mensagem': 'Se fodeu Serializer não é válido', 'data': serialiazer.data})
+				return Response({'mensagem': 'Serializer não é válido', 'errors': serialiazer.errors}, status=400)
 			serialiazer.save()
-		except () as err:
+		except Exception as err:
 			return Response({'mensagem': 'Não foi possível realizar alterações para o usuário', 'erro': f'{err}'}, status=400)
 		return Response(serialiazer.data, status=200)
 

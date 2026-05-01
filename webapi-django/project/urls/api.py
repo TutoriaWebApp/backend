@@ -16,7 +16,15 @@ router.register(r'tutores', TutorViewSet, basename='tutor')
 
 router.register(r'sessoes', SessaoViewSet, basename='sessoes')
 
-router.register(r'solicitacao', SolicitacaoViewSet, basename='solicitacoes')
+router.register(r'solicitacoes', SolicitacaoViewSet, basename='solicitacoes')
+
+router.register(r'areas', AreaViewSet, basename='areas')
+
+router.register(r'especialidades', EspecialidadeViewSet, basename='especialidades')
+
+router.register(r'contem', ContemViewSet, basename='contem')
+
+router.register(r'agendas', AgendaViewSet, basename='agendas')
 
 urlpatterns = [
     path('', include(router.urls)),
