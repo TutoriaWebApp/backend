@@ -67,6 +67,8 @@ AVALIACAO_APRENDIZ (
     CONSTRAINT AVALIACAO_APRENDIZ_USUARIO_FK
         FOREIGN KEY (usuarioId)
         REFERENCES USUARIO (usuarioId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
@@ -80,6 +82,8 @@ TUTOR (
     CONSTRAINT TUTOR_USUARIO_FK
         FOREIGN KEY (usuarioId)
         REFERENCES USUARIO (usuarioId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
@@ -91,6 +95,8 @@ AVALIACAO_TUTOR (
     CONSTRAINT AVALIACAO_TUTOR_USUARIO_FK
         FOREIGN KEY (tutorId)
         REFERENCES TUTOR (tutorId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
@@ -120,53 +126,98 @@ ESPECIALIDADE (
     CONSTRAINT ESPECIALIDADE_AREA_FK
         FOREIGN KEY (areaId)
         REFERENCES AREA (areaId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
-SESSAO (
-    sessaoId      INT  NOT NULL AUTO_INCREMENT,
+AGENDA (
+    agendaId      INT  NOT NULL AUTO_INCREMENT,
     tutorId       INT  NOT NULL,
     horarioInicio TIME NOT NULL,
     horarioFim    TIME NOT NULL,
     dia           ENUM('SEG', 'TER', 'QUA', 'QUI', 'SEX', 'SAB', 'DOM')  NOT NULL,
 
-    CONSTRAINT SESSAO_PK
-        PRIMARY KEY (sessaoId),
+    CONSTRAINT AGENDA_PK
+        PRIMARY KEY (agendaId),
 
-    CONSTRAINT SESSAO_TUTOR_FK
+    CONSTRAINT AGENDA_TUTOR_FK
         FOREIGN KEY (tutorId)
-        REFERENCES TUTOR (tutorId),
+        REFERENCES TUTOR (tutorId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
-    CONSTRAINT SESSAO_UK
+    CONSTRAINT AGENDA_UK
         UNIQUE KEY (tutorId, dia, horarioInicio)
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
 SOLICITACAO (
-    solicitacaoId   INT  NOT NULL AUTO_INCREMENT,
-    usuarioId       INT  NOT NULL,
-    sessaoId        INT  NOT NULL,
-    especialidadeId INT  NOT NULL,
-    dataCriacao     TIME NOT NULL,
-    dataSessao      DATE NOT NULL,
+    solicitacaoId   INT NOT NULL AUTO_INCREMENT,
+    usuarioId       INT NOT NULL,
+    agendaId        INT NOT NULL,
+    areaId          INT NOT NULL,
+    especialidadeId INT,
+    dataCriacao     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    dataPretendida  DATE NOT NULL,
     validade        TIME NOT NULL,
-
-    estado   ENUM('ACEITO', 'PENDENTE', 'RECUSADO', 'RECORRENTE') NOT NULL DEFAULT 'PENDENTE',
+    recorrente      BOOLEAN NOT NULL,
+    estado          ENUM('ACEITO', 'PENDENTE', 'RECUSADO', 'RECORRENTE') NOT NULL DEFAULT 'PENDENTE',
 
     CONSTRAINT SOLICITACAO_PK
-        PRIMARY KEY (usuarioId, sessaoId),
+        PRIMARY KEY (solicitacaoId),
 
     CONSTRAINT SOLICITACAO_USUARIO_FK
         FOREIGN KEY (usuarioId)
-        REFERENCES USUARIO (usuarioId),
+        REFERENCES USUARIO (usuarioId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
-    CONSTRAINT SOLICITACAO_SESSAO_FK
-        FOREIGN KEY (sessaoId)
-        REFERENCES SESSAO (sessaoId),
+    CONSTRAINT SOLICITACAO_AGENDA_FK
+        FOREIGN KEY (agendaId)
+        REFERENCES AGENDA (agendaId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT SOLICITACAO_ESPECIALIDADE_FK
+        FOREIGN KEY (especialidadeId)
+        REFERENCES ESPECIALIDADE (especialidadeId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+) ENGINE=InnoDB, AUTO_INCREMENT=1;
+
+CREATE TABLE IF NOT EXISTS
+SESSAO (
+    sessaoId        INT NOT NULL AUTO_INCREMENT,
+    usuarioId       INT NOT NULL,
+    tutorId         INT NOT NULL,
+    areaId          INT NOT NULL,
+    especialidadeId INT,
+
+    dataSessao    DATE NOT NULL,
+    horarioInicio TIME NOT NULL,
+    horarioFim    TIME NOT NULL,
+
+    CONSTRAINT SESSAO_PK
+        PRIMARY KEY (sessaoId),
+
+    CONSTRAINT SESSAO_USUARIO_FK
+        FOREIGN KEY (usuarioId)
+        REFERENCES USUARIO (usuarioId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT SESSAO_TUTOR_FK
+        FOREIGN KEY (tutorId)
+        REFERENCES TUTOR (tutorId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
     CONSTRAINT SESSAO_ESPECIALIDADE_FK
         FOREIGN KEY (especialidadeId)
         REFERENCES ESPECIALIDADE (especialidadeId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
@@ -183,11 +234,15 @@ CHAT (
 
     CONSTRAINT CHAT_TUTOR_FK
         FOREIGN KEY (tutorId)
-        REFERENCES TUTOR (tutorId),
+        REFERENCES TUTOR (tutorId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
     CONSTRAINT CHAT_USUARIO_FK
         FOREIGN KEY (usuarioId)
         REFERENCES USUARIO (usuarioId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
@@ -203,6 +258,8 @@ MENSAGEM (
     CONSTRAINT MENSAGEM
         FOREIGN KEY (chatId)
         REFERENCES CHAT (chatId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 -- Tabela de relacionamentos
@@ -222,11 +279,15 @@ consegue (
 
     CONSTRAINT consegue_USUARIO_FK
         FOREIGN KEY (usuarioId)
-        REFERENCES USUARIO (usuarioId),
+        REFERENCES USUARIO (usuarioId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
     CONSTRAINT consegue_CONQUISTA_FK
         FOREIGN KEY (conquistaId)
         REFERENCES CONQUISTA (conquistaId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
 
 CREATE TABLE IF NOT EXISTS
@@ -243,9 +304,13 @@ contem (
 
     CONSTRAINT contem_ESPECIALIDADE_FK
         FOREIGN KEY (especialidadeId)
-        REFERENCES ESPECIALIDADE (especialidadeId),
+        REFERENCES ESPECIALIDADE (especialidadeId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
 
     CONSTRAINT contem_TUTOR_FK
         FOREIGN KEY (tutorId)
         REFERENCES TUTOR (tutorId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;
