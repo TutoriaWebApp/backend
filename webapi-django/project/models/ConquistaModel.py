@@ -44,4 +44,5 @@ class consegueModel(models.Model):
 	class Meta:
 		unique_together = ('usuarioId', 'conquistaId')
 		db_table = 'consegue'
-
+		verbose_name = 'RELACIONAMENTO USUARIO-CONQUISTA'
+		verbose_name_plural = 'RELACIONAMENTOS USUARIO-CONQUISTA'

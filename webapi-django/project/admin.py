@@ -72,8 +72,16 @@ class UsuarioAdmin(UserAdmin):
 
 # Registrando os modelos
 admin.site.register(UsuarioModel, UsuarioAdmin)
+
 admin.site.register(ConquistaModel)
 admin.site.register(consegueModel)
+
 admin.site.register(TutorModel)
+
+admin.site.register(AgendaModel)
 admin.site.register(SessaoModel)
 admin.site.register(SolicitacaoModel)
+
+admin.site.register(AreaModel)
+admin.site.register(EspecialidadeModel)
+admin.site.register(ContemModel)

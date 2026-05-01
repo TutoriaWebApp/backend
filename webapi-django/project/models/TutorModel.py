@@ -82,3 +82,5 @@ class ContemModel(models.Model):
 	class Meta:
 		unique_together = ('especialidadeId', 'tutorId')
 		db_table = 'contem'
+		verbose_name = 'RELACIONAMENTO TUTOR-ESPECIALIDADE'
+		verbose_name_plural = 'RELACIONAMENTOS TUTOR-ESPECIALIDADE'
