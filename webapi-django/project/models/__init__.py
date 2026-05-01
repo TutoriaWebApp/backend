@@ -1,8 +1,7 @@
-from .UsuarioModel import UsuarioModel
-from .ConquistaModel import ConquistaModel, consegueModel
-from .TutorModel import TutorModel
-from .SessaoModel import SessaoModel
-from .SolicitacaoModel import SolicitacaoModel
+from .UsuarioModel import *
+from .ConquistaModel import *
+from .TutorModel import *
+from .SessaoModel import *
 
 __all__ = [
 	'UsuarioModel',
@@ -11,4 +10,8 @@ __all__ = [
 	'TutorModel',
 	'SessaoModel',
 	'SolicitacaoModel',
+	'AgendaModel',
+	'AreaModel',
+	'EspecialidadeModel',
+	'ContemModel',
 ]
