@@ -1,6 +1,7 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import ValidationError
 
 from project.models import *
 from project.serializers import *
@@ -17,6 +18,11 @@ class TutorViewSet(viewsets.ModelViewSet):
 	serializer_class = TutorSerializer
 	permission_classes = [IsAuthenticated]
 	http_method_names = ['get', 'post']
+
+	def perform_create(self, serializer):
+		if TutorModel.objects.filter(usuarioId=self.request.user).exists():
+			raise ValidationError({"detail": "Este usuário já está cadastrado como tutor."})
+		serializer.save(usuarioId=self.request.user)
 
 
 

@@ -54,7 +54,7 @@ class UsuarioPerfilLogadoView(APIView):
 		user = request.user
 		try:
 			serializer = UsuarioSerializer(user, context={'request':request})
-		except () as err:
+		except Exception as err:
 			return Response({'mensagem': err})
 		return Response(serializer.data, status=200)
 

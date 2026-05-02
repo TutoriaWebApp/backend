@@ -1,7 +1,10 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 from django.db.models import Q
+
+from rest_framework.exceptions import ValidationError
 
 from project.models import *
 from project.serializers import *
@@ -17,9 +20,28 @@ class AgendaViewSet(viewsets.ModelViewSet):
 	queryset = AgendaModel.objects.all()
 	serializer_class = AgendaSerializer
 	permission_classes = [IsAuthenticated]
+	http_method_names = ['get', 'post', 'delete']
 
 	def get_queryset(self):
 		return AgendaModel.objects.all()
+
+	def create(self, request, *args, **kwargs):
+
+		try:
+			tutor = TutorModel.objects.get(usuarioId=self.request.user)
+		except TutorModel.DoesNotExist:
+			raise ValidationError({"mensagem": "Apenas tutores podem criar agendas."})
+
+		data = request.data.copy()
+		data['tutorId'] = tutor.id
+
+		serializer = self.get_serializer(data=data)
+		serializer.is_valid(raise_exception=True)
+
+		self.perform_create(serializer)
+		headers = self.get_success_headers(serializer.data)
+		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
 
 
 
@@ -60,7 +82,7 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 class SessaoViewSet(viewsets.ModelViewSet):
 	serializer_class = SessaoSerializer
 	permission_classes = [IsAuthenticated]
-	http_method_names = ['get', 'post', 'delete', 'patch']
+	http_method_names = ['get']
 
 	def get_queryset(self):
 		user = self.request.user

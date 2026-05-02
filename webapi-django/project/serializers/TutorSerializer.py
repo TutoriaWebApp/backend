@@ -7,6 +7,7 @@ class TutorSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = TutorModel
 		fields = ['id', 'usuarioId', 'especialidades']
+		read_only_fields = ['usuarioId']
 
 	def get_especialidades(self, obj):
 		contem_queryset = ContemModel.objects.filter(tutorId=obj)

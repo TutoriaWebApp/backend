@@ -94,20 +94,6 @@ class SolicitacaoModel(models.Model):
 class SessaoModel(models.Model):
 	id = models.AutoField(primary_key=True, db_column='sessaoId')
 
-	solicitacaoId = models.ForeignKey(
-		SolicitacaoModel,
-		on_delete=models.CASCADE,
-		db_column='solicitacaoId',
-		related_name='sessoes'
-	)
-
-	agendaId = models.ForeignKey(
-		AgendaModel,
-		on_delete=models.CASCADE,
-		db_column='agendaId',
-		related_name='sessoes'
-	)
-
 	usuarioId = models.ForeignKey(
 		UsuarioModel,
 		on_delete=models.CASCADE,
@@ -134,7 +120,9 @@ class SessaoModel(models.Model):
 		db_column='especialidadeId'
 	)
 
-	dataRealizacao = models.DateField()
+	dataSessao = models.DateField()
+	horaInicio = models.TimeField()
+	horaFim = models.TimeField()
 
 	def __str__(self):
 		return f"Sessao {self.id} ({self.dataRealizacao})"
