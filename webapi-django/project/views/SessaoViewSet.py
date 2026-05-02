@@ -55,10 +55,32 @@ class AgendaViewSet(viewsets.ModelViewSet):
 class SolicitacaoViewSet(viewsets.ModelViewSet):
 	serializer_class = SolicitacaoSerializer
 	permission_classes = [IsAuthenticated]
-	http_method_names = ['get', 'post', 'delete']
+	http_method_names = ['get', 'post', 'patch']
 
 	def get_queryset(self):
+		from django.utils import timezone
+		import datetime
+
 		user = self.request.user
+
+		solicitacoes = SolicitacaoModel.objects.filter(
+			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
+		).distinct()
+
+		agora = timezone.now()
+
+		for sol in solicitacoes:
+			if sol.validade:
+				validade_delta = datetime.timedelta(
+					hours=sol.validade.hour,
+					minutes=sol.validade.minute,
+					seconds=sol.validade.second
+				)
+				data_expiracao = sol.dataCriacao + validade_delta
+
+				if agora > data_expiracao:
+					sol.delete()
+
 		return SolicitacaoModel.objects.filter(
 			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
 		).distinct()

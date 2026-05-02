@@ -73,7 +73,9 @@ class SolicitacaoModel(models.Model):
 	especialidadeId = models.ForeignKey(
 		EspecialidadeModel,
 		on_delete=models.CASCADE,
-		db_column='especialidadeId'
+		db_column='especialidadeId',
+		blank=True,
+		null=True,
 	)
 
 	dataCriacao = models.DateTimeField(auto_now_add=True)

@@ -1,6 +1,6 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.exceptions import ValidationError
 
 from project.models import *
@@ -21,7 +21,7 @@ class TutorViewSet(viewsets.ModelViewSet):
 
 	def perform_create(self, serializer):
 		if TutorModel.objects.filter(usuarioId=self.request.user).exists():
-			raise ValidationError({"detail": "Este usuário já está cadastrado como tutor."})
+			raise ValidationError({"mensagem": "Este usuário já está cadastrado como tutor."})
 		serializer.save(usuarioId=self.request.user)
 
 
@@ -64,4 +64,23 @@ class EspecialidadeViewSet(viewsets.ModelViewSet):
 class ContemViewSet(viewsets.ModelViewSet):
 	queryset = ContemModel.objects.all()
 	serializer_class = ContemSerializer
+	permission_classes = [IsAuthenticatedOrReadOnly]
 	http_method_names = ['get', 'post', 'delete']
+
+	def create(self, request, *args, **kwargs):
+		from rest_framework import status
+		from rest_framework.response import Response
+
+		try:
+			tutor = TutorModel.objects.get(usuarioId=request.user)
+		except TutorModel.DoesNotExist:
+			raise ValidationError({"mensagem": "Apenas tutores podem adicionar especialidades."})
+
+		data = request.data.copy()
+		data['tutorId'] = tutor.id
+
+		serializer = self.get_serializer(data=data)
+		serializer.is_valid(raise_exception=True)
+		self.perform_create(serializer)
+		headers = self.get_success_headers(serializer.data)
+		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

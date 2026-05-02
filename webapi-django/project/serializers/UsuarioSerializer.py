@@ -2,11 +2,13 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
 from project.models import *
+from project.serializers.TutorSerializer import TutorSerializer
 from project.utils import UsuarioUtils
 
 class UsuarioSerializer(serializers.ModelSerializer):
 	fotoURL = serializers.SerializerMethodField()
 	foto = serializers.ImageField(allow_null=True, write_only=True, required=False)
+	perfilTutor = serializers.SerializerMethodField()
 
 	class Meta:
 		model = UsuarioModel
@@ -19,7 +21,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
 			'aniversario',
 			'pontuacao',
 			'fotoURL',
-			'foto'
+			'foto',
+			'perfilTutor',
 		]
 		read_only_fields = ['pontuacao', 'fotoURL']
 
@@ -29,7 +32,15 @@ class UsuarioSerializer(serializers.ModelSerializer):
 		)
 
 	def get_fotoURL(self, obj):
-		return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
+		request = self.context.get('request')
+		return UsuarioUtils.get_fotoUrl(obj.email, request)
+
+	def get_perfilTutor(self, obj):
+		request = self.context.get('request')
+		usuarioId = request.user.id
+		t_tutor = TutorModel.objects.filter(usuarioId=usuarioId).first()
+		serializer = TutorSerializer(t_tutor, context=self.context)
+		return serializer.data if t_tutor else None
 
 	def update(self, instance, validated_data):
 		foto_arquivo = validated_data.pop('foto', None)

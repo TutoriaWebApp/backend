@@ -28,13 +28,16 @@ router.register(r'agendas', AgendaViewSet, basename='agendas')
 
 urlpatterns = [
     path('', include(router.urls)),
+
 	path('usuarios/novo', UsuarioRegistroView.as_view(), name='criar_novo_usuario'),
 	path('usuarios/altera-senha', UsuarioAlteraSenhaView.as_view(), name='altera_a_senha'),
+
 	path('login', LogInView.as_view(), name='logar_usuario'),
 	path('login/refresh', LoginRefreshView.as_view(), name='refrescar_token_de_acesso'),
 	path('logout', LogOutView.as_view(), name='deslogar_usuario'),
 	path('reset-password/request', PasswordResetView.as_view(), name='resetar_senha'),
 	path('reset-password/confirm', PasswordResetConfirmView.as_view(), name='confirmar_alteracao_de_senha'),
 	path('perfil', UsuarioPerfilLogadoView.as_view(), name='perfil_do_usuario'),
+
 	path('conquistas/usuario/<int:usuarioId>', Usuario_conseguiu_ConquistaView.as_view(), name='conquistas_do_usuario'),
 ]
