@@ -217,7 +217,7 @@ SESSAO (
         FOREIGN KEY (areaId)
         REFERENCES AREA (areaId)
         ON DELETE CASCADE
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
 
     CONSTRAINT SESSAO_ESPECIALIDADE_FK
         FOREIGN KEY (especialidadeId)
