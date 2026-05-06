@@ -15,10 +15,10 @@ class SessaoViewSetTest(APITestCase):
 			nomePerfil='Tutor', cidade='Test City', estado='TS'
 		)
 		self.tutor = TutorModel.objects.create(usuarioId=self.usuario_tutor)
-		
+
 		self.area = AreaModel.objects.create(nomeArea='Exatas')
 		self.especialidade = EspecialidadeModel.objects.create(areaId=self.area, nomeEspecialidade='Matemática')
-		
+
 		self.agenda = AgendaModel.objects.create(
 			tutorId=self.tutor,
 			dia=AgendaModel.DiaSemana.SEGUNDA,
@@ -95,10 +95,24 @@ class SessaoViewSetTest(APITestCase):
 	def test_aceitar_solicitacao_como_tutor(self):
 		self.client.force_authenticate(user=self.usuario_tutor)
 		url = reverse('aceitar-solicitacao-detail', args=[self.solicitacao.id])
+
+		sessoes_antes = SessaoModel.objects.count()
+
 		response = self.client.patch(url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 		self.solicitacao.refresh_from_db()
 		self.assertEqual(self.solicitacao.estado, SolicitacaoModel.EstadoSolicitacao.ACEITO)
+
+		sessoes_depois = SessaoModel.objects.count()
+		self.assertEqual(sessoes_depois, sessoes_antes + 1)
+
+		nova_sessao = SessaoModel.objects.last()
+		self.assertEqual(nova_sessao.usuarioId, self.solicitacao.usuarioId)
+		self.assertEqual(nova_sessao.tutorId, self.solicitacao.agendaId.tutorId)
+		self.assertEqual(nova_sessao.dataSessao, self.solicitacao.dataPretendida)
+		self.assertEqual(nova_sessao.horaInicio, self.solicitacao.agendaId.horarioInicio)
+		self.assertEqual(nova_sessao.horaFim, self.solicitacao.agendaId.horarioFim)
 
 	def test_aceitar_solicitacao_nao_tutor(self):
 		self.client.force_authenticate(user=self.usuario_aluno)
