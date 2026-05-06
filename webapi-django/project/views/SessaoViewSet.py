@@ -108,6 +108,16 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
 			solicitacao.recorrente = True
 			solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
 			solicitacao.save()
+
+			SessaoModel.objects.create(
+				usuarioId=solicitacao.usuarioId,
+				tutorId=solicitacao.agendaId.tutorId.id,
+				areaId=solicitacao.areaId.id,
+				especialidadeId=solicitacao.especialidadeId.id,
+				dataSessao=solicitacao.dataPretendida,
+				horaInicio=solicitacao.agendaId.horarioInicio,
+				horaFim=solicitacao.agendaId.horarioFim
+			)
 			return
 
 		if solicitacao.estado != SolicitacaoModel.EstadoSolicitacao.PENDENTE:
@@ -115,6 +125,16 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
 			raise ValidationError({"mensagem": "Apenas solicitações pendentes podem ser aceitas."})
 		solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
 		solicitacao.save()
+
+		SessaoModel.objects.create(
+			usuarioId=solicitacao.usuarioId,
+			tutorId=solicitacao.agendaId.tutorId,
+			areaId=solicitacao.areaId,
+			especialidadeId=solicitacao.especialidadeId,
+			dataSessao=solicitacao.dataPretendida,
+			horaInicio=solicitacao.agendaId.horarioInicio,
+			horaFim=solicitacao.agendaId.horarioFim
+		)
 
 class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):
 	queryset = SolicitacaoModel.objects.all()
@@ -131,7 +151,7 @@ class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):
 
 		if solicitacao.estado not in [SolicitacaoModel.EstadoSolicitacao.PENDENTE, SolicitacaoModel.EstadoSolicitacao.RECORRENTE]:
 			raise ValidationError({"mensagem": "Apenas solicitações pendentes ou recorrentes podem ser recusadas."})
-		
+
 		solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.RECUSADO
 		solicitacao.save()
 
