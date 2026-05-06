@@ -19,6 +19,9 @@ class TutorViewSet(viewsets.ModelViewSet):
 	permission_classes = [IsAuthenticated]
 	http_method_names = ['get', 'post']
 
+	def get_queryset(self):
+		return TutorModel.objects.all().select_related('usuarioId')
+
 	def perform_create(self, serializer):
 		if TutorModel.objects.filter(usuarioId=self.request.user).exists():
 			raise ValidationError({"mensagem": "Este usuário já está cadastrado como tutor."})
