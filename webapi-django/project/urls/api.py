@@ -26,6 +26,9 @@ router.register(r'contem', ContemViewSet, basename='contem')
 
 router.register(r'agendas', AgendaViewSet, basename='agendas')
 
+router.register(r'solicitacoes/aceitar', AceitarSolicitacaoViewSet, basename='aceitar-solicitacao')
+router.register(r'solicitacoes/recusar', RecusarSolicitacaoViewSet, basename='recusar-solicitacao')
+
 urlpatterns = [
     path('', include(router.urls)),
 

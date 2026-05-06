@@ -91,3 +91,33 @@ class SessaoViewSetTest(APITestCase):
 		response = self.client.get(self.sessoes_url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(len(response.data), 1)
+
+	def test_aceitar_solicitacao_como_tutor(self):
+		self.client.force_authenticate(user=self.usuario_tutor)
+		url = reverse('aceitar-solicitacao-detail', args=[self.solicitacao.id])
+		response = self.client.patch(url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.solicitacao.refresh_from_db()
+		self.assertEqual(self.solicitacao.estado, SolicitacaoModel.EstadoSolicitacao.ACEITO)
+
+	def test_aceitar_solicitacao_nao_tutor(self):
+		self.client.force_authenticate(user=self.usuario_aluno)
+		url = reverse('aceitar-solicitacao-detail', args=[self.solicitacao.id])
+		response = self.client.patch(url)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("Apenas o tutor responsável pode aceitar", response.data[0] if isinstance(response.data, list) else str(response.data))
+
+	def test_recusar_solicitacao_como_tutor(self):
+		self.client.force_authenticate(user=self.usuario_tutor)
+		url = reverse('recusar-solicitacao-detail', args=[self.solicitacao.id])
+		response = self.client.patch(url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.solicitacao.refresh_from_db()
+		self.assertEqual(self.solicitacao.estado, SolicitacaoModel.EstadoSolicitacao.RECUSADO)
+
+	def test_recusar_solicitacao_nao_tutor(self):
+		self.client.force_authenticate(user=self.usuario_aluno)
+		url = reverse('recusar-solicitacao-detail', args=[self.solicitacao.id])
+		response = self.client.patch(url)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("Apenas o tutor responsável pode recusar", response.data[0] if isinstance(response.data, list) else str(response.data))
