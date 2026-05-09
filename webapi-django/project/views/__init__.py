@@ -22,6 +22,8 @@ __all__ = [
 	'AgendaViewSet',
 	'SessaoViewSet',
 	'SolicitacaoViewSet',
+	'AceitarSolicitacaoViewSet',
+	'RecusarSolicitacaoViewSet',
 	'TutorViewSet',
 	'AreaViewSet',
 	'EspecialidadeViewSet',
