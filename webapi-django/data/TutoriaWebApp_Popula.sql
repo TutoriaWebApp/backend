@@ -48,19 +48,12 @@ INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
 
 INSERT INTO TUTOR (usuarioId) VALUES (1), (2), (3), (4), (5);
 
-INSERT INTO AVALIACAO_APRENDIZ (usuarioId, nota, comentario) VALUES
-(1, 5, 'Excelente aluno!'),
-(2, 4, 'Bom desempenho.'),
-(3, 3, 'Precisa de mais dedicação.'),
-(4, 5, 'Muito participativo!'),
-(5, 4, 'Aprende rápido.');
-
-INSERT INTO AVALIACAO_TUTOR (tutorId, nota, comentario) VALUES
-(1, 5, 'Ótimo tutor, explica muito bem.'),
-(2, 4, 'Didática boa e paciente.'),
-(3, 3, 'Pode melhorar a explicação.'),
-(4, 5, 'Excelente metodologia.'),
-(5, 4, 'Muito atencioso.');
+INSERT INTO contem (especialidadeId, tutorId) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
 
 INSERT INTO AGENDA (tutorId, horarioInicio, horarioFim, dia) VALUES
 (1, '08:00:00', '10:00:00', 'SEG'),
@@ -69,12 +62,19 @@ INSERT INTO AGENDA (tutorId, horarioInicio, horarioFim, dia) VALUES
 (3, '09:00:00', '11:00:00', 'QUI'),
 (4, '15:00:00', '17:00:00', 'SEX');
 
--- INSERT INTO SOLICITACAO (usuarioId, sessaoId, dataCriacao, validade, estado) VALUES
--- (2, 1, '2025-10-24 08:30:00', '2025-10-25 10:00:00', 'ACEITO'),
--- (3, 2, '2025-10-24 13:00:00', '2025-10-25 15:00:00', 'PENDENTE'),
--- (4, 3, '2025-10-24 09:00:00', '2025-10-25 12:00:00', 'ACEITO'),
--- (5, 4, '2025-10-24 08:45:00', '2025-10-25 11:00:00', 'RECUSADO'),
--- (1, 5, '2025-10-24 15:30:00', '2025-10-25 17:00:00', 'RECORRENTE');
+INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPretendida, validade, recorrente, estado) VALUES
+(3, 1, 1, 2, '2026-05-19', '23:59:59', FALSE, 'ACEITO'),
+(3, 2, 1, 1, '2026-05-20', '23:59:59', FALSE, 'PENDENTE');
+
+INSERT INTO SESSAO (usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(3, 1, 1, 2, '2026-05-19', '09:00:00', '10:00:00');
+
+
+INSERT INTO AVALIACAO_APRENDIZ (usuarioId, sessaoId, nota, comentario) VALUES
+(3, 1, 5, 'João demonstrou ótimo domínio lógico e trouxe dúvidas muito bem estruturadas sobre SQL.');
+
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(1, 1, 5, 'O Admin tem uma didática excelente e me ajudou a entender subqueries de forma muito simples.');
 
 -- INSERT INTO CHAT (tutorId, usuarioId) VALUES
 -- (1, 2),
@@ -96,10 +96,3 @@ INSERT INTO AGENDA (tutorId, horarioInicio, horarioFim, dia) VALUES
 -- (3, 3),
 -- (4, 4),
 -- (5, 5);
-
-INSERT INTO contem (especialidadeId, tutorId) VALUES
-(1, 1),
-(2, 2),
-(3, 3),
-(4, 4),
-(5, 5);
