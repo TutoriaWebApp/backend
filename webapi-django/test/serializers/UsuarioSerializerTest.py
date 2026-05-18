@@ -1,6 +1,6 @@
 from django.test import TestCase
 from project.models import UsuarioModel
-from project.serializers import UsuarioSerializer, UsuarioPublicoSerializer, UsuarioRegistroSerializer
+from project.serializers import *
 from datetime import date
 from rest_framework.test import APIRequestFactory
 
@@ -30,7 +30,7 @@ class UsuarioSerializerTest(TestCase):
         data = serializer.data
         self.assertEqual(data['nomePerfil'], self.user.nomePerfil)
         self.assertNotIn('password', data)
-        self.assertNotIn('email', data) # UsuarioPublicoSerializer doesn't include email based on code provided earlier
+        self.assertNotIn('email', data)
         self.assertIn('fotoURL', data)
 
     def test_usuario_registro_serializer(self):

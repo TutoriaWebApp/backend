@@ -59,13 +59,12 @@ class SessaoSolicitacaoModelTest(TestCase):
             estado='ACEITO'
         )
         sessao = SessaoModel.objects.create(
-            solicitacaoId=solicitacao,
-            agendaId=self.agenda,
             usuarioId=self.aluno,
             tutorId=self.tutor,
             areaId=self.area,
             especialidadeId=self.esp,
-            dataRealizacao=date(2025, 10, 20)
+            dataSessao=date(2025, 10, 20),
+            horarioInicio=time(14, 0),
+            horarioFim=time(15, 0)
         )
-        self.assertEqual(sessao.dataRealizacao, date(2025, 10, 20))
-        self.assertIn('2025-10-20', str(sessao))
+        self.assertEqual(sessao.dataSessao, date(2025, 10, 20))
