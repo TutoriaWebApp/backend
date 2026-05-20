@@ -72,6 +72,9 @@ class UsuarioPublicoSerializer(serializers.ModelSerializer):
 class UsuarioRegistroSerializer(serializers.ModelSerializer):
 	password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
 	foto = serializers.ImageField(write_only=True, required=False)
+	especialidades = serializers.ListField(
+		child=serializers.IntegerField(), write_only=True, required=False
+	)
 
 	class Meta:
 		model = UsuarioModel
@@ -82,16 +85,28 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
 			'estado',
 			'cidade',
 			'aniversario',
-			'foto'
+			'foto',
+			'especialidades'
 		]
 
 	def create(self, validated_data):
 		foto_file = validated_data.pop('foto', None)
+		especialidades_data = validated_data.pop('especialidades', [])
 
 		user = UsuarioModel.objects.create_user(**validated_data)
 
 		if foto_file:
 			UsuarioUtils.set_fotoUrl(user.email, foto_file)
+
+		if especialidades_data:
+			tutor = TutorModel.objects.create(usuarioId=user)
+			for especialidade_id in especialidades_data:
+				print(especialidade_id)
+				try:
+					especialidade = EspecialidadeModel.objects.get(pk=especialidade_id)
+					ContemModel.objects.create(tutorId=tutor, especialidadeId=especialidade)
+				except EspecialidadeModel.DoesNotExist:
+					continue
 
 		return user
 

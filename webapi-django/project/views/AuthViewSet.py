@@ -227,7 +227,7 @@ class PasswordResetView(APIView):
 class PasswordResetConfirmView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request):
-		uidb64 = request.data.get('uid')
+		uidb64 = request.data.get('uid', '')
 		token = request.data.get('token')
 		new_password = request.data.get('new_password')
 

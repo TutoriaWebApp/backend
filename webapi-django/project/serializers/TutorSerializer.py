@@ -16,9 +16,13 @@ class TutorSerializer(serializers.ModelSerializer):
 		read_only_fields = ['usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL']
 
 	def get_especialidades(self, obj):
-		contem_queryset = ContemModel.objects.filter(tutorId=obj)
-		especialidades = [item.especialidadeId for item in contem_queryset]
-		return EspecialidadeSerializer(especialidades, many=True).data
+		contem_queryset = ContemModel.objects.filter(tutorId=obj).select_related('especialidadeId')
+		result = []
+		for item in contem_queryset:
+			data = EspecialidadeSerializer(item.especialidadeId).data
+			data['contemId'] = item.id
+			result.append(data)
+		return result
 
 	def get_nomePerfil(self, obj):
 		return obj.usuarioId.nomePerfil

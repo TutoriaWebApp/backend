@@ -111,12 +111,12 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
 
 			SessaoModel.objects.create(
 				usuarioId=solicitacao.usuarioId,
-				tutorId=solicitacao.agendaId.tutorId.id,
-				areaId=solicitacao.areaId.id,
-				especialidadeId=solicitacao.especialidadeId.id,
+				tutorId=solicitacao.agendaId.tutorId,
+				areaId=solicitacao.areaId,
+				especialidadeId=solicitacao.especialidadeId,
 				dataSessao=solicitacao.dataPretendida,
-				horaInicio=solicitacao.agendaId.horarioInicio,
-				horaFim=solicitacao.agendaId.horarioFim
+				horarioInicio=solicitacao.agendaId.horarioInicio,
+				horarioFim=solicitacao.agendaId.horarioFim
 			)
 			return
 
@@ -132,8 +132,8 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
 			areaId=solicitacao.areaId,
 			especialidadeId=solicitacao.especialidadeId,
 			dataSessao=solicitacao.dataPretendida,
-			horaInicio=solicitacao.agendaId.horarioInicio,
-			horaFim=solicitacao.agendaId.horarioFim
+			horarioInicio=solicitacao.agendaId.horarioInicio,
+			horarioFim=solicitacao.agendaId.horarioFim
 		)
 
 class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):

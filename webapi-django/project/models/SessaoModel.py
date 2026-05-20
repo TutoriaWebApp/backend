@@ -128,7 +128,7 @@ class SessaoModel(models.Model):
 	horarioFim = models.TimeField()
 
 	def __str__(self):
-		return f"Sessao {self.id} ({self.dataRealizacao})"
+		return f"Sessao {self.id} ({self.dataSessao})"
 
 	class Meta:
 		db_table = 'SESSAO'
