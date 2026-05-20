@@ -19,6 +19,7 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 	queryset = AvaliacaoAprendizModel.objects.all()
 	serializer_class = AvaliacaoAprendizSerializer
 	permission_classes = [IsAuthenticated]
+	http_method_names = ['get', 'post']
 
 @extend_schema(
 	summary="Avaliação do Tutor",
@@ -31,6 +32,7 @@ class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 	queryset = AvaliacaoTutorModel.objects.all()
 	serializer_class = AvaliacaoTutorSerializer
 	permission_classes = [IsAuthenticated]
+	http_method_names = ['get', 'post']
 
 
 

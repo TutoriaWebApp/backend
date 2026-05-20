@@ -176,15 +176,15 @@ class PasswordResetView(APIView):
 		email = request.data.get('email')
 		user = UsuarioModel.objects.filter(email=email).first()
 
-		print(f"Sending email to: {email}")
+		# print(f"Sending email to: {email}")
 		if user:
 			token = default_token_generator.make_token(user)
 			uid = urlsafe_base64_encode(force_bytes(user.pk))
 
 			reset_url = f"http://localhost:3000/redefinir-senha/{uid}/{token}"
 
-			print(f'De: {EMAIL_HOST_USER}')
-			print(f'Para: {user.nomePerfil} {email}')
+			# print(f'De: {EMAIL_HOST_USER}')
+			# print(f'Para: {user.nomePerfil} {email}')
 			send_mail(
 				subject='WebTutoria - Recuperação de Senha',
 				message=f'Prezado(a) {user.nomePerfil}, clique no no link para redefinir a sua senha: {reset_url}',

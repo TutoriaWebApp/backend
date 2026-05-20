@@ -103,12 +103,12 @@ if os.environ.get('EMAIL_SENDER') == 'BREVO':
 	EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 	EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-	print('LOG: E-mails configurados para envio via SMTP.')
+	# print('LOG: E-mails configurados para envio via SMTP.')
 
 else:
 	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 	EMAIL_HOST_USER = 'console@mail.com'
-	print('LOG: E-mails configurados para exibição no CONSOLE.')
+	# print('LOG: E-mails configurados para exibição no CONSOLE.')
 
 
 

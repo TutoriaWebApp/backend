@@ -101,7 +101,7 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
 		if especialidades_data:
 			tutor = TutorModel.objects.create(usuarioId=user)
 			for especialidade_id in especialidades_data:
-				print(especialidade_id)
+				# print(especialidade_id)
 				try:
 					especialidade = EspecialidadeModel.objects.get(pk=especialidade_id)
 					ContemModel.objects.create(tutorId=tutor, especialidadeId=especialidade)
