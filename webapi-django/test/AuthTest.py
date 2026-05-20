@@ -193,3 +193,17 @@ class PasswordResetConfirmViewTest(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn('mensagem', response.data)
+
+    def test_password_reset_confirm_malformed_uid(self):
+        """Testa confirmação de reset com uid malformado (não base64)"""
+        url = reverse('confirmar_alteracao_de_senha')
+        data = {'uid': '!!!notbase64!!!', 'token': 'some-token', 'new_password': 'newpass123'}
+        response = self.client.post(url, data)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn('mensagem', response.data)
+
+    def test_password_reset_confirm_empty_data(self):
+        """Testa confirmação de reset com dados vazios"""
+        url = reverse('confirmar_alteracao_de_senha')
+        response = self.client.post(url, {})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)

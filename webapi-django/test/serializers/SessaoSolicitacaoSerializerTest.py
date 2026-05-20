@@ -53,23 +53,16 @@ class SessaoSolicitacaoSerializerTest(TestCase):
         self.assertEqual(serializer.data['agendaId'], self.agenda.id)
 
     def test_sessao_serializer(self):
-        solicitacao = SolicitacaoModel.objects.create(
-            usuarioId=self.aluno,
-            agendaId=self.agenda,
-            areaId=self.area,
-            especialidadeId=self.esp,
-            dataPretendida=date(2025, 10, 20),
-            estado='ACEITO'
-        )
         sessao = SessaoModel.objects.create(
-            solicitacaoId=solicitacao,
-            agendaId=self.agenda,
             usuarioId=self.aluno,
             tutorId=self.tutor,
             areaId=self.area,
             especialidadeId=self.esp,
-            dataRealizacao=date(2025, 10, 20)
+            dataSessao=date(2025, 10, 20),
+            horarioInicio=time(14, 0),
+            horarioFim=time(15, 0)
         )
         serializer = SessaoSerializer(sessao)
-        self.assertEqual(serializer.data['dataRealizacao'], '2025-10-20')
+        self.assertEqual(serializer.data['dataSessao'], '2025-10-20')
         self.assertEqual(serializer.data['tutorId'], self.tutor.id)
+        self.assertEqual(serializer.data['horarioInicio'], '14:00:00')

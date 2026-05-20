@@ -11,6 +11,16 @@ from test.serializers.ConquistaSerializerTest import ConquistaSerializerTest
 from test.serializers.TutorAreaSerializerTest import TutorAreaSerializerTest
 from test.serializers.SessaoSolicitacaoSerializerTest import SessaoSolicitacaoSerializerTest
 
+# ViewSet Tests
+from test.views.UsuarioViewSetTest import UsuarioViewSetTest
+from test.views.ConquistaViewSetTest import ConquistaViewSetTest
+from test.views.SessaoViewSetTest import SessaoViewSetTest
+from test.views.TutorViewSetTest import TutorViewSetTest
+
+# Auth and Utils
+from test.AuthTest import *
+from test.UsuarioUtilsTest import UsuarioUtilsTest
+
 __all__ = [
     # Model Tests
 	'UsuarioModelTest',
@@ -18,9 +28,24 @@ __all__ = [
     'TutorModelTest',
     'AreaEspecialidadeModelTest',
     'SessaoSolicitacaoModelTest',
+    
     # Serializer Tests
     'UsuarioSerializerTest',
     'ConquistaSerializerTest',
     'TutorAreaSerializerTest',
     'SessaoSolicitacaoSerializerTest',
+
+    # ViewSet Tests
+    'UsuarioViewSetTest',
+    'ConquistaViewSetTest',
+    'SessaoViewSetTest',
+    'TutorViewSetTest',
+
+    # Auth and Utils
+    'LogInViewTest',
+    'LoginRefreshViewTest',
+    'LogOutViewTest',
+    'PasswordResetViewTest',
+    'PasswordResetConfirmViewTest',
+    'UsuarioUtilsTest',
 ]

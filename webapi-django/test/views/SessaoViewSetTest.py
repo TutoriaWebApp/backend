@@ -41,8 +41,8 @@ class SessaoViewSetTest(APITestCase):
 			areaId=self.area,
 			especialidadeId=self.especialidade,
 			dataSessao=datetime.date.today() + datetime.timedelta(days=2),
-			horaInicio=datetime.time(10, 0),
-			horaFim=datetime.time(11, 0)
+			horarioInicio=datetime.time(10, 0),
+			horarioFim=datetime.time(11, 0)
 		)
 
 		self.agendas_url = reverse('agendas-list')
@@ -111,8 +111,8 @@ class SessaoViewSetTest(APITestCase):
 		self.assertEqual(nova_sessao.usuarioId, self.solicitacao.usuarioId)
 		self.assertEqual(nova_sessao.tutorId, self.solicitacao.agendaId.tutorId)
 		self.assertEqual(nova_sessao.dataSessao, self.solicitacao.dataPretendida)
-		self.assertEqual(nova_sessao.horaInicio, self.solicitacao.agendaId.horarioInicio)
-		self.assertEqual(nova_sessao.horaFim, self.solicitacao.agendaId.horarioFim)
+		self.assertEqual(nova_sessao.horarioInicio, self.solicitacao.agendaId.horarioInicio)
+		self.assertEqual(nova_sessao.horarioFim, self.solicitacao.agendaId.horarioFim)
 
 	def test_aceitar_solicitacao_nao_tutor(self):
 		self.client.force_authenticate(user=self.usuario_aluno)
