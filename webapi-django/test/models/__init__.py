@@ -3,11 +3,13 @@ from .ConquistaModelTest import ConquistaModelTest
 from .TutorModelTest import TutorModelTest
 from .AreaEspecialidadeModelTest import AreaEspecialidadeModelTest
 from .SessaoSolicitacaoModelTest import SessaoSolicitacaoModelTest
+from .AvaliacaoModelTest import AvaliacaoModelTest
 
 __all__ = [
     'UsuarioModelTest',
     'ConquistaModelTest',
     'TutorModelTest',
     'AreaEspecialidadeModelTest',
-    'SessaoSolicitacaoModelTest'
+    'SessaoSolicitacaoModelTest',
+	'AvaliacaoModelTest',
 ]
