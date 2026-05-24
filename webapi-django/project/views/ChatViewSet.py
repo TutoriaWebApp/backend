@@ -18,6 +18,25 @@ class ChatViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     http_method_names = ['get', 'post', 'delete']
 
+    def get_queryset(self):
+        user = self.request.user
+        return ChatModel.objects.filter(
+            Q(usuarioId=user) | Q(tutorId__usuarioId=user)
+        )
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        tutor_id = self.request.data.get('tutorId')
+
+        try:
+            tutor = TutorModel.objects.get(id=tutor_id)
+            if tutor.usuarioId == user:
+                raise ValidationError({"mensagem": "Você não pode iniciar um chat consigo mesmo."})
+        except TutorModel.DoesNotExist:
+            raise ValidationError({"mensagem": "Tutor não encontrado."})
+
+        serializer.save(usuarioId=user)
+
 @extend_schema(
     summary="Mensagens do Chat",
     description="Este endpoint permite o envio e visualização de mensagens em um chat.",
@@ -27,3 +46,21 @@ class MensagemViewSet(viewsets.ModelViewSet):
     serializer_class = MensagemSerializer
     permission_classes = [IsAuthenticated]
     http_method_names = ['get', 'post']
+
+    def get_queryset(self):
+        user = self.request.user
+        return MensagemModel.objects.filter(
+            Q(chatId__usuarioId=user) | Q(chatId__tutorId__usuarioId=user)
+        )
+
+    def perform_create(self, serializer):
+        chat_id = self.request.data.get('chatId')
+        try:
+            chat = ChatModel.objects.get(id=chat_id)
+            user = self.request.user
+            if chat.usuarioId != user and chat.tutorId.usuarioId != user:
+                raise ValidationError({"mensagem": "Você não tem permissão para enviar mensagens neste chat."})
+        except ChatModel.DoesNotExist:
+            raise ValidationError({"mensagem": "Chat não encontrado."})
+
+        serializer.save()
