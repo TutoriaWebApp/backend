@@ -4,6 +4,7 @@ from .ConquistaViewSet import *
 from .SessaoViewSet import *
 from .TutorViewSet import *
 from .AvaliacaoViewSet import *
+from .ChatViewSet import *
 
 __all__ = [
 	'LogInView',
@@ -33,4 +34,7 @@ __all__ = [
 	'AvaliacaoAprendizViewSet',
 	'AvaliacaoTutorViewSet',
 	'PendenteAvaliacaoView',
+
+	'ChatViewSet',
+	'MensagemViewSet',
 ]

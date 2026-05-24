@@ -26,6 +26,10 @@ router.register(r'contem', ContemViewSet, basename='contem')
 
 router.register(r'agendas', AgendaViewSet, basename='agendas')
 
+router.register(r'chats', ChatViewSet, basename='chat')
+
+router.register(r'mensagens', MensagemViewSet, basename='mensagem')
+
 router.register(r'avaliacoes/aprendiz', AvaliacaoAprendizViewSet, basename='avaliacoes-aprendiz')
 router.register(r'avaliacoes/tutor', AvaliacaoTutorViewSet, basename='avaliacoes-tutor')
 
