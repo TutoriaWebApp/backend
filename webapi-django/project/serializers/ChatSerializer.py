@@ -9,7 +9,7 @@ class MensagemSerializer(serializers.ModelSerializer):
 
 class ChatSerializer(serializers.ModelSerializer):
     mensagens = MensagemSerializer(many=True, read_only=True)
-    
+
     class Meta:
         model = ChatModel
         fields = ['id', 'usuarioId', 'tutorId', 'mensagens']
