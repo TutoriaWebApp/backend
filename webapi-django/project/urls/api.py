@@ -26,8 +26,20 @@ router.register(r'contem', ContemViewSet, basename='contem')
 
 router.register(r'agendas', AgendaViewSet, basename='agendas')
 
+router.register(r'chats', ChatViewSet, basename='chat')
+
+router.register(r'mensagens', MensagemViewSet, basename='mensagem')
+
+router.register(r'avaliacoes/aprendiz', AvaliacaoAprendizViewSet, basename='avaliacoes-aprendiz')
+router.register(r'avaliacoes/tutor', AvaliacaoTutorViewSet, basename='avaliacoes-tutor')
+
+router.register(r'solicitacoes/aceitar', AceitarSolicitacaoViewSet, basename='aceitar-solicitacao')
+router.register(r'solicitacoes/recusar', RecusarSolicitacaoViewSet, basename='recusar-solicitacao')
+
 urlpatterns = [
     path('', include(router.urls)),
+
+	path('avaliacoes/pendentes', PendenteAvaliacaoView.as_view(), name='avaliacoes_pendentes'),
 
 	path('usuarios/novo', UsuarioRegistroView.as_view(), name='criar_novo_usuario'),
 	path('usuarios/altera-senha', UsuarioAlteraSenhaView.as_view(), name='altera_a_senha'),

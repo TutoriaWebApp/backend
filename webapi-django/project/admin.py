@@ -85,3 +85,9 @@ admin.site.register(SolicitacaoModel)
 admin.site.register(AreaModel)
 admin.site.register(EspecialidadeModel)
 admin.site.register(ContemModel)
+
+admin.site.register(AvaliacaoAprendizModel)
+admin.site.register(AvaliacaoTutorModel)
+
+admin.site.register(ChatModel)
+admin.site.register(MensagemModel)

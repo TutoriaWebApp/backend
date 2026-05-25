@@ -2,6 +2,8 @@ from .UsuarioModel import *
 from .ConquistaModel import *
 from .TutorModel import *
 from .SessaoModel import *
+from .AvaliacaoModel import *
+from .ChatModel import *
 
 __all__ = [
 	'UsuarioModel',
@@ -14,4 +16,8 @@ __all__ = [
 	'AreaModel',
 	'EspecialidadeModel',
 	'ContemModel',
+	'AvaliacaoAprendizModel',
+	'AvaliacaoTutorModel',
+	'ChatModel',
+	'MensagemModel',
 ]

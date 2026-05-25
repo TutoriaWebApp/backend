@@ -18,63 +18,63 @@ USE tutoriadb;
 INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, is_active, is_staff, is_superuser) VALUES
 ('admin@tutoria.com', 'pbkdf2_sha256$1000000$zZBLgMtlMlfKvomGWZKEKt$ifR7/CLjG7xZUl6+iFjJ0W3mXON2p3smJGnn2XuBUSY=', 'Admin', 'Não Aplicado', 'NA', '1971-03-15', 1, 1, 1);
 
--- INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario) VALUES
--- ('ana.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ana Lima', 'Curitiba', 'PR', '1985-03-05'),
--- ('joao.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'João Silva', 'São Paulo', 'SP', '1990-01-03'),
--- ('maria.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', '1979-03-05'),
--- ('carlos.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Carlos Souza', 'Belo Horizonte', 'MG', '1988-02-18'),
--- ('paula.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Paula Mendes', 'Salvador', 'BA', '1988-01-05');
+INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario) VALUES
+('ana.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ana Lima', 'Curitiba', 'PR', '1985-03-05'),
+('joao.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'João Silva', 'São Paulo', 'SP', '1990-01-03'),
+('maria.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', '1979-03-05'),
+('carlos.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Carlos Souza', 'Belo Horizonte', 'MG', '1988-02-18'),
+('paula.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Paula Mendes', 'Salvador', 'BA', '1988-01-05');
 
--- INSERT INTO CONQUISTA (pontos, titulo, descricao, urlImagem) VALUES
--- (100, 'A primeira de muitas!', 'Realize sua primeira sessão de tutoria!', 'https://picsum.photos/100?6'),
--- (250, 'Aprendiz', 'Completou 5 aulas', 'https://picsum.photos/100?7'),
--- (500, 'Tutor Experiente', 'Completou 20 aulas', 'https://picsum.photos/100?8'),
--- (1000, 'Mestre', 'Conquistou 1000 pontos', 'https://picsum.photos/100?9'),
--- (1500, 'Lenda', 'Conquistou mais de 1500 pontos', 'https://picsum.photos/100?10');
+INSERT INTO CONQUISTA (pontos, titulo, descricao, urlImagem) VALUES
+(100, 'A primeira de muitas!', 'Realize sua primeira sessão de tutoria!', 'https://picsum.photos/100?6'),
+(250, 'Aprendiz', 'Completou 5 aulas', 'https://picsum.photos/100?7'),
+(500, 'Tutor Experiente', 'Completou 20 aulas', 'https://picsum.photos/100?8'),
+(1000, 'Mestre', 'Conquistou 1000 pontos', 'https://picsum.photos/100?9'),
+(1500, 'Lenda', 'Conquistou mais de 1500 pontos', 'https://picsum.photos/100?10');
 
--- INSERT INTO AREA (nomeArea) VALUES
--- ('Matemática'),
--- ('Programação'),
--- ('Design Gráfico'),
--- ('Idiomas'),
--- ('Ciências Exatas');
+INSERT INTO AREA (nomeArea) VALUES
+('Matemática'),
+('Programação'),
+('Design Gráfico'),
+('Idiomas'),
+('Ciências Exatas');
 
--- INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
--- (1, 1, 'Cálculo Diferencial'),
--- (2, 2, 'Desenvolvimento Web'),
--- (3, 3, 'Photoshop Avançado'),
--- (4, 4, 'Inglês Intermediário'),
--- (5, 5, 'Física Quântica');
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+(1, 1, 'Cálculo Diferencial'),
+(2, 2, 'Desenvolvimento Web'),
+(3, 3, 'Photoshop Avançado'),
+(4, 4, 'Inglês Intermediário'),
+(5, 5, 'Física Quântica');
 
--- INSERT INTO TUTOR (usuarioId) VALUES (1), (2), (3), (4), (5);
+INSERT INTO TUTOR (usuarioId) VALUES (1), (2), (3), (4), (5);
 
--- INSERT INTO AVALIACAO_APRENDIZ (usuarioId, nota, comentario) VALUES
--- (1, 5, 'Excelente aluno!'),
--- (2, 4, 'Bom desempenho.'),
--- (3, 3, 'Precisa de mais dedicação.'),
--- (4, 5, 'Muito participativo!'),
--- (5, 4, 'Aprende rápido.');
+INSERT INTO contem (especialidadeId, tutorId) VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
 
--- INSERT INTO AVALIACAO_TUTOR (tutorId, nota, comentario) VALUES
--- (1, 5, 'Ótimo tutor, explica muito bem.'),
--- (2, 4, 'Didática boa e paciente.'),
--- (3, 3, 'Pode melhorar a explicação.'),
--- (4, 5, 'Excelente metodologia.'),
--- (5, 4, 'Muito atencioso.');
+INSERT INTO AGENDA (tutorId, horarioInicio, horarioFim, dia) VALUES
+(1, '08:00:00', '10:00:00', 'SEG'),
+(1, '14:00:00', '16:00:00', 'QUA'),
+(2, '10:00:00', '12:00:00', 'TER'),
+(3, '09:00:00', '11:00:00', 'QUI'),
+(4, '15:00:00', '17:00:00', 'SEX');
 
--- INSERT INTO SESSAO (tutorId, horarioInicio, horarioFim, dia) VALUES
--- (1, '08:00:00', '10:00:00', 'SEG'),
--- (1, '14:00:00', '16:00:00', 'QUA'),
--- (2, '10:00:00', '12:00:00', 'TER'),
--- (3, '09:00:00', '11:00:00', 'QUI'),
--- (4, '15:00:00', '17:00:00', 'SEX');
+INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPretendida, validade, recorrente, estado) VALUES
+(3, 1, 1, 2, '2026-05-19', '23:59:59', FALSE, 'ACEITO'),
+(3, 2, 1, 1, '2026-05-20', '23:59:59', FALSE, 'PENDENTE');
 
--- INSERT INTO SOLICITACAO (usuarioId, sessaoId, dataCriacao, validade, estado) VALUES
--- (2, 1, '2025-10-24 08:30:00', '2025-10-25 10:00:00', 'ACEITO'),
--- (3, 2, '2025-10-24 13:00:00', '2025-10-25 15:00:00', 'PENDENTE'),
--- (4, 3, '2025-10-24 09:00:00', '2025-10-25 12:00:00', 'ACEITO'),
--- (5, 4, '2025-10-24 08:45:00', '2025-10-25 11:00:00', 'RECUSADO'),
--- (1, 5, '2025-10-24 15:30:00', '2025-10-25 17:00:00', 'RECORRENTE');
+INSERT INTO SESSAO (usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(3, 1, 1, 2, '2026-05-19', '09:00:00', '10:00:00');
+
+
+INSERT INTO AVALIACAO_APRENDIZ (usuarioId, sessaoId, nota, comentario) VALUES
+(3, 1, 5, 'João demonstrou ótimo domínio lógico e trouxe dúvidas muito bem estruturadas sobre SQL.');
+
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(1, 1, 5, 'O Admin tem uma didática excelente e me ajudou a entender subqueries de forma muito simples.');
 
 -- INSERT INTO CHAT (tutorId, usuarioId) VALUES
 -- (1, 2),
@@ -91,13 +91,6 @@ INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, is_a
 -- (5, 'Fiquei com dúvidas na aula de Física.');
 
 -- INSERT INTO consegue (usuarioId, conquistaId) VALUES
--- (1, 1),
--- (2, 2),
--- (3, 3),
--- (4, 4),
--- (5, 5);
-
--- INSERT INTO contem (especialidadeId, tutorId) VALUES
 -- (1, 1),
 -- (2, 2),
 -- (3, 3),

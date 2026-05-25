@@ -81,6 +81,7 @@ class SolicitacaoModel(models.Model):
 	dataCriacao = models.DateTimeField(auto_now_add=True)
 	dataPretendida = models.DateField(null=False)
 	validade    = models.TimeField(null=True)
+	recorrente  = models.BooleanField(default=False)
 	estado      = models.CharField(max_length=10, choices=EstadoSolicitacao, default=EstadoSolicitacao.PENDENTE)
 
 	def __str__(self):
@@ -123,11 +124,11 @@ class SessaoModel(models.Model):
 	)
 
 	dataSessao = models.DateField()
-	horaInicio = models.TimeField()
-	horaFim = models.TimeField()
+	horarioInicio = models.TimeField()
+	horarioFim = models.TimeField()
 
 	def __str__(self):
-		return f"Sessao {self.id} ({self.dataRealizacao})"
+		return f"Sessao {self.id} ({self.dataSessao})"
 
 	class Meta:
 		db_table = 'SESSAO'

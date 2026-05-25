@@ -2,6 +2,8 @@ from .UsuarioSerializer import *
 from .ConquistaSerializer import *
 from .TutorSerializer import *
 from .SessaoSerializer import *
+from .AvaliacaoSerializer import *
+from .ChatSerializer import *
 
 __all__ = [
 	'UsuarioSerializer',
@@ -20,4 +22,11 @@ __all__ = [
 	'AreaSerializer',
 	'EspecialidadeSerializer',
 	'ContemSerializer',
+
+	'AvaliacaoAprendizSerializer',
+	'AvaliacaoTutorSerializer',
+	'SessaoPendenteAvaliacaoSerializer',
+
+	'ChatSerializer',
+	'MensagemSerializer',
 ]

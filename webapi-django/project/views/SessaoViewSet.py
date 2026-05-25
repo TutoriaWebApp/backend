@@ -88,9 +88,72 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 	def perform_create(self, serializer):
 		logged_user = self.request.user
 		serializer.save(
-			usuarioId=logged_user,
-			estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
+			usuarioId=logged_user
 		)
+
+class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
+	queryset = SolicitacaoModel.objects.all()
+	serializer_class = SolicitacaoSerializer
+	permission_classes = [IsAuthenticated]
+	http_method_names = ['patch']
+
+	def perform_update(self, serializer):
+		solicitacao = self.get_object()
+		user = self.request.user
+
+		if solicitacao.agendaId.tutorId.usuarioId != user:
+			raise ValidationError({"mensagem": "Apenas o tutor responsável pode aceitar esta solicitação."})
+
+		if solicitacao.estado == SolicitacaoModel.EstadoSolicitacao.RECORRENTE:
+			solicitacao.recorrente = True
+			solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
+			solicitacao.save()
+
+			SessaoModel.objects.create(
+				usuarioId=solicitacao.usuarioId,
+				tutorId=solicitacao.agendaId.tutorId,
+				areaId=solicitacao.areaId,
+				especialidadeId=solicitacao.especialidadeId,
+				dataSessao=solicitacao.dataPretendida,
+				horarioInicio=solicitacao.agendaId.horarioInicio,
+				horarioFim=solicitacao.agendaId.horarioFim
+			)
+			return
+
+		if solicitacao.estado != SolicitacaoModel.EstadoSolicitacao.PENDENTE:
+
+			raise ValidationError({"mensagem": "Apenas solicitações pendentes podem ser aceitas."})
+		solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
+		solicitacao.save()
+
+		SessaoModel.objects.create(
+			usuarioId=solicitacao.usuarioId,
+			tutorId=solicitacao.agendaId.tutorId,
+			areaId=solicitacao.areaId,
+			especialidadeId=solicitacao.especialidadeId,
+			dataSessao=solicitacao.dataPretendida,
+			horarioInicio=solicitacao.agendaId.horarioInicio,
+			horarioFim=solicitacao.agendaId.horarioFim
+		)
+
+class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):
+	queryset = SolicitacaoModel.objects.all()
+	serializer_class = SolicitacaoSerializer
+	permission_classes = [IsAuthenticated]
+	http_method_names = ['patch']
+
+	def perform_update(self, serializer):
+		solicitacao = self.get_object()
+		user = self.request.user
+
+		if solicitacao.agendaId.tutorId.usuarioId != user:
+			raise ValidationError({"mensagem": "Apenas o tutor responsável pode recusar esta solicitação."})
+
+		if solicitacao.estado not in [SolicitacaoModel.EstadoSolicitacao.PENDENTE, SolicitacaoModel.EstadoSolicitacao.RECORRENTE]:
+			raise ValidationError({"mensagem": "Apenas solicitações pendentes ou recorrentes podem ser recusadas."})
+
+		solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.RECUSADO
+		solicitacao.save()
 
 
 

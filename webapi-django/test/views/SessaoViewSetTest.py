@@ -15,10 +15,10 @@ class SessaoViewSetTest(APITestCase):
 			nomePerfil='Tutor', cidade='Test City', estado='TS'
 		)
 		self.tutor = TutorModel.objects.create(usuarioId=self.usuario_tutor)
-		
+
 		self.area = AreaModel.objects.create(nomeArea='Exatas')
 		self.especialidade = EspecialidadeModel.objects.create(areaId=self.area, nomeEspecialidade='Matemática')
-		
+
 		self.agenda = AgendaModel.objects.create(
 			tutorId=self.tutor,
 			dia=AgendaModel.DiaSemana.SEGUNDA,
@@ -41,8 +41,8 @@ class SessaoViewSetTest(APITestCase):
 			areaId=self.area,
 			especialidadeId=self.especialidade,
 			dataSessao=datetime.date.today() + datetime.timedelta(days=2),
-			horaInicio=datetime.time(10, 0),
-			horaFim=datetime.time(11, 0)
+			horarioInicio=datetime.time(10, 0),
+			horarioFim=datetime.time(11, 0)
 		)
 
 		self.agendas_url = reverse('agendas-list')
@@ -91,3 +91,47 @@ class SessaoViewSetTest(APITestCase):
 		response = self.client.get(self.sessoes_url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(len(response.data), 1)
+
+	def test_aceitar_solicitacao_como_tutor(self):
+		self.client.force_authenticate(user=self.usuario_tutor)
+		url = reverse('aceitar-solicitacao-detail', args=[self.solicitacao.id])
+
+		sessoes_antes = SessaoModel.objects.count()
+
+		response = self.client.patch(url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+		self.solicitacao.refresh_from_db()
+		self.assertEqual(self.solicitacao.estado, SolicitacaoModel.EstadoSolicitacao.ACEITO)
+
+		sessoes_depois = SessaoModel.objects.count()
+		self.assertEqual(sessoes_depois, sessoes_antes + 1)
+
+		nova_sessao = SessaoModel.objects.last()
+		self.assertEqual(nova_sessao.usuarioId, self.solicitacao.usuarioId)
+		self.assertEqual(nova_sessao.tutorId, self.solicitacao.agendaId.tutorId)
+		self.assertEqual(nova_sessao.dataSessao, self.solicitacao.dataPretendida)
+		self.assertEqual(nova_sessao.horarioInicio, self.solicitacao.agendaId.horarioInicio)
+		self.assertEqual(nova_sessao.horarioFim, self.solicitacao.agendaId.horarioFim)
+
+	def test_aceitar_solicitacao_nao_tutor(self):
+		self.client.force_authenticate(user=self.usuario_aluno)
+		url = reverse('aceitar-solicitacao-detail', args=[self.solicitacao.id])
+		response = self.client.patch(url)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("Apenas o tutor responsável pode aceitar", response.data[0] if isinstance(response.data, list) else str(response.data))
+
+	def test_recusar_solicitacao_como_tutor(self):
+		self.client.force_authenticate(user=self.usuario_tutor)
+		url = reverse('recusar-solicitacao-detail', args=[self.solicitacao.id])
+		response = self.client.patch(url)
+		self.assertEqual(response.status_code, status.HTTP_200_OK)
+		self.solicitacao.refresh_from_db()
+		self.assertEqual(self.solicitacao.estado, SolicitacaoModel.EstadoSolicitacao.RECUSADO)
+
+	def test_recusar_solicitacao_nao_tutor(self):
+		self.client.force_authenticate(user=self.usuario_aluno)
+		url = reverse('recusar-solicitacao-detail', args=[self.solicitacao.id])
+		response = self.client.patch(url)
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn("Apenas o tutor responsável pode recusar", response.data[0] if isinstance(response.data, list) else str(response.data))
