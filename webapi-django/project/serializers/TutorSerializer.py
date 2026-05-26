@@ -2,8 +2,13 @@ from rest_framework import serializers
 from project.models import *
 from project.utils import UsuarioUtils
 
+class AreaSimplificadaSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = AreaModel
+		fields = ['id', 'nomeArea']
 class TutorSerializer(serializers.ModelSerializer):
 	especialidades = serializers.SerializerMethodField()
+	areas = serializers.SerializerMethodField()
 	nomePerfil = serializers.SerializerMethodField()
 	estado = serializers.SerializerMethodField()
 	cidade = serializers.SerializerMethodField()
@@ -12,7 +17,7 @@ class TutorSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = TutorModel
-		fields = ['id', 'usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL', 'especialidades']
+		fields = ['id', 'usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL', 'especialidades', 'areas']
 		read_only_fields = ['usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL']
 
 	def get_especialidades(self, obj):
@@ -23,6 +28,10 @@ class TutorSerializer(serializers.ModelSerializer):
 			data['contemId'] = item.id
 			result.append(data)
 		return result
+
+	def get_areas(self, obj):
+		areas_queryset = AreaModel.objects.filter(especialidades__tutores=obj).distinct()
+		return AreaSimplificadaSerializer(areas_queryset, many=True).data
 
 	def get_nomePerfil(self, obj):
 		return obj.usuarioId.nomePerfil

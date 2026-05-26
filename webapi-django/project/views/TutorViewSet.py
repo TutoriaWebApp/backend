@@ -58,7 +58,7 @@ class TutorViewSet(viewsets.ModelViewSet):
 
 	def get_queryset(self):
 		return TutorModel.objects.all().select_related('usuarioId').prefetch_related('especialidades', 'especialidades__areaId')
-
+	
 	def perform_create(self, serializer):
 		if TutorModel.objects.filter(usuarioId=self.request.user).exists():
 			raise ValidationError({"mensagem": "Este usuário já está cadastrado como tutor."})
