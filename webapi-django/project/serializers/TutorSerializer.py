@@ -2,10 +2,6 @@ from rest_framework import serializers
 from project.models import *
 from project.utils import UsuarioUtils
 
-class AreaSimplificadaSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = AreaModel
-		fields = ['id', 'nomeArea']
 class TutorSerializer(serializers.ModelSerializer):
 	especialidades = serializers.SerializerMethodField()
 	areas = serializers.SerializerMethodField()
@@ -14,11 +10,12 @@ class TutorSerializer(serializers.ModelSerializer):
 	cidade = serializers.SerializerMethodField()
 	pontuacao = serializers.SerializerMethodField()
 	fotoURL = serializers.SerializerMethodField()
+	sobremim = serializers.SerializerMethodField()
 
 	class Meta:
 		model = TutorModel
-		fields = ['id', 'usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL', 'especialidades', 'areas']
-		read_only_fields = ['usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL']
+		fields = ['id', 'usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL', 'sobremim', 'notaAvaliacao', 'especialidades', 'areas']
+		read_only_fields = ['usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL', 'sobremim', 'notaAvaliacao', 'especialidades', 'areas']
 
 	def get_especialidades(self, obj):
 		contem_queryset = ContemModel.objects.filter(tutorId=obj).select_related('especialidadeId')
@@ -31,7 +28,7 @@ class TutorSerializer(serializers.ModelSerializer):
 
 	def get_areas(self, obj):
 		areas_queryset = AreaModel.objects.filter(especialidades__tutores=obj).distinct()
-		return AreaSimplificadaSerializer(areas_queryset, many=True).data
+		return AreaSerializer(areas_queryset, many=True).data
 
 	def get_nomePerfil(self, obj):
 		return obj.usuarioId.nomePerfil
@@ -44,6 +41,9 @@ class TutorSerializer(serializers.ModelSerializer):
 
 	def get_pontuacao(self, obj):
 		return obj.usuarioId.pontuacao
+
+	def get_sobremim(self, obj):
+		return obj.usuarioId.sobremim
 
 	def get_fotoURL(self, obj):
 		return UsuarioUtils.get_fotoUrl(obj.usuarioId.email, self.context.get('request'))

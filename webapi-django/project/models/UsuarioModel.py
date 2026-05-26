@@ -11,6 +11,7 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
 	cidade = models.CharField(max_length=80)
 	estado = models.CharField(max_length=2)
 	aniversario = models.DateField(blank=True, null=True, db_default=None, default=None)
+	sobremim = models.CharField(max_length=500, blank=True, db_default=None, default=None, null=True)
 	notaAvaliacao = models.FloatField(default=5.0, db_default=5.0)
 
 	# Campos necessários para o funcionamento do Django Admin e Auth

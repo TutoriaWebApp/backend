@@ -27,7 +27,8 @@ USUARIO (
     nomePerfil  VARCHAR(100) NOT NULL,
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
-    nascimento  DATE         NOT NULL,
+    nascimento  DATE,
+    sobremim    VARCHAR(500),
     notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
 
     -- Campos obrigatórios para o Django

@@ -22,9 +22,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
 			'pontuacao',
 			'fotoURL',
 			'foto',
+			'sobremim',
+			'notaAvaliacao',
 			'perfilTutor',
 		]
-		read_only_fields = ['pontuacao', 'fotoURL']
+		read_only_fields = ['pontuacao', 'fotoURL', 'notaAvaliacao', 'perfilTutor']
 
 	def create(self, validated_data):
 		raise serializers.ValidationError(
@@ -62,9 +64,11 @@ class UsuarioPublicoSerializer(serializers.ModelSerializer):
 			'estado',
 			'cidade',
 			'pontuacao',
-			'fotoURL'
+			'fotoURL',
+			'sobremim',
+			'notaAvaliacao',
 		]
-		read_only_fields = ['id', 'email', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL']
+		read_only_fields = ['id', 'email', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL', 'sobremim', 'notaAvaliacao']
 
 	def get_fotoURL(self, obj):
 		return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
@@ -72,9 +76,8 @@ class UsuarioPublicoSerializer(serializers.ModelSerializer):
 class UsuarioRegistroSerializer(serializers.ModelSerializer):
 	password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
 	foto = serializers.ImageField(write_only=True, required=False)
-	especialidades = serializers.ListField(
-		child=serializers.IntegerField(), write_only=True, required=False
-	)
+	especialidades = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
+	agendas = serializers.ListField(child=serializers.DictField(), write_only=True, required=False)
 
 	class Meta:
 		model = UsuarioModel
@@ -86,7 +89,9 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
 			'cidade',
 			'aniversario',
 			'foto',
-			'especialidades'
+			'sobremim',
+			'especialidades',
+			'agendas',
 		]
 
 	def create(self, validated_data):
@@ -106,6 +111,17 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
 					especialidade = EspecialidadeModel.objects.get(pk=especialidade_id)
 					ContemModel.objects.create(tutorId=tutor, especialidadeId=especialidade)
 				except EspecialidadeModel.DoesNotExist:
+					continue
+
+			for agenda_data in validated_data.get('agendas', []):
+				try:
+					AgendaModel.objects.create(
+						tutorId=tutor,
+						diaSemana=agenda_data.get('diaSemana'),
+						horarioInicio=agenda_data.get('horarioInicio'),
+						horarioFim=agenda_data.get('horarioFim')
+					)
+				except AgendaModel.ValidationError:
 					continue
 
 		return user

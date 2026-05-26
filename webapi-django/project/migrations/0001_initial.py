@@ -53,6 +53,7 @@ class Migration(migrations.Migration):
                 ('cidade', models.CharField(max_length=80)),
                 ('estado', models.CharField(max_length=2)),
                 ('aniversario', models.DateField(blank=True, db_default=None, default=None, null=True)),
+                ('sobremim', models.CharField(max_length=500, blank=True, db_default=None, default=None, null=True)),
                 ('notaAvaliacao', models.FloatField(db_default=5.0, default=5.0)),
                 ('is_staff', models.BooleanField(db_default=False, default=False)),
                 ('is_superuser', models.BooleanField(db_default=False, default=False)),
