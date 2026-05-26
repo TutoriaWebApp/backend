@@ -28,6 +28,7 @@ USUARIO (
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
     nascimento  DATE         NOT NULL,
+    notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
 
     -- Campos obrigatórios para o Django
     is_active       TINYINT(1)  DEFAULT 1,
@@ -62,6 +63,7 @@ CREATE TABLE IF NOT EXISTS
 TUTOR (
     tutorId     INT          NOT NULL AUTO_INCREMENT,
     usuarioId   INT          NOT NULL,
+    notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
 
     CONSTRAINT TUTOR_PK
         PRIMARY KEY (tutorId),
