@@ -33,6 +33,8 @@ router.register(r'mensagens', MensagemViewSet, basename='mensagem')
 router.register(r'avaliacoes/aprendiz', AvaliacaoAprendizViewSet, basename='avaliacoes-aprendiz')
 router.register(r'avaliacoes/tutor', AvaliacaoTutorViewSet, basename='avaliacoes-tutor')
 
+router.register(r'recomendacoes', SistemaRecomendacaoViewSet, basename='recomendacoes')
+
 router.register(r'solicitacoes/aceitar', AceitarSolicitacaoViewSet, basename='aceitar-solicitacao')
 router.register(r'solicitacoes/recusar', RecusarSolicitacaoViewSet, basename='recusar-solicitacao')
 
