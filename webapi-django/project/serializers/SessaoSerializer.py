@@ -24,4 +24,4 @@ class SessaoSerializer(serializers.ModelSerializer):
 	class Meta:
 		model  = SessaoModel
 		fields = '__all__'
-		read_only_fields = ['id', 'usuarioId', 'tutorId', 'areaId', 'especialidadeId', 'dataSessao', 'horaInicio', 'horaFim']
+		read_only_fields = ['id', 'usuarioId', 'tutorId', 'areaId', 'especialidadeId', 'dataSessao', 'horarioInicio', 'horarioFim']

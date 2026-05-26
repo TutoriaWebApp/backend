@@ -1,20 +1,27 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.db.models import Q
-
 from rest_framework.exceptions import ValidationError
+from django.db.models import Q
 
 from project.models import *
 from project.serializers import *
 
 @extend_schema(
 	summary="Agenda do Tutor",
-	description="Este endpoint permite gerenciar os horários disponíveis (slots) de um tutor.",
+	description="Este endpoint permite gerenciar os horários disponíveis (slots). Usar  o parâmetro '?tutor=ID' na URL para filtra a agenda para a de um tutor específico.",
 	request=AgendaSerializer,
 	responses=AgendaSerializer,
-	tags=['05. Solicitar Sessão']
+	tags=['05. Solicitar Sessão'],
+	parameters=[
+		OpenApiParameter(
+			name='tutor', 
+			description='ID do Tutor para buscar os horários disponíveis na agenda', 
+			required=False, 
+			type=int
+		),
+	]
 )
 class AgendaViewSet(viewsets.ModelViewSet):
 	queryset = AgendaModel.objects.all()
@@ -23,7 +30,16 @@ class AgendaViewSet(viewsets.ModelViewSet):
 	http_method_names = ['get', 'post', 'delete']
 
 	def get_queryset(self):
-		return AgendaModel.objects.all()
+		queryset = AgendaModel.objects.all().select_related('tutorId')
+			
+			# 👈 Captura o ID passado na URL como (?tutor=NUMERO)
+		tutor_id = self.request.query_params.get('tutor')
+			
+		if tutor_id is not None:
+			# Filtra a tabela trazendo apenas os slots correspondentes àquele tutor
+			queryset = queryset.filter(tutorId=tutor_id)
+				
+		return queryset
 
 	def create(self, request, *args, **kwargs):
 
@@ -41,9 +57,6 @@ class AgendaViewSet(viewsets.ModelViewSet):
 		self.perform_create(serializer)
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-
-
 
 @extend_schema(
 	summary="Dados de Solicitação",
