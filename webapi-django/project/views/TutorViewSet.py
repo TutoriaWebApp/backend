@@ -79,20 +79,34 @@ class AreaViewSet(viewsets.ModelViewSet):
 	http_method_names = ['get']
 
 
+class EspecialidadeFilter(filters.FilterSet):
+	# Cria o filtro 'areaId' para trazer as especialidades de uma área específica
+	area = filters.NumberFilter(field_name='areaId', lookup_expr='exact')
+
+	class Meta:
+		model = EspecialidadeModel
+		fields = ['area']
 
 @extend_schema(
 	summary="Especialidades",
-	description="Este endpoint permite listar, criar, visualizar, atualizar e deletar especialidades",
+	description="Este endpoint permite listar e filtrar especialidades. É possível passar o parâmetro area para buscar todas as especialidades de uma área específica.",
 	request=EspecialidadeSerializer,
 	responses=EspecialidadeSerializer,
-	tags=['04. Areas']
+	tags=['04. Areas'],
+	parameters=[
+		OpenApiParameter(name='area', description='ID da Área de Conhecimento para listar suas especialidades', required=False, type=int),
+	]
 )
 class EspecialidadeViewSet(viewsets.ModelViewSet):
 	queryset = EspecialidadeModel.objects.all()
 	serializer_class = EspecialidadeSerializer
 	http_method_names = ['get']
 
+	filter_backends = (filters.DjangoFilterBackend,)
+	filterset_class = EspecialidadeFilter
 
+	def get_queryset(self):
+		return EspecialidadeModel.objects.all().select_related('areaId')
 
 @extend_schema(
 	summary="Relacionamento Tutor-Especialidade (Contém)",
