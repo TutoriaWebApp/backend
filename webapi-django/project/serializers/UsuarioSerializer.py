@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
@@ -5,9 +6,11 @@ from project.models import *
 from project.serializers.TutorSerializer import TutorSerializer
 from project.utils import UsuarioUtils
 
+
 class UsuarioSerializer(serializers.ModelSerializer):
 	fotoURL = serializers.SerializerMethodField()
-	foto = serializers.ImageField(allow_null=True, write_only=True, required=False)
+	foto = serializers.ImageField(
+	    allow_null=True, write_only=True, required=False)
 	perfilTutor = serializers.SerializerMethodField()
 
 	class Meta:
@@ -68,16 +71,20 @@ class UsuarioPublicoSerializer(serializers.ModelSerializer):
 			'sobremim',
 			'notaAvaliacao',
 		]
-		read_only_fields = ['id', 'email', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL', 'sobremim', 'notaAvaliacao']
+		read_only_fields = ['id', 'email', 'nomePerfil', 'estado',
+		    'cidade', 'pontuacao', 'fotoURL', 'sobremim', 'notaAvaliacao']
 
 	def get_fotoURL(self, obj):
 		return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
 
+
 class UsuarioRegistroSerializer(serializers.ModelSerializer):
-	password = serializers.CharField(write_only=True, required=True, style={'input_type': 'password'})
+	password = serializers.CharField(write_only=True, required=True, style={
+	                                 'input_type': 'password'})
 	foto = serializers.ImageField(write_only=True, required=False)
-	especialidades = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)
-	agendas = serializers.ListField(child=serializers.DictField(), write_only=True, required=False)
+	especialidades = serializers.ListField(
+	    child=serializers.IntegerField(), write_only=True, required=False)
+	agendas = serializers.CharField(write_only=True, required=False)
 
 	class Meta:
 		model = UsuarioModel
@@ -97,6 +104,7 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		foto_file = validated_data.pop('foto', None)
 		especialidades_data = validated_data.pop('especialidades', [])
+		agendas_string = validated_data.pop('agendas', '[]')
 
 		user = UsuarioModel.objects.create_user(**validated_data)
 
@@ -113,18 +121,25 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
 				except EspecialidadeModel.DoesNotExist:
 					continue
 
-			for agenda_data in validated_data.get('agendas', []):
+
 				try:
-					AgendaModel.objects.create(
-						tutorId=tutor,
-						diaSemana=agenda_data.get('diaSemana'),
-						horarioInicio=agenda_data.get('horarioInicio'),
-						horarioFim=agenda_data.get('horarioFim')
-					)
-				except AgendaModel.ValidationError:
-					continue
+					agendas_lista = json.loads(agendas_string)
+
+					for agenda_data in agendas_lista:
+						try:
+							AgendaModel.objects.create(
+								tutorId=tutor,
+								dia=agenda_data.get('dia'),
+								horarioInicio=agenda_data.get('horarioInicio'),
+								horarioFim=agenda_data.get('horarioFim')
+							)
+						except Exception:
+							continue
+				except Exception as e:
+					print(f"Erro ao decodificar a string de agendas: {e}")
 
 		return user
+
 
 
 
