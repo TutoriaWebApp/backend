@@ -1,5 +1,7 @@
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets
+from django.db.models import Count
+
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.exceptions import ValidationError
@@ -46,95 +48,108 @@ class TutorFilter(filters.FilterSet):
     ]
 )
 class TutorViewSet(viewsets.ModelViewSet):
-	queryset = TutorModel.objects.all()
-	serializer_class = TutorSerializer
-	permission_classes = [IsAuthenticated]
-	http_method_names = ['get', 'post']
+    queryset = TutorModel.objects.all()
+    serializer_class = TutorSerializer
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['get', 'post']
 
-	# Configura os backends de filtro e paginação do DRF
-	filter_backends = (filters.DjangoFilterBackend,)
-	filterset_class = TutorFilter
-	pagination_class = TutorPagination
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TutorFilter
+    pagination_class = TutorPagination
 
-	def get_queryset(self):
-		return TutorModel.objects.all().select_related('usuarioId').prefetch_related('especialidades', 'especialidades__areaId')
-	
-	def perform_create(self, serializer):
-		if TutorModel.objects.filter(usuarioId=self.request.user).exists():
-			raise ValidationError({"mensagem": "Este usuário já está cadastrado como tutor."})
-		serializer.save(usuarioId=self.request.user)
+    def get_queryset(self):
+        user = self.request.user
+        
+        queryset = TutorModel.objects.all().select_related('usuarioId').prefetch_related(
+            'especialidades', 
+            'especialidades__areaId'
+        ).annotate(
+            qtd_avaliacoes_tutor=Count('avaliacoes_tutor')
+        )
+        
+        if user and user.is_authenticated:
+            queryset = queryset.exclude(usuarioId=user)
+            
+        return queryset
 
-
+    def perform_create(self, serializer):
+        if TutorModel.objects.filter(usuarioId=self.request.user).exists():
+            raise ValidationError({"mensagem": "Este usuário já está cadastrado como tutor."})
+        serializer.save(usuarioId=self.request.user)
 
 @extend_schema(
-	summary="Áreas de conhecimento",
-	description="Este endpoint permite listar, criar, visualizar, atualizar e deletar áreas de conhecimento",
-	request=AreaSerializer,
-	responses=AreaSerializer,
-	tags=['04. Areas']
+    summary="Áreas de conhecimento",
+    description="Este endpoint permite listar, criar, visualizar, atualizar e deletar áreas de conhecimento",
+    request=AreaSerializer,
+    responses=AreaSerializer,
+    tags=['04. Areas']
 )
 class AreaViewSet(viewsets.ModelViewSet):
-	queryset = AreaModel.objects.all()
-	serializer_class = AreaSerializer
-	http_method_names = ['get']
+    queryset = AreaModel.objects.all()
+    serializer_class = AreaSerializer
+    http_method_names = ['get']
 
 
 class EspecialidadeFilter(filters.FilterSet):
-	# Cria o filtro 'areaId' para trazer as especialidades de uma área específica
-	area = filters.NumberFilter(field_name='areaId', lookup_expr='exact')
+    # Cria o filtro 'areaId' para trazer as especialidades de uma área específica
+    area = filters.NumberFilter(field_name='areaId', lookup_expr='exact')
 
-	class Meta:
-		model = EspecialidadeModel
-		fields = ['area']
+    class Meta:
+        model = EspecialidadeModel
+        fields = ['area']
+
 
 @extend_schema(
-	summary="Especialidades",
-	description="Este endpoint permite listar e filtrar especialidades. É possível passar o parâmetro area para buscar todas as especialidades de uma área específica.",
-	request=EspecialidadeSerializer,
-	responses=EspecialidadeSerializer,
-	tags=['04. Areas'],
-	parameters=[
-		OpenApiParameter(name='area', description='ID da Área de Conhecimento para listar suas especialidades', required=False, type=int),
-	]
+    summary="Especialidades",
+    description="Este endpoint permite listar e filtrar especialidades. É possível passar o parâmetro area para buscar todas as especialidades de uma área específica.",
+    request=EspecialidadeSerializer,
+    responses=EspecialidadeSerializer,
+    tags=['04. Areas'],
+    parameters=[
+        OpenApiParameter(
+            name='area', description='ID da Área de Conhecimento para listar suas especialidades', required=False, type=int),
+    ]
 )
 class EspecialidadeViewSet(viewsets.ModelViewSet):
-	queryset = EspecialidadeModel.objects.all()
-	serializer_class = EspecialidadeSerializer
-	http_method_names = ['get']
+    queryset = EspecialidadeModel.objects.all()
+    serializer_class = EspecialidadeSerializer
+    http_method_names = ['get']
 
-	filter_backends = (filters.DjangoFilterBackend,)
-	filterset_class = EspecialidadeFilter
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = EspecialidadeFilter
 
-	def get_queryset(self):
-		return EspecialidadeModel.objects.all().select_related('areaId')
+    def get_queryset(self):
+        return EspecialidadeModel.objects.all().select_related('areaId')
+
 
 @extend_schema(
-	summary="Relacionamento Tutor-Especialidade (Contém)",
-	description="Este endpoint permite gerenciar quais especialidades um tutor possui",
-	request=ContemSerializer,
-	responses=ContemSerializer,
-	tags=['04. Areas']
+    summary="Relacionamento Tutor-Especialidade (Contém)",
+    description="Este endpoint permite gerenciar quais especialidades um tutor possui",
+    request=ContemSerializer,
+    responses=ContemSerializer,
+    tags=['04. Areas']
 )
 class ContemViewSet(viewsets.ModelViewSet):
-	queryset = ContemModel.objects.all()
-	serializer_class = ContemSerializer
-	permission_classes = [IsAuthenticatedOrReadOnly]
-	http_method_names = ['get', 'post', 'delete']
+    queryset = ContemModel.objects.all()
+    serializer_class = ContemSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    http_method_names = ['get', 'post', 'delete']
 
-	def create(self, request, *args, **kwargs):
-		from rest_framework import status
-		from rest_framework.response import Response
+    def create(self, request, *args, **kwargs):
+        from rest_framework import status
+        from rest_framework.response import Response
 
-		try:
-			tutor = TutorModel.objects.get(usuarioId=request.user)
-		except TutorModel.DoesNotExist:
-			raise ValidationError({"mensagem": "Apenas tutores podem adicionar especialidades."})
+        try:
+            tutor = TutorModel.objects.get(usuarioId=request.user)
+        except TutorModel.DoesNotExist:
+            raise ValidationError(
+                {"mensagem": "Apenas tutores podem adicionar especialidades."})
 
-		data = request.data.copy()
-		data['tutorId'] = tutor.id
+        data = request.data.copy()
+        data['tutorId'] = tutor.id
 
-		serializer = self.get_serializer(data=data)
-		serializer.is_valid(raise_exception=True)
-		self.perform_create(serializer)
-		headers = self.get_success_headers(serializer.data)
-		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+        serializer = self.get_serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)

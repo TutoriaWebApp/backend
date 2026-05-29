@@ -1,5 +1,6 @@
 from datetime import timedelta
 from django.utils import timezone
+from django.db.models import Count
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -8,6 +9,7 @@ from rest_framework.views import APIView
 
 from project.models import *
 from project.serializers import *
+
 
 @extend_schema(
 	summary="Lista Usuário da plataforma",
@@ -21,6 +23,10 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 	serializer_class = UsuarioPublicoSerializer
 	http_method_names = ['get']
 
+	def get_queryset(self):
+		return UsuarioModel.objects.all().annotate(
+			qtd_avaliacoes_aprendiz=Count('avaliacoes_aprendiz')
+		)
 
 
 @extend_schema(
@@ -37,7 +43,6 @@ class UsuarioRegistroView(generics.CreateAPIView):
 	http_method_names = ['post']
 
 
-
 @extend_schema(
 	summary="Exibe/edita informações sobre o Usuário logado",
 	description="Este endpoint exibe/edita um usuário cadastrado na plataforma",
@@ -51,11 +56,14 @@ class UsuarioPerfilLogadoView(APIView):
 	http_method_names = ['get', 'patch']
 
 	def get(self, request):
-		user = request.user
+		user = UsuarioModel.objects.annotate(
+			qtd_avaliacoes_aprendiz=Count('avaliacoes_aprendiz')
+		).get(pk=request.user.pk)
+
 		try:
-			serializer = UsuarioSerializer(user, context={'request':request})
+			serializer = UsuarioSerializer(user, context={'request': request})
 		except Exception as err:
-			return Response({'mensagem': err})
+			return Response({'mensagem': str(err)}, status=400)
 		return Response(serializer.data, status=200)
 
 	def patch(self, request):
