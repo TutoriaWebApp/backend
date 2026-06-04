@@ -15,10 +15,19 @@ class AgendaSerializer(serializers.ModelSerializer):
         ]
 
 class SolicitacaoSerializer(serializers.ModelSerializer):
+	usuarioId = serializers.HiddenField(default=serializers.CurrentUserDefault())
 	class Meta:
 		model  = SolicitacaoModel
 		fields = '__all__'
 		read_only_fields = ['id', 'usuarioId', 'dataCriacao', 'validade']
+
+		validators = [
+				UniqueTogetherValidator(
+					queryset=SolicitacaoModel.objects.all(),
+					fields=['usuarioId', 'agendaId', 'dataPretendida'],
+					message="Você já enviou uma solicitação para este horário nesta data específica."
+				)
+		]
 
 class SessaoSerializer(serializers.ModelSerializer):
 	class Meta:

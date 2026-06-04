@@ -87,7 +87,7 @@ class SolicitacaoModel(models.Model):
 	def __str__(self):
 		return f"Aluno {self.usuarioId} SOLICITA AGENDA: {self.agendaId}"
 	class Meta:
-		unique_together = ('usuarioId', 'agendaId')
+		unique_together = ('usuarioId', 'agendaId', 'dataPretendida')
 		db_table = 'SOLICITACAO'
 		verbose_name = 'SOLICITACAO'
 		verbose_name_plural = 'SOLICITACOES'
