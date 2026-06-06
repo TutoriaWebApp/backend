@@ -253,7 +253,7 @@ class Migration(migrations.Migration):
                 'verbose_name': 'SOLICITACAO',
                 'verbose_name_plural': 'SOLICITACOES',
                 'db_table': 'SOLICITACAO',
-                'unique_together': {('usuarioId', 'agendaId')},
+                'unique_together': {('usuarioId', 'agendaId', 'dataPretendida')},
             },
         ),
         migrations.AlterUniqueTogether(
