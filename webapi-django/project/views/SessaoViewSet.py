@@ -237,7 +237,9 @@ class SessaoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         
-        queryset = SessaoModel.objects.filter(Q(usuarioId=user) | Q(tutorId__usuarioId=user))
+        queryset = SessaoModel.objects.filter(
+            Q(usuarioId=user) | Q(tutorId__usuarioId=user)
+        ).select_related('usuarioId', 'tutorId__usuarioId', 'areaId', 'especialidadeId')
         
         tipo_filtro   = self.request.query_params.get('tipo', '').lower()
         area_id       = self.request.query_params.get('area')

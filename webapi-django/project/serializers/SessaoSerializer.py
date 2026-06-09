@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from project.models import *
+from project.utils import UsuarioUtils
 
 class AgendaSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -32,7 +33,24 @@ class SolicitacaoSerializer(serializers.ModelSerializer):
 class SessaoSerializer(serializers.ModelSerializer):
 	nomeArea = serializers.ReadOnlyField(source='areaId.nomeArea')
 	nomeEspecialidade = serializers.ReadOnlyField(source='especialidadeId.nomeEspecialidade')
+	nomeUsuario = serializers.ReadOnlyField(source='usuarioId.nomePerfil')
+	nomeTutor = serializers.ReadOnlyField(source='tutorId.usuarioId.nomePerfil')
+	fotoAprendizURL = serializers.SerializerMethodField()
+	fotoTutorURL = serializers.SerializerMethodField()
+
 	class Meta:
 		model  = SessaoModel
 		fields = '__all__'
 		read_only_fields = ['id', 'usuarioId', 'tutorId', 'areaId', 'especialidadeId', 'dataSessao', 'horarioInicio', 'horarioFim']
+
+	def get_fotoAprendizURL(self, obj):
+		request = self.context.get('request')
+		if obj.usuarioId and hasattr(obj.usuarioId, 'email'):
+			return UsuarioUtils.get_fotoUrl(obj.usuarioId.email, request)
+		return None
+
+	def get_fotoTutorURL(self, obj):
+		request = self.context.get('request')
+		if obj.tutorId and obj.tutorId.usuarioId and hasattr(obj.tutorId.usuarioId, 'email'):
+			return UsuarioUtils.get_fotoUrl(obj.tutorId.usuarioId.email, request)
+		return None
