@@ -30,6 +30,8 @@ class SolicitacaoSerializer(serializers.ModelSerializer):
 		]
 
 class SessaoSerializer(serializers.ModelSerializer):
+	nomeArea = serializers.ReadOnlyField(source='areaId.nomeArea')
+	nomeEspecialidade = serializers.ReadOnlyField(source='especialidadeId.nomeEspecialidade')
 	class Meta:
 		model  = SessaoModel
 		fields = '__all__'
