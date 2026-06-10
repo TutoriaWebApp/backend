@@ -1,3 +1,5 @@
+import datetime
+from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
@@ -40,11 +42,9 @@ class AgendaViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = AgendaModel.objects.all().select_related('tutorId')
 
-        # 👈 Captura o ID passado na URL como (?tutor=NUMERO)
         tutor_id = self.request.query_params.get('tutor')
 
         if tutor_id is not None:
-            # Filtra a tabela trazendo apenas os slots correspondentes àquele tutor
             queryset = queryset.filter(tutorId=tutor_id)
 
         return queryset
@@ -69,44 +69,84 @@ class AgendaViewSet(viewsets.ModelViewSet):
 
 
 @extend_schema(
-    summary="Dados de Solicitação",
-    description="Este endpoint gerencia as solicitações de tutoria feitas por alunos.",
-    request=SolicitacaoSerializer,
-    responses=SolicitacaoSerializer,
-    tags=['05. Solicitar Sessão']
+	summary="Dados de Solicitação",
+	description=(
+		"Este endpoint gerencia as solicitações de tutoria feitas por alunos. "
+		"Permite filtrar por tipo de participação ('tutor' ou 'aprendiz'), ID da Área, "
+		"ID da Especialidade, escolher a direção da ordenação por data ('desc' ou 'asc') e possui paginação."
+	),
+	request=SolicitacaoSerializer,
+	responses=SolicitacaoSerializer,
+	tags=['05. Solicitar Sessão'],
+	parameters=[
+		OpenApiParameter(name='tipo', description="Filtra pelo papel do usuário logado ('tutor' ou 'aprendiz')", required=False, type=str),
+		OpenApiParameter(name='area', description="ID da Área para filtrar as solicitações", required=False, type=int),
+		OpenApiParameter(name='especialidade', description="ID da Especialidade para filtrar as solicitações", required=False, type=int),
+		OpenApiParameter(name='ordem', description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)", required=False, type=str),
+		OpenApiParameter(name='page', description="Número da página que deseja buscar", required=False, type=int),
+	]
 )
 class SolicitacaoViewSet(viewsets.ModelViewSet):
     serializer_class = SolicitacaoSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = SessaoPagination
     http_method_names = ['get', 'post', 'patch']
 
     def get_queryset(self):
-        from django.utils import timezone
-        import datetime
-
         user = self.request.user
 
-        solicitacoes = SolicitacaoModel.objects.filter(
-            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-        ).distinct()
+        queryset = SolicitacaoModel.objects.filter(
+			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
+		).select_related(
+			'usuarioId', 
+			'areaId', 
+			'especialidadeId', 
+			'agendaId__tutorId__usuarioId'
+		).distinct()
 
         agora = timezone.now()
 
-        for sol in solicitacoes:
+        for sol in queryset:
             if sol.validade:
                 validade_delta = datetime.timedelta(
-                    hours=sol.validade.hour,
-                    minutes=sol.validade.minute,
-                    seconds=sol.validade.second
-                )
+					hours=sol.validade.hour,
+					minutes=sol.validade.minute,
+					seconds=sol.validade.second
+				)
                 data_expiracao = sol.dataCriacao + validade_delta
 
                 if agora > data_expiracao:
                     sol.delete()
 
-        return SolicitacaoModel.objects.filter(
-            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-        ).distinct()
+        queryset = SolicitacaoModel.objects.filter(
+			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
+		).select_related(
+			'usuarioId', 
+			'areaId', 
+			'especialidadeId', 
+			'agendaId__tutorId__usuarioId'
+		).distinct()
+
+        tipo_filtro   = self.request.query_params.get('tipo', '').lower()
+        area_id       = self.request.query_params.get('area')
+        espec_id      = self.request.query_params.get('especialidade')
+        ordem_filtro  = self.request.query_params.get('ordem', '').lower()
+
+        if tipo_filtro == 'tutor':
+            queryset = queryset.filter(agendaId__tutorId__usuarioId=user)
+        elif tipo_filtro == 'aprendiz':
+            queryset = queryset.filter(usuarioId=user)
+
+        if area_id is not None:
+            queryset = queryset.filter(areaId=area_id)
+			
+        if espec_id is not None:
+            queryset = queryset.filter(especialidadeId=espec_id)
+
+        if ordem_filtro == 'asc':
+            return queryset.order_by('dataPretendida', 'agendaId__horarioInicio')
+        
+        return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
 
     def perform_create(self, serializer):
         logged_user = self.request.user
