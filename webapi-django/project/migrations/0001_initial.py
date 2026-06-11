@@ -241,7 +241,11 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='solicitacaoId', primary_key=True, serialize=False)),
                 ('dataCriacao', models.DateTimeField(auto_now_add=True)),
                 ('dataPretendida', models.DateField()),
-                ('validade', models.TimeField(null=True, default='23:59:59')),
+                ('validade', models.DateTimeField(
+                    null=True,
+                    default=django.utils.timezone.now
+                    + django.utils.timezone.timedelta(days=1)
+                )),
                 ('recorrente', models.BooleanField(default=False)),
                 ('estado', models.CharField(choices=[('ACEITO', 'Solicitação Aceita'), ('PENDENTE', 'Tutor precisa aceitar'), ('RECUSADO', 'Solicitação recusada'), ('RECORRENTE', 'Solicitação recorrente')], default='PENDENTE', max_length=10)),
                 ('agendaId', models.ForeignKey(db_column='agendaId', on_delete=django.db.models.deletion.CASCADE, related_name='solicitacoes', to='project.agendamodel')),

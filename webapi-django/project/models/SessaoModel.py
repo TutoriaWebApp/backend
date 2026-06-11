@@ -80,7 +80,7 @@ class SolicitacaoModel(models.Model):
 
 	dataCriacao = models.DateTimeField(auto_now_add=True)
 	dataPretendida = models.DateField(null=False)
-	validade    = models.TimeField(null=True)
+	validade    = models.DateTimeField(null=True)
 	recorrente  = models.BooleanField(default=False)
 	estado      = models.CharField(max_length=10, choices=EstadoSolicitacao, default=EstadoSolicitacao.PENDENTE)
 

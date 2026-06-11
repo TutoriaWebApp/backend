@@ -98,9 +98,9 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
         queryset = SolicitacaoModel.objects.filter(
 			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
 		).select_related(
-			'usuarioId', 
-			'areaId', 
-			'especialidadeId', 
+			'usuarioId',
+			'areaId',
+			'especialidadeId',
 			'agendaId__tutorId__usuarioId'
 		).distinct()
 
@@ -113,7 +113,7 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 					minutes=sol.validade.minute,
 					seconds=sol.validade.second
 				)
-                data_expiracao = sol.dataCriacao + validade_delta
+                data_expiracao = validade_delta
 
                 if agora > data_expiracao:
                     sol.delete()
@@ -121,9 +121,9 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
         queryset = SolicitacaoModel.objects.filter(
 			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
 		).select_related(
-			'usuarioId', 
-			'areaId', 
-			'especialidadeId', 
+			'usuarioId',
+			'areaId',
+			'especialidadeId',
 			'agendaId__tutorId__usuarioId'
 		).distinct()
 
@@ -139,13 +139,13 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 
         if area_id is not None:
             queryset = queryset.filter(areaId=area_id)
-			
+
         if espec_id is not None:
             queryset = queryset.filter(especialidadeId=espec_id)
 
         if ordem_filtro == 'asc':
             return queryset.order_by('dataPretendida', 'agendaId__horarioInicio')
-        
+
         return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
 
     def perform_create(self, serializer):
@@ -276,11 +276,11 @@ class SessaoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        
+
         queryset = SessaoModel.objects.filter(
             Q(usuarioId=user) | Q(tutorId__usuarioId=user)
         ).select_related('usuarioId', 'tutorId__usuarioId', 'areaId', 'especialidadeId')
-        
+
         tipo_filtro   = self.request.query_params.get('tipo', '').lower()
         area_id       = self.request.query_params.get('area')
         espec_id      = self.request.query_params.get('especialidade')
@@ -290,14 +290,14 @@ class SessaoViewSet(viewsets.ModelViewSet):
             return SessaoModel.objects.filter(tutorId__usuarioId=user)
         elif tipo_filtro == 'aprendiz':
             return SessaoModel.objects.filter(usuarioId=user)
-        
+
         if area_id is not None:
             queryset = queryset.filter(areaId=area_id)
-            
+
         if espec_id is not None:
             queryset = queryset.filter(especialidadeId=espec_id)
-            
+
         if ordem_filtro == 'asc':
            return queryset.order_by('dataSessao', 'horarioInicio')
-        
+
         return queryset.order_by('-dataSessao', '-horarioInicio')
