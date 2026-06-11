@@ -137,7 +137,7 @@ SOLICITACAO (
     especialidadeId INT,
     dataCriacao     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dataPretendida  DATE NOT NULL,
-    validade        TIME NOT NULL,
+    validade        DATETIME NOT NULL,
     recorrente      BOOLEAN NOT NULL,
     estado          ENUM('ACEITO', 'PENDENTE', 'RECUSADO', 'RECORRENTE') NOT NULL DEFAULT 'PENDENTE',
 

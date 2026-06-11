@@ -243,7 +243,7 @@ class Migration(migrations.Migration):
                 ('dataPretendida', models.DateField()),
                 ('validade', models.DateTimeField(
                     null=True,
-                    default=django.utils.timezone.now
+                    default=django.utils.timezone.now()
                     + django.utils.timezone.timedelta(days=1)
                 )),
                 ('recorrente', models.BooleanField(default=False)),

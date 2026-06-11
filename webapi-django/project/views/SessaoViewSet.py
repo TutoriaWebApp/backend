@@ -108,14 +108,7 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 
         for sol in queryset:
             if sol.validade:
-                validade_delta = datetime.timedelta(
-					hours=sol.validade.hour,
-					minutes=sol.validade.minute,
-					seconds=sol.validade.second
-				)
-                data_expiracao = validade_delta
-
-                if agora > data_expiracao:
+                if agora > sol.validade:
                     sol.delete()
 
         queryset = SolicitacaoModel.objects.filter(
