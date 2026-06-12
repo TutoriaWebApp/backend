@@ -113,7 +113,9 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 
         queryset = SolicitacaoModel.objects.filter(
 			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-		).select_related(
+		).filter(
+            estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
+        ).select_related(
 			'usuarioId',
 			'areaId',
 			'especialidadeId',
@@ -271,18 +273,23 @@ class SessaoViewSet(viewsets.ModelViewSet):
         user = self.request.user
 
         queryset = SessaoModel.objects.filter(
-            Q(usuarioId=user) | Q(tutorId__usuarioId=user)
-        ).select_related('usuarioId', 'tutorId__usuarioId', 'areaId', 'especialidadeId')
-
+			Q(usuarioId=user) | Q(tutorId__usuarioId=user)
+		).select_related(
+            'usuarioId', 
+            'tutorId__usuarioId', 
+            'areaId', 
+            'especialidadeId'
+        )
+        
         tipo_filtro   = self.request.query_params.get('tipo', '').lower()
         area_id       = self.request.query_params.get('area')
         espec_id      = self.request.query_params.get('especialidade')
         ordem_filtro  = self.request.query_params.get('ordem', '').lower()
 
         if tipo_filtro == 'tutor':
-            return SessaoModel.objects.filter(tutorId__usuarioId=user)
+            queryset = queryset.filter(tutorId__usuarioId=user)
         elif tipo_filtro == 'aprendiz':
-            return SessaoModel.objects.filter(usuarioId=user)
+            queryset = queryset.filter(usuarioId=user)
 
         if area_id is not None:
             queryset = queryset.filter(areaId=area_id)
