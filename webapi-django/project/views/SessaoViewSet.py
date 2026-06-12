@@ -95,42 +95,24 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
 
-        queryset = SolicitacaoModel.objects.filter(
-			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-		).select_related(
-			'usuarioId',
-			'areaId',
-			'especialidadeId',
-			'agendaId__tutorId__usuarioId'
-		).distinct()
-
-        agora = timezone.now()
-
-        for sol in queryset:
-            if sol.validade:
-                if agora > sol.validade:
-                    sol.delete()
-
-        queryset = SolicitacaoModel.objects.filter(
-			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-		).filter(
-            estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
-        ).select_related(
-			'usuarioId',
-			'areaId',
-			'especialidadeId',
-			'agendaId__tutorId__usuarioId'
-		).distinct()
-
         tipo_filtro   = self.request.query_params.get('tipo', '').lower()
         area_id       = self.request.query_params.get('area')
         espec_id      = self.request.query_params.get('especialidade')
         ordem_filtro  = self.request.query_params.get('ordem', '').lower()
 
+        queryset = SolicitacaoModel.objects.filter(
+			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
+		).select_related('usuarioId', 'agendaId__tutorId__usuarioId', 'areaId', 'especialidadeId')
+
         if tipo_filtro == 'tutor':
-            queryset = queryset.filter(agendaId__tutorId__usuarioId=user)
+            queryset = queryset.filter(
+				agendaId__tutorId__usuarioId=user,
+				estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
+			)
         elif tipo_filtro == 'aprendiz':
             queryset = queryset.filter(usuarioId=user)
+        else:
+            queryset = queryset.filter(estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE)
 
         if area_id is not None:
             queryset = queryset.filter(areaId=area_id)
@@ -139,15 +121,44 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(especialidadeId=espec_id)
 
         if ordem_filtro == 'asc':
-            return queryset.order_by('dataPretendida', 'agendaId__horarioInicio')
+            queryset = queryset.order_by('dataPretendida', 'agendaId__horarioInicio')
+        else:
+            queryset = queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
 
-        return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
+        return queryset
 
     def perform_create(self, serializer):
         logged_user = self.request.user
+		
+        agenda = serializer.validated_data.get('agendaId')
+        data_pretendida = serializer.validated_data.get('dataPretendida')
+		
+        fuso_local = timezone.get_current_timezone()
+        hoje = timezone.localtime(timezone.now())
+
+        def obter_proximo_dia_util(data_base):
+            proximo_dia = data_base + datetime.timedelta(days=1)
+            if proximo_dia.weekday() == 5:  
+                return proximo_dia + datetime.timedelta(days=2)
+            elif proximo_dia.weekday() == 6:  
+                return proximo_dia + datetime.timedelta(days=1)
+            return proximo_dia
+
+        dia_util_seguinte = obter_proximo_dia_util(hoje)
+        limite_fim_do_dia = dia_util_seguinte.replace(hour=23, minute=59, second=59, microsecond=0)
+		
+        momento_da_tutoria_naive = datetime.datetime.combine(data_pretendida, agenda.horarioInicio)
+        momento_da_tutoria = timezone.make_aware(momento_da_tutoria_naive, fuso_local)
+		
+        if momento_da_tutoria < limite_fim_do_dia:
+            data_validade = momento_da_tutoria
+        else:
+            data_validade = limite_fim_do_dia
+
         serializer.save(
-            usuarioId=logged_user
-        )
+			usuarioId=logged_user,
+			validade=data_validade
+		)
 
 
 class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
