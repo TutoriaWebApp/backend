@@ -15,6 +15,7 @@ router.register(r'consegue', consegueViewSet, basename='consegue')
 router.register(r'tutores', TutorViewSet, basename='tutor')
 
 router.register(r'sessoes', SessaoViewSet, basename='sessoes')
+router.register(r'sessoes-tutor', SessoesTutorVerificacaoViewSet, basename='sessoes-tutor')
 
 router.register(r'solicitacoes', SolicitacaoViewSet, basename='solicitacoes')
 

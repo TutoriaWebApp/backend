@@ -312,3 +312,36 @@ class SessaoViewSet(viewsets.ModelViewSet):
            return queryset.order_by('dataSessao', 'horarioInicio')
 
         return queryset.order_by('-dataSessao', '-horarioInicio')
+
+@extend_schema(
+    summary="Listar todas as sessões de um tutor (Sem Paginação)",
+    description="Endpoint exclusivo para verificação. Retorna a lista completa de sessões de um tutor com base no seu ID passado na URL.",
+    responses=SessaoSerializer(many=True),
+    tags=['06. Sessões'],
+    parameters=[
+        OpenApiParameter(
+            name='tutor_id',
+            description="ID do Tutor para buscar todas as sessões associadas",
+            required=True,
+            type=int
+        ),
+    ]
+)
+class SessoesTutorVerificacaoViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SessaoSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = None 
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        tutor_id = self.request.query_params.get('tutor_id')
+        
+        if not tutor_id:
+            return SessaoModel.objects.none()
+            
+        return SessaoModel.objects.filter(tutorId=tutor_id).select_related(
+            'usuarioId', 
+            'tutorId__usuarioId', 
+            'areaId', 
+            'especialidadeId'
+        ).order_by('-dataSessao', '-horarioInicio')

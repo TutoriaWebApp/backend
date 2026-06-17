@@ -24,6 +24,7 @@ __all__ = [
 	'consegueViewSet',
 	'AgendaViewSet',
 	'SessaoViewSet',
+    'SessoesTutorVerificacaoViewSet',
 	'SolicitacaoViewSet',
 	'AceitarSolicitacaoViewSet',
 	'RecusarSolicitacaoViewSet',
