@@ -16,8 +16,10 @@ router.register(r'tutores', TutorViewSet, basename='tutor')
 
 router.register(r'sessoes', SessaoViewSet, basename='sessoes')
 router.register(r'sessoes-tutor', SessoesTutorVerificacaoViewSet, basename='sessoes-tutor')
+router.register(r'todas-sessoes-usuario', TodasSessoesUsuarioViewSet, basename='todas-sessoes-usuario')
 
 router.register(r'solicitacoes', SolicitacaoViewSet, basename='solicitacoes')
+router.register(r'todas-solicitacoes', TodasSolicitacoesUsuarioViewSet, basename='todas-solicitacoes')
 
 router.register(r'areas', AreaViewSet, basename='areas')
 

@@ -314,34 +314,92 @@ class SessaoViewSet(viewsets.ModelViewSet):
         return queryset.order_by('-dataSessao', '-horarioInicio')
 
 @extend_schema(
-    summary="Listar todas as sessões de um tutor (Sem Paginação)",
-    description="Endpoint exclusivo para verificação. Retorna a lista completa de sessões de um tutor com base no seu ID passado na URL.",
-    responses=SessaoSerializer(many=True),
-    tags=['06. Sessões'],
-    parameters=[
-        OpenApiParameter(
-            name='tutor_id',
-            description="ID do Tutor para buscar todas as sessões associadas",
-            required=True,
-            type=int
-        ),
-    ]
+	summary="Listar todas as sessões de um tutor como Tutor e Aprendiz (Sem Paginação)",
+	description="Endpoint exclusivo para verificação. Retorna a lista completa de sessões onde o Tutor informado participa, seja ensinando ou aprendendo.",
+	responses=SessaoSerializer(many=True),
+	tags=['06. Sessões'],
+	parameters=[
+		OpenApiParameter(
+			name='tutor_id',
+			description="ID do Tutor para buscar todas as sessões associadas",
+			required=True,
+			type=int
+		),
+	]
 )
 class SessoesTutorVerificacaoViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = SessaoSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = None 
-    http_method_names = ['get']
+	serializer_class = SessaoSerializer
+	permission_classes = [IsAuthenticated]
+	pagination_class = None 
+	http_method_names = ['get']
 
-    def get_queryset(self):
-        tutor_id = self.request.query_params.get('tutor_id')
-        
-        if not tutor_id:
-            return SessaoModel.objects.none()
-            
-        return SessaoModel.objects.filter(tutorId=tutor_id).select_related(
-            'usuarioId', 
-            'tutorId__usuarioId', 
-            'areaId', 
-            'especialidadeId'
-        ).order_by('-dataSessao', '-horarioInicio')
+	def get_queryset(self):
+		tutor_id = self.request.query_params.get('tutor_id')
+		
+		if not tutor_id:
+			return SessaoModel.objects.none()
+			
+		try:
+			tutor_registro = TutorModel.objects.get(id=tutor_id)
+			usuario_do_tutor_id = tutor_registro.usuarioId_id
+		except TutorModel.DoesNotExist:
+			return SessaoModel.objects.none()
+			
+		return SessaoModel.objects.filter(
+			Q(tutorId=tutor_id) | Q(usuarioId=usuario_do_tutor_id)
+		).select_related(
+			'usuarioId', 
+			'tutorId__usuarioId', 
+			'areaId', 
+			'especialidadeId'
+		).order_by('-dataSessao', '-horarioInicio')
+    
+@extend_schema(
+	summary="Listar todas as solicitações do usuário autenticado (Sem Paginação)",
+	description="Retorna a lista completa de todas as solicitações associadas ao usuário logado, englobando tanto as enviadas por ele como Aprendiz quanto as recebidas como Tutor, sem paginação ou filtros obrigatórios.",
+	responses=SolicitacaoSerializer(many=True),
+	tags=['05. Solicitar Sessão']
+)
+class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
+	serializer_class = SolicitacaoSerializer
+	permission_classes = [IsAuthenticated]
+	pagination_class = None
+	http_method_names = ['get']
+
+	def get_queryset(self):
+		user = self.request.user
+
+		# Puxa todas as solicitações atreladas ao usuário logado (enviadas ou recebidas)
+		return SolicitacaoModel.objects.filter(
+			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
+		).select_related(
+			'usuarioId', 
+			'agendaId__tutorId__usuarioId', 
+			'areaId', 
+			'especialidadeId'
+		).order_by('-dataPretendida', '-agendaId__horarioInicio')
+     
+@extend_schema(
+	summary="Listar todas as sessões do usuário autenticado (Sem Paginação)",
+	description="Retorna a lista completa de todas as sessões associadas ao usuário logado, englobando tanto o papel de Tutor quanto o de Aprendiz, sem filtros restritivos ou paginação.",
+	responses=SessaoSerializer(many=True),
+	tags=['06. Sessões']
+)
+class TodasSessoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
+	serializer_class = SessaoSerializer
+	permission_classes = [IsAuthenticated]
+	pagination_class = None
+	http_method_names = ['get']
+
+	def get_queryset(self):
+		user = self.request.user
+
+		# Puxa todas as sessões onde o usuário é o aprendiz OU onde ele é o tutor cadastrado
+		return SessaoModel.objects.filter(
+			Q(usuarioId=user) | Q(tutorId__usuarioId=user)
+		).select_related(
+			'usuarioId', 
+			'tutorId__usuarioId', 
+			'areaId', 
+			'especialidadeId'
+		).order_by('-dataSessao', '-horarioInicio')
