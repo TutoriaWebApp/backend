@@ -99,10 +99,32 @@ INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
 (25, 25, 'Roteiro Cinematográfico');
 
 -- TUTORES (Total: 25)
-INSERT INTO TUTOR (usuarioId) VALUES
-(1), (2), (3), (4), (5), (6), (7), (8), (9), (10),
-(11), (12), (13), (14), (15), (16), (17), (18), (19), (20),
-(21), (22), (23), (24), (25);
+INSERT INTO TUTOR (tutorId, usuarioId, notaAvaliacao) VALUES
+(1, 1, 5.0), 
+(2, 2, 4.5), 
+(3, 3, 4.8), 
+(4, 4, 3.5), 
+(5, 5, 4.0), 
+(6, 6, 2.5), 
+(7, 7, 4.2), 
+(8, 8, 5.0), 
+(9, 9, 3.8), 
+(10, 10, 4.7),
+(11, 11, 4.1), 
+(12, 12, 1.5), -- Nota bem baixa para testar o 'asc'
+(13, 13, 3.9), 
+(14, 14, 4.9), 
+(15, 15, 4.3), 
+(16, 16, 2.0), 
+(17, 17, 4.6), 
+(18, 18, 3.7), 
+(19, 19, 4.4), 
+(20, 20, 5.0),
+(21, 21, 3.2), 
+(22, 22, 4.0), 
+(23, 23, 2.8), 
+(24, 24, 4.9), 
+(25, 25, 3.0);
 
 -- CONTEM (Relacionamento Tutor-Especialidade, Total: 25)
 INSERT INTO contem (tutorId, especialidadeId) VALUES
@@ -175,128 +197,130 @@ INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPrete
 (29, 24, 23, 23, '2026-06-28', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
 (30, 25, 24, 24, '2026-06-29', '2026-10-10 23:59:59', FALSE, 'ACEITO');
 
--- SESSOES (Total: 25)
-INSERT INTO SESSAO (usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(26,  1, 1, 1, '2026-05-19', '08:00:00', '10:00:00'),
-(27,  2, 2, 2, '2026-05-20', '10:00:00', '12:00:00'),
-(28,  3, 3, 3, '2026-05-21', '09:00:00', '11:00:00'),
-(29,  4, 4, 4, '2026-05-22', '15:00:00', '17:00:00'),
-(30,  5, 5, 5, '2026-05-23', '08:00:00', '10:00:00'),
-(26,  6, 6, 6, '2026-05-25', '13:00:00', '15:00:00'),
-(27,  7, 7, 7, '2026-05-26', '16:00:00', '18:00:00'),
-(28,  8, 8, 8, '2026-05-27', '09:00:00', '11:00:00'),
-(29,  9, 9, 9, '2026-05-28', '14:00:00', '16:00:00'),
-(30, 10, 10, 10, '2026-05-29', '10:00:00', '12:00:00'),
-(26, 11, 11, 11, '2026-05-31', '08:00:00', '10:00:00'),
-(27, 12, 12, 12, '2026-06-01', '14:00:00', '16:00:00'),
-(28, 13, 13, 13, '2026-06-02', '10:00:00', '12:00:00'),
-(29, 14, 14, 14, '2026-06-03', '09:00:00', '11:00:00'),
-(30, 15, 15, 15, '2026-06-04', '15:00:00', '17:00:00'),
-(26, 16, 16, 16, '2026-06-05', '16:00:00', '18:00:00'),
-(27, 17, 17, 17, '2026-06-06', '08:00:00', '10:00:00'),
-(28, 18, 18, 18, '2026-06-08', '13:00:00', '15:00:00'),
-(29, 19, 19, 19, '2026-06-09', '10:00:00', '12:00:00'),
-(30, 20, 20, 20, '2026-06-10', '14:00:00', '16:00:00'),
-(26, 21, 21, 21, '2026-06-11', '09:00:00', '11:00:00'),
-(27, 22, 22, 22, '2026-06-12', '15:00:00', '17:00:00'),
-(28, 23, 23, 23, '2026-06-13', '10:00:00', '12:00:00'),
-(29, 24, 24, 24, '2026-06-14', '08:00:00', '10:00:00'),
-(30, 25, 25, 25, '2026-06-15', '14:00:00', '16:00:00'),
-(1, 2, 1, 1, '2026-05-19', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-20', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-21', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-22', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-23', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-24', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-25', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-26', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-27', '08:00:00', '10:00:00'),
-(1, 2, 1, 1, '2026-05-28', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-19', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-20', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-21', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-22', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-23', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-24', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-25', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-26', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-27', '08:00:00', '10:00:00'),
-(2, 3, 1, 1, '2026-05-28', '08:00:00', '10:00:00');
+-- =========================================================================
+-- SESSOES (IDs sequenciais de 1 a 40)
+-- =========================================================================
 
--- AVALIACOES_APRENDIZ (Total: 25)
+-- Tutor 1 (Nota 5.0): Fez 4 sessões (IDs: 1, 2, 3, 4)
+INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(1, 26, 1, 1, 1, '2026-05-19', '08:00:00', '10:00:00'),
+(2, 27, 1, 1, 1, '2026-05-20', '10:00:00', '12:00:00'),
+(3, 28, 1, 1, 1, '2026-05-21', '09:00:00', '11:00:00'),
+(4, 29, 1, 1, 1, '2026-05-22', '15:00:00', '17:00:00');
+
+-- Tutor 2 (Nota 4.5): Fez 6 sessões (IDs: 5, 6, 7, 8, 9, 10)
+INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(5,  26, 2, 2, 2, '2026-05-20', '10:00:00', '12:00:00'),
+(6,  27, 2, 2, 2, '2026-05-21', '10:00:00', '12:00:00'),
+(7,  28, 2, 2, 2, '2026-05-22', '10:00:00', '12:00:00'),
+(8,  29, 2, 2, 2, '2026-05-23', '10:00:00', '12:00:00'),
+(9,  30, 2, 2, 2, '2026-05-24', '10:00:00', '12:00:00'),
+(10, 26, 2, 2, 2, '2026-05-25', '10:00:00', '12:00:00');
+
+-- Tutor 3 (Nota 4.8): Fez 5 sessões (IDs: 11, 12, 13, 14, 15)
+INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(11, 26, 3, 3, 3, '2026-05-19', '09:00:00', '11:00:00'),
+(12, 27, 3, 3, 3, '2026-05-20', '09:00:00', '11:00:00'),
+(13, 28, 3, 3, 3, '2026-05-21', '09:00:00', '11:00:00'),
+(14, 29, 3, 3, 3, '2026-05-22', '09:00:00', '11:00:00'),
+(15, 30, 3, 3, 3, '2026-05-23', '09:00:00', '11:00:00');
+
+-- Tutor 4 (Nota 3.5): Fez 3 sessões (IDs: 16, 17, 18)
+INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(16, 26, 4, 4, 4, '2026-05-19', '15:00:00', '17:00:00'),
+(17, 27, 4, 4, 4, '2026-05-20', '15:00:00', '17:00:00'),
+(18, 28, 4, 4, 4, '2026-05-21', '15:00:00', '17:00:00');
+
+-- Tutor 5 (Nota 4.0): Fez 2 sessões (IDs: 19, 20)
+INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(19, 26, 5, 5, 5, '2026-05-19', '08:00:00', '10:00:00'),
+(20, 27, 5, 5, 5, '2026-05-20', '08:00:00', '10:00:00');
+
+-- Tutor 8 (Nota 5.0): Fez 2 sessões (IDs: 21, 22) -> Perfeito para testar desempate com o Tutor 1!
+INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(21, 26, 8, 8, 8, '2026-05-19', '09:00:00', '11:00:00'),
+(22, 27, 8, 8, 8, '2026-05-20', '09:00:00', '11:00:00');
+
+-- Tutor 20 (Nota 5.0): Fez 1 sessão (ID: 23) -> Outro empate de nota máxima!
+INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(23, 26, 20, 20, 20, '2026-05-19', '14:00:00', '16:00:00');
+
+-- Restante dos tutores (6, 7, 9 ao 19, 21 ao 25): Apenas 1 sessão padrão para não deixar vazio (IDs: 24 a 40)
+INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
+(24, 26, 6, 6, 6, '2026-05-19', '13:00:00', '15:00:00'),
+(25, 26, 7, 7, 7, '2026-05-19', '16:00:00', '18:00:00'),
+(26, 26, 9, 9, 9, '2026-05-19', '14:00:00', '16:00:00'),
+(27, 26, 10, 10, 10, '2026-05-19', '10:00:00', '12:00:00'),
+(28, 26, 11, 11, 11, '2026-05-19', '08:00:00', '10:00:00'),
+(29, 26, 12, 12, 12, '2026-05-19', '14:00:00', '16:00:00'),
+(30, 26, 13, 13, 13, '2026-05-19', '10:00:00', '12:00:00'),
+(31, 26, 14, 14, 14, '2026-05-19', '09:00:00', '11:00:00'),
+(32, 26, 15, 15, 15, '2026-05-19', '15:00:00', '17:00:00'),
+(33, 26, 16, 16, 16, '2026-05-19', '16:00:00', '18:00:00'),
+(34, 26, 17, 17, 17, '2026-05-19', '08:00:00', '10:00:00'),
+(35, 26, 18, 18, 18, '2026-05-19', '13:00:00', '15:00:00'),
+(36, 26, 19, 19, 19, '2026-05-19', '10:00:00', '12:00:00'),
+(37, 26, 21, 21, 21, '2026-05-19', '09:00:00', '11:00:00'),
+(38, 26, 22, 22, 22, '2026-05-19', '15:00:00', '17:00:00'),
+(39, 26, 23, 23, 23, '2026-05-19', '10:00:00', '12:00:00'),
+(40, 26, 24, 24, 24, '2026-05-19', '08:00:00', '10:00:00'),
+(41, 26, 25, 25, 25, '2026-05-19', '14:00:00', '16:00:00');
+
+-- =========================================================================
+-- AVALIACOES_APRENDIZ (Total: 41 - Mapeamento 1:1 exato com as sessões)
+-- =========================================================================
 INSERT INTO AVALIACAO_APRENDIZ (usuarioId, sessaoId, nota, comentario) VALUES
-(26,  1, 5, 'Aluno muito dedicado e interessado.'),
-(27,  2, 4, 'Demonstrou facilidade com programação.'),
-(28,  3, 2, 'Boa criatividade, precisa focar em detalhes.'),
-(29,  4, 4, 'Pronúncia excelente.'),
-(30,  5, 3, 'Dedicado, mas precisa revisar conceitos básicos.'),
-(26,  6, 4, 'Interessado em detalhes históricos.'),
-(27,  7, 3, 'Boa compreensão geopolítica.'),
-(28,  8, 3, 'Interessado, mas faltou base em biologia.'),
-(29,  9, 4, 'Ótima evolução na química.'),
-(30, 10, 3, 'Física dominada com sucesso.'),
-(26, 11, 3, 'Reflexivo e participativo.'),
-(27, 12, 3, 'Boa análise social.'),
-(28, 13, 3, 'Habilidade artística notável.'),
-(29, 14, 3, 'Ritmo bom, precisa praticar mais.'),
-(30, 15, 5, 'Atleta dedicado aos estudos.'),
-(26, 16, 5, 'Visão econômica apurada.'),
-(27, 17, 5, 'Raciocínio jurídico rápido.'),
-(28, 18, 4, 'Esforçado na memorização de termos.'),
-(29, 19, 5, 'Interesse genuíno em comportamento.'),
-(30, 20, 5, 'Projetos inovadores.'),
-(26, 21, 5, 'Visão de mercado excelente.'),
-(27, 22, 5, 'Mão cheia na cozinha.'),
-(28, 23, 4, 'Bom acabamento nas peças.'),
-(29, 24, 5, 'Olhar fotográfico apurado.'),
-(30, 25, 5, 'Roteiros com bom ritmo.'),
-(1, 26, 4, ''),
-(1, 27, 2, ''),
-(1, 28, 3, ''),
-(1, 29, 4, ''),
-(1, 30, 4, ''),
-(1, 30, 3, ''),
-(1, 31, 5, ''),
-(1, 32, 4, ''),
-(1, 33, 4, ''),
-(1, 34, 3, ''),
-(2, 36, 4, ''),
-(2, 37, 5, ''),
-(2, 38, 5, ''),
-(2, 39, 5, ''),
-(2, 40, 4, ''),
-(2, 41, 4, ''),
-(2, 42, 5, ''),
-(2, 43, 5, ''),
-(2, 44, 4, '');
+(26, 1, 5, 'Excelente'), (27, 2, 5, 'Ótimo'), (28, 3, 4, 'Bom'), (29, 4, 5, 'Muito bom'),
+(26, 5, 4, 'Ok'), (27, 6, 4, 'Ok'), (28, 7, 4, 'Ok'), (29, 8, 4, 'Ok'), (30, 9, 4, 'Ok'), (26, 10, 4, 'Ok'),
+(26, 11, 5, ''), (27, 12, 5, ''), (28, 13, 5, ''), (29, 14, 4, ''), (30, 15, 5, ''),
+(26, 16, 3, ''), (27, 17, 3, ''), (28, 18, 4, ''),
+(26, 19, 4, ''), (27, 20, 4, ''),
+(26, 21, 5, ''), (27, 22, 5, ''),
+(26, 23, 5, ''),
+(26, 24, 3, ''), (26, 25, 4, ''), (26, 26, 4, ''), (26, 27, 5, ''), (26, 28, 4, ''),
+(26, 29, 2, ''), (26, 30, 3, ''), (26, 31, 4, ''), (26, 32, 4, ''), (26, 33, 3, ''),
+(26, 34, 5, ''), (26, 35, 4, ''), (26, 36, 4, ''), (26, 37, 3, ''), (26, 38, 4, ''),
+(26, 39, 3, ''), (26, 40, 5, ''), (26, 41, 3, '');
 
--- AVALIACOES_TUTOR (Total: 25)
+
+-- =========================================================================
+-- AVALIACOES_TUTOR (Total: 41 - Uma avaliação real casando com cada Sessão)
+-- =========================================================================
+
+-- Avaliações do Tutor 1 (Sessões 1, 2, 3, 4)
 INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(1,   1, 5, 'Excelente tutor, explicou tudo perfeitamente.'),
-(2,   2, 4, 'Muito bom, mas o horário foi um pouco apertado.'),
-(3,   3, 5, 'Aula incrível, aprendi muito sobre design.'),
-(4,   4, 5, 'O melhor tutor de idiomas que já tive.'),
-(5,   5, 4, 'Boa didática, recomendo.'),
-(6,   6, 5, 'Aula de história muito envolvente.'),
-(7,   7, 3, 'Poderia ser mais paciente com as dúvidas.'),
-(8,   8, 5, 'Genética explicada de forma simples.'),
-(9,   9, 4, 'Bom conhecimento técnico.'),
-(10, 10, 5, 'Mecânica clássica nunca foi tão fácil.'),
-(11, 11, 4, 'Gostei muito da abordagem filosófica.'),
-(12, 12, 5, 'Excelente visão sociológica.'),
-(13, 13, 5, 'Pintura a óleo técnica muito boa.'),
-(14, 14, 4, 'Teoria musical bem explicada.'),
-(15, 15, 5, 'Fisiologia aplicada de forma prática.'),
-(16, 16, 3, 'Achei a aula um pouco cansativa.'),
-(17, 17, 5, 'Direito civil de forma clara.'),
-(18, 18, 5, 'Anatomia humana fascinante.'),
-(19, 19, 4, 'Psicologia cognitiva bem estruturada.'),
-(20, 20, 5, 'Urbanismo sustentável muito atual.'),
-(21, 21, 5, 'Marketing digital na prática.'),
-(22, 22, 5, 'Culinária italiana deliciosa.'),
-(23, 23, 4, 'Corte e costura técnica precisa.'),
-(24, 24, 5, 'Iluminação de estúdio profissional.'),
-(25, 25, 5, 'Roteiro cinematográfico criativo.');
+(1, 1, 5, 'Excelente didática.'), (1, 2, 5, 'Ótimo.'), (1, 3, 5, 'Muito prestativo.'), (1, 4, 5, 'Perfeito.');
+
+-- Avaliações do Tutor 2 (Sessões 5, 6, 7, 8, 9, 10)
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(2, 5, 4, ''), (2, 6, 4, ''), (2, 7, 5, ''), (2, 8, 4, ''), (2, 9, 4, ''), (2, 10, 5, '');
+
+-- Avaliações do Tutor 3 (Sessões 11, 12, 13, 14, 15)
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(3, 11, 5, ''), (3, 12, 5, ''), (3, 13, 4, ''), (3, 14, 5, ''), (3, 15, 5, '');
+
+-- Avaliações do Tutor 4 (Sessões 16, 17, 18)
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(4, 16, 3, ''), (4, 17, 4, ''), (4, 18, 3, '');
+
+-- Avaliações do Tutor 5 (Sessões 19, 20)
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(5, 19, 4, ''), (5, 20, 4, '');
+
+-- Avaliações do Tutor 8 (Sessões 21, 22)
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(8, 21, 5, ''), (8, 22, 5, '');
+
+-- Avaliação do Tutor 20 (Sessão 23)
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(20, 23, 5, '');
+
+-- Restante dos Tutores (Sessões de 24 a 41)
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
+(6, 24, 3, ''), (7, 25, 4, ''), (9, 26, 4, ''), (10, 27, 5, ''), (11, 28, 4, ''),
+(12, 29, 2, ''), (13, 30, 3, ''), (14, 31, 4, ''), (15, 32, 4, ''), (16, 33, 3, ''),
+(17, 34, 5, ''), (18, 35, 4, ''), (19, 36, 4, ''), (21, 37, 3, ''), (22, 38, 4, ''),
+(23, 39, 3, ''), (24, 40, 5, ''), (25, 41, 3, '');
 
 -- CHATS (Total: 25)
 INSERT INTO CHAT (tutorId, usuarioId) VALUES

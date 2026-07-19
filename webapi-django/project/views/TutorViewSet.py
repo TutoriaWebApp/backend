@@ -33,16 +33,30 @@ class TutorFilter(filters.FilterSet):
 
 @extend_schema(
     summary="Usuário tutor",
-    description="Este endpoint retorna informações sobre os tutores cadastrados na plataforma, filtrados por área/especialidade e paginados.",
+    description=(
+        "Este endpoint retorna informações sobre os tutores cadastrados na plataforma, "
+        "filtrados por área/especialidade, ordenados por nota e quantidade de tutorias, e paginados."
+    ),
     request=TutorSerializer,
     responses=TutorSerializer,
     tags=['03. Tutor'],
-    # Adiciona a documentação dos parâmetros de filtro no Swagger/Spectacular
     parameters=[
         OpenApiParameter(
             name='area', description='ID da Área de Conhecimento para filtrar', required=False, type=int),
         OpenApiParameter(
             name='especialidade', description='ID da Especialidade para filtrar', required=False, type=int),
+        OpenApiParameter(
+            name='ordenar_nota', 
+            description="Ordenação por nota. Use 'asc' (menores notas primeiro) ou 'desc' (maiores notas primeiro).", 
+            required=False, 
+            type=str
+        ),
+        OpenApiParameter(
+            name='ordenar_tutorias', 
+            description="Ordenação por quantidade de tutorias realizadas. Use 'asc' (menos tutorias) ou 'desc' (mais tutorias).", 
+            required=False, 
+            type=str
+        ),
         OpenApiParameter(
             name='page', description='Número da página', required=False, type=int),
     ]
@@ -64,12 +78,30 @@ class TutorViewSet(viewsets.ModelViewSet):
             'especialidades', 
             'especialidades__areaId'
         ).annotate(
-            qtd_avaliacoes_tutor=Count('avaliacoes_tutor')
+            qtd_tutorias_realizadas=Count('sessoes') 
         )
         
         if user and user.is_authenticated:
             queryset = queryset.exclude(usuarioId=user)
             
+        ordem_nota = self.request.query_params.get('ordenar_nota', '').lower()
+        ordem_tutorias = self.request.query_params.get('ordenar_tutorias', '').lower()
+
+        order_by_fields = []
+
+        if ordem_nota == 'asc':
+            order_by_fields.append('notaAvaliacao')
+        elif ordem_nota == 'desc':
+            order_by_fields.append('-notaAvaliacao')
+
+        if ordem_tutorias == 'asc':
+            order_by_fields.append('qtd_tutorias_realizadas')
+        elif ordem_tutorias == 'desc':
+            order_by_fields.append('-qtd_tutorias_realizadas')
+
+        if order_by_fields:
+            queryset = queryset.order_by(*order_by_fields)
+
         return queryset
 
     def perform_create(self, serializer):
