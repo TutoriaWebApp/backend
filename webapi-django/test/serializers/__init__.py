@@ -3,6 +3,7 @@ from .ConquistaSerializerTest import ConquistaSerializerTest
 from .TutorAreaSerializerTest import TutorAreaSerializerTest
 from .SessaoSolicitacaoSerializerTest import SessaoSolicitacaoSerializerTest
 from .AvaliacaoSerializerTest import AvaliacaoSerializerTest
+from .ChatSerializerTest import ChatSerializerTest, MensagemSerializerTest
 
 __all__ = [
     'UsuarioSerializerTest',
@@ -10,4 +11,6 @@ __all__ = [
     'TutorAreaSerializerTest',
     'SessaoSolicitacaoSerializerTest',
 	'AvaliacaoSerializerTest',
+	'ChatSerializerTest',
+	'MensagemSerializerTest',
 ]

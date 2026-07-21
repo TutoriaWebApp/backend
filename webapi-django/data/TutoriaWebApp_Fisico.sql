@@ -27,6 +27,7 @@ USUARIO (
     nomePerfil  VARCHAR(100) NOT NULL,
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
+    localizacao POINT        NOT NULL SRID 4326,
     nascimento  DATE,
     sobremim    VARCHAR(500),
     notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
@@ -37,6 +38,8 @@ USUARIO (
     is_superuser    TINYINT(1)  DEFAULT 0,
     date_joined     DATETIME    DEFAULT CURRENT_TIMESTAMP,
     last_login      DATETIME,
+
+    SPATIAL INDEX `IDX_USUARIO_LOCALIZACAO` (`localizacao`),
 
     CONSTRAINT USUARIO_PK
         PRIMARY KEY (usuarioId),

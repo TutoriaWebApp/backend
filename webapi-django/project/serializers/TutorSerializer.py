@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from project.models import *
-from project.utils import UsuarioUtils
+from project.utils import UsuarioUtils, GeoLocalizacaoUtil
 
 
 class TutorSerializer(serializers.ModelSerializer):
@@ -9,6 +9,8 @@ class TutorSerializer(serializers.ModelSerializer):
     nomePerfil = serializers.SerializerMethodField()
     estado = serializers.SerializerMethodField()
     cidade = serializers.SerializerMethodField()
+    localizacao = serializers.SerializerMethodField()
+    distancia_km = serializers.SerializerMethodField()
     pontuacao = serializers.SerializerMethodField()
     fotoURL = serializers.SerializerMethodField()
     sobremim = serializers.SerializerMethodField()
@@ -16,9 +18,8 @@ class TutorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TutorModel
-        fields = ['id', 'usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao',
-                  'fotoURL', 'sobremim', 'notaAvaliacao', 'totalAvaliacoes', 'especialidades', 'areas']
-        read_only_fields = ['usuarioId', 'nomePerfil', 'estado', 'cidade', 'pontuacao',
+        fields = ['id', 'usuarioId', 'nomePerfil', 'estado', 'cidade', 'localizacao', 'distancia_km', 'pontuacao', 'fotoURL', 'sobremim', 'notaAvaliacao', 'totalAvaliacoes', 'especialidades', 'areas']
+        read_only_fields = ['usuarioId', 'nomePerfil', 'estado', 'cidade', 'localizacao', 'distancia_km', 'pontuacao',
                             'fotoURL', 'sobremim', 'notaAvaliacao', 'totalAvaliacoes', 'especialidades', 'areas']
 
     def get_especialidades(self, obj):
@@ -53,6 +54,25 @@ class TutorSerializer(serializers.ModelSerializer):
 
     def get_fotoURL(self, obj):
         return UsuarioUtils.get_fotoUrl(obj.usuarioId.email, self.context.get('request'))
+
+    def get_localizacao(self, obj):
+        loc = obj.usuarioId.localizacao
+        if loc is None:
+            return None
+        if hasattr(loc, 'x') and hasattr(loc, 'y'):
+            return {'longitude': loc.x, 'latitude': loc.y}
+        return str(loc)
+
+    def get_distancia_km(self, obj):
+        request = self.context.get('request')
+        if request and hasattr(request, 'user') and request.user and request.user.is_authenticated:
+            user_loc = getattr(request.user, 'localizacao', None)
+            tutor_loc = getattr(obj.usuarioId, 'localizacao', None)
+            if user_loc and tutor_loc:
+                dist = GeoLocalizacaoUtil.haversine_distance(user_loc, tutor_loc)
+                if dist != float('inf'):
+                    return round(dist, 2)
+        return None
 
     def get_totalAvaliacoes(self, obj):
         if hasattr(obj, 'qtd_avaliacoes_tutor'):

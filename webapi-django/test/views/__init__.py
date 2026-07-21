@@ -3,6 +3,8 @@ from .ConquistaViewSetTest import ConquistaViewSetTest
 from .SessaoViewSetTest import SessaoViewSetTest
 from .TutorViewSetTest import TutorViewSetTest
 from .AvaliacaoViewSetTest import AvaliacaoViewSetTest
+from .ChatViewSetTest import ChatViewSetTest, MensagemViewSetTest
+from .SistemaRecomendacaoViewSetTest import SistemaRecomendacaoViewSetTest
 
 __all__ = [
 	'UsuarioViewSetTest',
@@ -10,4 +12,7 @@ __all__ = [
 	'SessaoViewSetTest',
 	'TutorViewSetTest',
 	'AvaliacaoViewSetTest',
+	'ChatViewSetTest',
+	'MensagemViewSetTest',
+	'SistemaRecomendacaoViewSetTest',
 ]

@@ -26,9 +26,6 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
 
     @extend_schema(
         parameters=[
-            OpenApiParameter(name='dia', description='Vetor de dias da semana (SEG, TER, etc)', type={'type': 'array', 'items': {'type': 'string'}}, many=True),
-            OpenApiParameter(name='horarioInicio', description='Vetor de horários de início (HH:MM)', type={'type': 'array', 'items': {'type': 'string'}}, many=True),
-            OpenApiParameter(name='horarioFim', description='Vetor de horários de fim (HH:MM)', type={'type': 'array', 'items': {'type': 'string'}}, many=True),
             OpenApiParameter(name='area', description='Id de área de pesquisa', type=int, required=False),
             OpenApiParameter(name='especialidade', description='Id de especialidade de pesquisa', type=int, required=False),
             OpenApiParameter(name='page', description='Número da página', type=int, required=False),
@@ -43,10 +40,8 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
         tutors_qs = TutorModel.objects.exclude(usuarioId=user).select_related('usuarioId')
 
         # Parâmetros de Filtro (Suporte a Vetores)
-        dias = request.query_params.getlist('dia') or request.query_params.getlist('dia[]')
-        horarios_inicio = request.query_params.getlist('horarioInicio') or request.query_params.getlist('horarioInicio[]')
-        horarios_fim = request.query_params.getlist('horarioFim') or request.query_params.getlist('horarioFim[]')
-        
+        dias = request.query_params.getlist('dia[]') or request.query_params.getlist('dia')
+        horarios = request.query_params.getlist('horario[]') or request.query_params.getlist('horario')
         area = request.query_params.get('area')
 
         if not area:
@@ -55,13 +50,12 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
         especialidade = request.query_params.get('especialidade')
 
         # Filtro de Agenda (Lógica OR para múltiplos slots)
-        if dias and horarios_inicio and horarios_fim:
+        if dias and horarios:
             schedule_filter = Q()
-            for d, hi, hf in zip(dias, horarios_inicio, horarios_fim):
+            for d, h in zip(dias, horarios):
                 schedule_filter |= Q(
                     agendas__dia=d,
-                    agendas__horarioInicio__lte=hi,
-                    agendas__horarioFim__gte=hf
+                    agendas__horarioInicio__lte=h,
                 )
             tutors_qs = tutors_qs.filter(schedule_filter).distinct()
 

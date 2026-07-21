@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from project.models import *
 from project.serializers.TutorSerializer import TutorSerializer
-from project.utils import UsuarioUtils
+from project.utils import UsuarioUtils, GeoLocalizacaoUtil
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -22,6 +22,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'nomePerfil',
             'estado',
             'cidade',
+            'localizacao',
             'aniversario',
             'pontuacao',
             'fotoURL',
@@ -31,7 +32,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'totalAvaliacoes',
             'perfilTutor',
         ]
-        read_only_fields = ['pontuacao', 'fotoURL',
+        read_only_fields = ['pontuacao', 'fotoURL', 'localziacao',
                             'notaAvaliacao', 'totalAvaliacoes', 'perfilTutor']
 
     def create(self, validated_data):
@@ -60,6 +61,10 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
         if foto_arquivo:
             UsuarioUtils.set_fotoUrl(instance.email, foto_arquivo)
+
+        if 'cidade' in validated_data and 'estado' in validated_data:
+            localizacao = GeoLocalizacaoUtil.geocode(validated_data['cidade'], validated_data['estado'])
+            instance.localizacao = localizacao
 
         return super().update(instance, validated_data)
 
@@ -118,6 +123,10 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
         foto_file = validated_data.pop('foto', None)
         especialidades_data = validated_data.pop('especialidades', [])
         agendas_string = validated_data.pop('agendas', '[]')
+        localizacao = GeoLocalizacaoUtil.geocode(
+            validated_data['cidade'], validated_data['estado']
+        )
+        validated_data['localizacao'] = localizacao
 
         user = UsuarioModel.objects.create_user(**validated_data)
 

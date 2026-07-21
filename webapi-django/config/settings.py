@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
+import sys
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -81,20 +82,32 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+HAS_GIS = False
+try:
+    from django.contrib.gis.gdal import libgdal
+    HAS_GIS = True
+except Exception:
+    pass
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.contrib.gis.db.backends.mysql' if HAS_GIS else 'django.db.backends.mysql',
         'HOST': os.environ.get('DATABASE_HOST') if os.environ.get('DATABASE_HOST') else "localhost",
         'PORT': os.environ.get('DATABASE_PORT') if os.environ.get('DATABASE_PORT') else "8080",
         'NAME': 'tutoriadb',
         'USER': 'root',
         'PASSWORD': os.environ.get('DATABASE_PASSWORD') if os.environ.get('DATABASE_PASSWORD') else "rootpassword",
-    },
-	'TEST': {
-		'ENGINE': 'django.db.backends.sqlite3',
-		'NAME': ':memory:'
-	}
+    }
 }
+
+if 'test' in sys.argv or 'test_coverage' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.contrib.gis.db.backends.spatialite' if HAS_GIS else 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
+    if HAS_GIS:
+        SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'
+
 
 if os.environ.get('EMAIL_SENDER') == 'BREVO':
 	EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -103,12 +116,13 @@ if os.environ.get('EMAIL_SENDER') == 'BREVO':
 	EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
 	EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 	EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-
+	EMAIL_WEBAPPTUTORIA = os.environ.get('EMAIL_WEBAPPTUTORIA')
 	# print('LOG: E-mails configurados para envio via SMTP.')
 
 else:
 	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 	EMAIL_HOST_USER = 'console@mail.com'
+	EMAIL_WEBAPPTUTORIA = 'console@mail.com'
 	# print('LOG: E-mails configurados para exibição no CONSOLE.')
 
 

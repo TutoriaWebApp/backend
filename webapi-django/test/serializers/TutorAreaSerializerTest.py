@@ -12,9 +12,10 @@ class TutorAreaSerializerTest(TestCase):
             nomePerfil='Tutor Supremo',
             cidade='São Paulo',
             estado='SP',
-            pontuacao=4.5,
+            pontuacao=4,
             aniversario=date(1985, 1, 1)
         )
+
         self.tutor = TutorModel.objects.create(usuarioId=self.user)
         self.area = AreaModel.objects.create(nomeArea='Tecnologia')
         self.esp = EspecialidadeModel.objects.create(areaId=self.area, nomeEspecialidade='Django')
@@ -43,7 +44,8 @@ class TutorAreaSerializerTest(TestCase):
         self.assertEqual(data['nomePerfil'], 'Tutor Supremo')
         self.assertEqual(data['estado'], 'SP')
         self.assertEqual(data['cidade'], 'São Paulo')
-        self.assertEqual(data['pontuacao'], 4.5)
+        self.assertEqual(data['pontuacao'], 4)
+
         
         # Testing if fotoURL is handled correctly (currently no mock file, should be None)
         self.assertIsNone(data['fotoURL'])

@@ -52,6 +52,7 @@ class Migration(migrations.Migration):
                 ('nomePerfil', models.CharField(max_length=100)),
                 ('cidade', models.CharField(max_length=80)),
                 ('estado', models.CharField(max_length=2)),
+                ('localizacao', models.PointField(srid=4326)),
                 ('aniversario', models.DateField(blank=True, db_default=None, default=None, null=True)),
                 ('sobremim', models.CharField(max_length=500, blank=True, db_default=None, default=None, null=True)),
                 ('notaAvaliacao', models.FloatField(db_default=5.0, default=5.0)),
@@ -241,11 +242,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='solicitacaoId', primary_key=True, serialize=False)),
                 ('dataCriacao', models.DateTimeField(auto_now_add=True)),
                 ('dataPretendida', models.DateField()),
-                ('validade', models.DateTimeField(
-                    null=True,
-                    default=django.utils.timezone.now()
-                    + django.utils.timezone.timedelta(days=1)
-                )),
+                ('validade', models.DateTimeField(null=True, default=django.utils.timezone.now() + django.utils.timezone.timedelta(days=1))),
                 ('recorrente', models.BooleanField(default=False)),
                 ('estado', models.CharField(choices=[('ACEITO', 'Solicitação Aceita'), ('PENDENTE', 'Tutor precisa aceitar'), ('RECUSADO', 'Solicitação recusada'), ('RECORRENTE', 'Solicitação recorrente')], default='PENDENTE', max_length=10)),
                 ('agendaId', models.ForeignKey(db_column='agendaId', on_delete=django.db.models.deletion.CASCADE, related_name='solicitacoes', to='project.agendamodel')),

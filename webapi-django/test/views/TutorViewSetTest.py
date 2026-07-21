@@ -24,10 +24,16 @@ class TutorViewSetTest(APITestCase):
 		self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
 
 	def test_lista_tutores_authenticated(self):
+		outro_usuario = UsuarioModel.objects.create_user(
+			email='outro@example.com', password='testpassword123',
+			nomePerfil='Outro', cidade='Test City', estado='TS'
+		)
+		TutorModel.objects.create(usuarioId=outro_usuario)
+
 		self.client.force_authenticate(user=self.usuario)
 		response = self.client.get(self.tutores_url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertEqual(len(response.data), 1)
+		self.assertEqual(len(response.data['results']), 1)
 
 	def test_cria_tutor_ja_existente(self):
 		self.client.force_authenticate(user=self.usuario)
@@ -58,3 +64,48 @@ class TutorViewSetTest(APITestCase):
 		response = self.client.get(self.contem_url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
 		self.assertEqual(len(response.data), 1)
+
+	def test_lista_tutores_filtro_raio(self):
+		from project.utils.GeoLocalizacaoUtil import Point
+
+		# Atualiza localização do usuário logado para Brasília
+		self.usuario.localizacao = Point(-47.882778, -15.793889)
+		self.usuario.save()
+
+		# Tutor 1: Brasília (próximo, 0km)
+		u1 = UsuarioModel.objects.create_user(
+			email='tutor_bsb@example.com', password='testpassword123',
+			nomePerfil='Tutor BSB', cidade='Brasília', estado='DF',
+			localizacao=Point(-47.882778, -15.793889)
+		)
+		t1 = TutorModel.objects.create(usuarioId=u1)
+
+		# Tutor 2: São Paulo (~870km de distância)
+		u2 = UsuarioModel.objects.create_user(
+			email='tutor_sp@example.com', password='testpassword123',
+			nomePerfil='Tutor SP', cidade='São Paulo', estado='SP',
+			localizacao=Point(-46.633308, -23.550520)
+		)
+		t2 = TutorModel.objects.create(usuarioId=u2)
+
+		self.client.force_authenticate(user=self.usuario)
+
+		# Filtra com raio de 50km -> deve retornar apenas t1 (BSB)
+		resp_50 = self.client.get(f"{self.tutores_url}?raio=50")
+		self.assertEqual(resp_50.status_code, status.HTTP_200_OK)
+		ids_50 = [t['id'] for t in resp_50.data['results']]
+		self.assertIn(t1.id, ids_50)
+		self.assertNotIn(t2.id, ids_50)
+
+		# Filtra com raio de 1000km -> deve retornar ambos (t1 e t2)
+		resp_1000 = self.client.get(f"{self.tutores_url}?raio=1000")
+		self.assertEqual(resp_1000.status_code, status.HTTP_200_OK)
+		ids_1000 = [t['id'] for t in resp_1000.data['results']]
+		self.assertIn(t1.id, ids_1000)
+		self.assertIn(t2.id, ids_1000)
+
+	def test_lista_tutores_filtro_raio_invalido(self):
+		self.client.force_authenticate(user=self.usuario)
+		response = self.client.get(f"{self.tutores_url}?raio=abc")
+		self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+

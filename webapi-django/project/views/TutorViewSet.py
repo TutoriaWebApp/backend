@@ -10,6 +10,7 @@ from django_filters import rest_framework as filters
 
 from project.models import *
 from project.serializers import *
+from project.utils import GeoLocalizacaoUtil
 
 
 class TutorPagination(PageNumberPagination):
@@ -58,6 +59,12 @@ class TutorFilter(filters.FilterSet):
             type=str
         ),
         OpenApiParameter(
+            name='raio', 
+            description='Raio máximo de busca (em quilômetros) a partir da localização do usuário logado.', 
+            required=False, 
+            type=float
+        ),
+        OpenApiParameter(
             name='page', description='Número da página', required=False, type=int),
     ]
 )
@@ -83,6 +90,32 @@ class TutorViewSet(viewsets.ModelViewSet):
         
         if user and user.is_authenticated:
             queryset = queryset.exclude(usuarioId=user)
+            
+            raio_param = (
+                self.request.query_params.get('raio') or
+                self.request.query_params.get('raio_km') or
+                self.request.query_params.get('distancia') or
+                self.request.query_params.get('distancia_km')
+            )
+            if raio_param is not None:
+                try:
+                    raio = float(raio_param)
+                except (ValueError, TypeError):
+                    raise ValidationError({"raio": "O parâmetro de raio/distância deve ser um número válido em quilômetros (Km)."})
+
+                user_loc = getattr(user, 'localizacao', None)
+                if not user_loc:
+                    return queryset.none()
+
+                try:
+                    from django.contrib.gis.measure import D
+                    queryset = queryset.filter(usuarioId__localizacao__distance_lte=(user_loc, D(km=raio)))
+                except Exception:
+                    valid_tutor_ids = [
+                        t.id for t in queryset
+                        if GeoLocalizacaoUtil.haversine_distance(user_loc, getattr(t.usuarioId, 'localizacao', None)) <= raio
+                    ]
+                    queryset = queryset.filter(id__in=valid_tutor_ids)
             
         ordem_nota = self.request.query_params.get('ordenar_nota', '').lower()
         ordem_tutorias = self.request.query_params.get('ordenar_tutorias', '').lower()

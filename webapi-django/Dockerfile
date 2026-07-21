@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
 	build-essential pkg-config \
 	default-libmysqlclient-dev \
 	default-mysql-client \
+	binutils libproj-dev gdal-bin libsqlite3-mod-spatialite \
 	&& apt-get clean \
 	&& rm -rf /var/lib/apt/lists/*
 

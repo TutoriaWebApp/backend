@@ -4,6 +4,7 @@ from .TutorModelTest import TutorModelTest
 from .AreaEspecialidadeModelTest import AreaEspecialidadeModelTest
 from .SessaoSolicitacaoModelTest import SessaoSolicitacaoModelTest
 from .AvaliacaoModelTest import AvaliacaoModelTest
+from .ChatModelTest import ChatModelTest
 
 __all__ = [
     'UsuarioModelTest',
@@ -12,4 +13,5 @@ __all__ = [
     'AreaEspecialidadeModelTest',
     'SessaoSolicitacaoModelTest',
 	'AvaliacaoModelTest',
+	'ChatModelTest',
 ]
