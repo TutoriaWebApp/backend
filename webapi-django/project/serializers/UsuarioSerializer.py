@@ -13,6 +13,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
         allow_null=True, write_only=True, required=False)
     perfilTutor = serializers.SerializerMethodField()
     totalAvaliacoes = serializers.SerializerMethodField()
+    tutorId = serializers.SerializerMethodField()
 
     class Meta:
         model = UsuarioModel
@@ -31,9 +32,10 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'notaAvaliacao',
             'totalAvaliacoes',
             'perfilTutor',
+            'tutorId',
         ]
         read_only_fields = ['pontuacao', 'fotoURL', 'localziacao',
-                            'notaAvaliacao', 'totalAvaliacoes', 'perfilTutor']
+                            'notaAvaliacao', 'totalAvaliacoes', 'perfilTutor', 'tutorId']
 
     def create(self, validated_data):
         raise serializers.ValidationError(
@@ -45,9 +47,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return UsuarioUtils.get_fotoUrl(obj.email, request)
 
     def get_perfilTutor(self, obj):
-        request = self.context.get('request')
-        usuarioId = request.user.id
-        t_tutor = TutorModel.objects.filter(usuarioId=usuarioId).first()
+        # Correção mantida: busca o perfil do usuário atual do objeto (obj.id)
+        t_tutor = TutorModel.objects.filter(usuarioId=obj.id).first()
         serializer = TutorSerializer(t_tutor, context=self.context)
         return serializer.data if t_tutor else None
 
@@ -55,6 +56,10 @@ class UsuarioSerializer(serializers.ModelSerializer):
         if hasattr(obj, 'qtd_avaliacoes_aprendiz'):
             return obj.qtd_avaliacoes_aprendiz
         return obj.avaliacoes_aprendiz.count()
+
+    def get_tutorId(self, obj):
+        t_tutor = TutorModel.objects.filter(usuarioId=obj.id).first()
+        return t_tutor.id if t_tutor else None
 
     def update(self, instance, validated_data):
         foto_arquivo = validated_data.pop('foto', None)
@@ -70,31 +75,50 @@ class UsuarioSerializer(serializers.ModelSerializer):
 
 
 class UsuarioPublicoSerializer(serializers.ModelSerializer):
-	fotoURL = serializers.SerializerMethodField()
-	totalAvaliacoes = serializers.SerializerMethodField()
+    fotoURL = serializers.SerializerMethodField()
+    totalAvaliacoes = serializers.SerializerMethodField()
+    tutorId = serializers.SerializerMethodField()
 
-	class Meta:
-		model = UsuarioModel
-		fields = [
-			'id',
-			'nomePerfil',
-			'estado',
-			'cidade',
-			'pontuacao',
-			'fotoURL',
-			'sobremim',
-			'notaAvaliacao',
-			'totalAvaliacoes'
-		]
-		read_only_fields = ['id', 'email', 'nomePerfil', 'estado', 'cidade', 'pontuacao', 'fotoURL', 'sobremim', 'notaAvaliacao', 'totalAvaliacoes']
+    class Meta:
+        model = UsuarioModel
+        fields = [
+            'id',
+            'nomePerfil',
+            'estado',
+            'cidade',
+            'pontuacao',
+            'fotoURL',
+            'sobremim',
+            'notaAvaliacao',
+            'totalAvaliacoes',
+            'tutorId',
+        ]
+        read_only_fields = [
+            'id', 
+            'email', 
+            'nomePerfil', 
+            'estado', 
+            'cidade', 
+            'pontuacao', 
+            'fotoURL', 
+            'sobremim', 
+            'notaAvaliacao', 
+            'totalAvaliacoes', 
+            'tutorId'
+        ]
 
-	def get_fotoURL(self, obj):
-		return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
-	
-	def get_totalAvaliacoes(self, obj):
-		if hasattr(obj, 'qtd_avaliacoes_aprendiz'):
-			return obj.qtd_avaliacoes_aprendiz
-		return obj.avaliacoes_aprendiz.count()
+    def get_fotoURL(self, obj):
+        return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
+    
+    def get_totalAvaliacoes(self, obj):
+        if hasattr(obj, 'qtd_avaliacoes_aprendiz'):
+            return obj.qtd_avaliacoes_aprendiz
+        return obj.avaliacoes_aprendiz.count()
+
+    def get_tutorId(self, obj):
+        t_tutor = TutorModel.objects.filter(usuarioId=obj.id).first()
+        return t_tutor.id if t_tutor else None
+
 
 class UsuarioRegistroSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, style={

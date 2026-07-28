@@ -65,6 +65,7 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 		queryset = AvaliacaoAprendizModel.objects.all().select_related(
             'usuarioId',
             'sessaoId',
+            'sessaoId__tutorId__usuarioId',
             'sessaoId__areaId',
             'sessaoId__especialidadeId'
         )        
@@ -120,7 +121,6 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
     ]
 )
 class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
-	queryset = AvaliacaoTutorModel.objects.all().select_related('sessaoId__usuarioId')
 	serializer_class = AvaliacaoTutorSerializer
 	permission_classes = [IsAuthenticated]
 	pagination_class = AvaliacaoPagination
@@ -183,14 +183,13 @@ class PendenteAvaliacaoView(APIView):
 		pendentes = []
 
 		for s in sessoes_como_aprendiz:
-			# Só alertar se a sessão já terminou (simplificando por data, mas poderia checar hora)
 			if s.dataSessao < hoje or (s.dataSessao == hoje and s.horarioFim <= agora):
-				s.tipoPendente = 'APRENDIZ' # Ele precisa avaliar como aprendiz
+				s.tipoPendente = 'APRENDIZ'
 				pendentes.append(s)
 
 		for s in sessoes_como_tutor:
 			if s.dataSessao < hoje or (s.dataSessao == hoje and s.horarioFim <= agora):
-				s.tipoPendente = 'TUTOR' # Ele precisa avaliar como tutor
+				s.tipoPendente = 'TUTOR'
 				pendentes.append(s)
 
 		serializer = SessaoPendenteAvaliacaoSerializer(pendentes, many=True)

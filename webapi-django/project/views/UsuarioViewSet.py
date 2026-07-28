@@ -24,9 +24,9 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 	http_method_names = ['get']
 
 	def get_queryset(self):
-		return UsuarioModel.objects.all().annotate(
-			qtd_avaliacoes_aprendiz=Count('avaliacoes_aprendiz')
-		)
+		return UsuarioModel.objects.all().select_related('tutormodel').annotate(
+            qtd_avaliacoes_aprendiz=Count('avaliacoes_aprendiz')
+        )
 
 
 @extend_schema(

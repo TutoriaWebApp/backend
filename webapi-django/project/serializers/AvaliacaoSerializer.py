@@ -4,7 +4,8 @@ from project.utils import UsuarioUtils
 
 class AvaliacaoAprendizSerializer(serializers.ModelSerializer):
 	fotoURL = serializers.SerializerMethodField()
-	nomeUsuario = serializers.ReadOnlyField(source='usuarioId.nomePerfil')
+	nomeUsuario = serializers.ReadOnlyField(source='sessaoId.tutorId.usuarioId.nomePerfil')
+	usuarioAvaliadorId = serializers.ReadOnlyField(source='sessaoId.tutorId.usuarioId.id')
 
 	class Meta:
 		model  = AvaliacaoAprendizModel
@@ -12,20 +13,21 @@ class AvaliacaoAprendizSerializer(serializers.ModelSerializer):
 
 	def get_fotoURL(self, obj):
 		request = self.context.get('request')
-		if obj.usuarioId and hasattr(obj.usuarioId, 'email'):
-			return UsuarioUtils.get_fotoUrl(obj.usuarioId.email, request)
+		if obj.sessaoId and obj.sessaoId.tutorId and obj.sessaoId.tutorId.usuarioId:
+			return UsuarioUtils.get_fotoUrl(obj.sessaoId.tutorId.usuarioId.email, request)
 		return None
 
 class AvaliacaoTutorSerializer(serializers.ModelSerializer):
 	fotoURL = serializers.SerializerMethodField()
 	nomeUsuario = serializers.ReadOnlyField(source='sessaoId.usuarioId.nomePerfil')
+	usuarioAvaliadorId = serializers.ReadOnlyField(source='sessaoId.usuarioId.id')
+
 	class Meta:
 		model  = AvaliacaoTutorModel
 		fields = '__all__'
 
 	def get_fotoURL(self, obj):
 		request = self.context.get('request')
-        # Acessa o aprendiz da sessão que fez a crítica ao tutor
 		if obj.sessaoId and obj.sessaoId.usuarioId and hasattr(obj.sessaoId.usuarioId, 'email'):
 			return UsuarioUtils.get_fotoUrl(obj.sessaoId.usuarioId.email, request)
 		return None
@@ -36,4 +38,4 @@ class SessaoPendenteAvaliacaoSerializer(serializers.Serializer):
 	horarioInicio = serializers.TimeField()
 	tutorNome = serializers.CharField(source='tutorId.usuarioId.nomePerfil', read_only=True)
 	aprendizNome = serializers.CharField(source='usuarioId.nomePerfil', read_only=True)
-	tipoPendente = serializers.CharField() # 'APRENDIZ' ou 'TUTOR'
+	tipoPendente = serializers.CharField()
