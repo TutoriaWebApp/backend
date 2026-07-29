@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from project.models import *
 from project.serializers import *
@@ -102,7 +102,16 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 
 		queryset = SolicitacaoModel.objects.filter(
 			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-		).select_related('usuarioId', 'agendaId__tutorId__usuarioId', 'areaId', 'especialidadeId')
+		).select_related(
+            'usuarioId', 
+            'agendaId__tutorId',
+            'agendaId__tutorId__usuarioId', 
+            'areaId', 
+            'especialidadeId'
+        ).annotate(
+            qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
+            qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
+        )
 
 		if tipo_filtro == 'tutor':
 			queryset = queryset.filter(
@@ -284,13 +293,17 @@ class SessaoViewSet(viewsets.ModelViewSet):
 		user = self.request.user
 
 		queryset = SessaoModel.objects.filter(
-			Q(usuarioId=user) | Q(tutorId__usuarioId=user)
-		).select_related(
-			'usuarioId',
-			'tutorId__usuarioId',
-			'areaId',
-			'especialidadeId'
-		)
+            Q(usuarioId=user) | Q(tutorId__usuarioId=user)
+        ).select_related(
+            'usuarioId', 
+            'tutorId',
+            'tutorId__usuarioId', 
+            'areaId', 
+            'especialidadeId'
+        ).annotate(
+            qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
+            qtd_avaliacoes_tutor=Count('tutorId__avaliacoes_tutor', distinct=True)
+        )
 
 		tipo_filtro   = self.request.query_params.get('tipo', '').lower()
 		area_id       = self.request.query_params.get('area')
@@ -307,6 +320,9 @@ class SessaoViewSet(viewsets.ModelViewSet):
 
 		if espec_id is not None:
 			queryset = queryset.filter(especialidadeId=espec_id)
+
+		if ordem_filtro == 'asc':
+			return queryset.order_by('dataSessao', 'horarioInicio')
 
 		return queryset.order_by('-dataSessao', '-horarioInicio')
 
@@ -366,15 +382,18 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 	def get_queryset(self):
 		user = self.request.user
 
-		# Puxa todas as solicitações atreladas ao usuário logado (enviadas ou recebidas)
-		return SolicitacaoModel.objects.filter(
-			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-		).select_related(
-			'usuarioId', 
-			'agendaId__tutorId__usuarioId', 
-			'areaId', 
-			'especialidadeId'
-		).order_by('-dataPretendida', '-agendaId__horarioInicio')
+		return SessaoModel.objects.filter(
+            Q(usuarioId=user) | Q(tutorId__usuarioId=user)
+        ).select_related(
+            'usuarioId', 
+            'tutorId',
+            'tutorId__usuarioId', 
+            'areaId', 
+            'especialidadeId'
+        ).annotate(
+            qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
+            qtd_avaliacoes_tutor=Count('tutorId__avaliacoes_tutor', distinct=True)
+        ).order_by('-dataSessao', '-horarioInicio')
      
 @extend_schema(
 	summary="Listar todas as sessões do usuário autenticado (Sem Paginação)",

@@ -28,6 +28,10 @@ class SolicitacaoSerializer(serializers.ModelSerializer):
 	fotoAprendizURL = serializers.SerializerMethodField()
 	fotoTutorURL = serializers.SerializerMethodField()
 
+	idUsuarioSolicitacao = serializers.SerializerMethodField()		
+	nota = serializers.SerializerMethodField()
+	quantidadeAvaliacoes = serializers.SerializerMethodField()
+
 	class Meta:
 		model  = SolicitacaoModel
 		fields = '__all__'
@@ -41,11 +45,49 @@ class SolicitacaoSerializer(serializers.ModelSerializer):
 				)
 		]
 
+	def _e_papel_tutor(self, obj):
+		request = self.context.get('request')
+		if not request:
+			return False
+
+		tipo_param = request.query_params.get('tipo', '').lower()
+		if tipo_param == 'tutor':
+			return True
+		if tipo_param == 'aprendiz':
+			return False
+
+		user = request.user
+		return obj.agendaId.tutorId.usuarioId_id == user.id
+
 	def get_fotoAprendizURL(self, obj):
 		request = self.context.get('request')
 		if obj.usuarioId and hasattr(obj.usuarioId, 'email'):
 			return UsuarioUtils.get_fotoUrl(obj.usuarioId.email, request)
 		return None
+
+	def get_idUsuarioSolicitacao(self, obj):
+		if self._e_papel_tutor(obj):
+			return obj.usuarioId.id
+		else:
+			return obj.agendaId.tutorId.usuarioId.id
+		
+	def get_nota(self, obj):
+		if self._e_papel_tutor(obj):
+			return obj.usuarioId.notaAvaliacao
+		else:
+			return obj.agendaId.tutorId.notaAvaliacao
+
+	def get_quantidadeAvaliacoes(self, obj):
+		if self._e_papel_tutor(obj):
+			aprendiz = obj.usuarioId
+			if hasattr(aprendiz, 'qtd_avaliacoes_aprendiz'):
+				return aprendiz.qtd_avaliacoes_aprendiz
+			return aprendiz.avaliacoes_aprendiz.count()
+		else:
+			tutor = obj.agendaId.tutorId
+			if hasattr(tutor, 'qtd_avaliacoes_tutor'):
+				return tutor.qtd_avaliacoes_tutor
+			return tutor.avaliacoes_tutor.count()
 
 	def get_fotoTutorURL(self, obj):
 		request = self.context.get('request')
@@ -62,11 +104,52 @@ class SessaoSerializer(serializers.ModelSerializer):
 	nomeTutor = serializers.ReadOnlyField(source='tutorId.usuarioId.nomePerfil')
 	fotoAprendizURL = serializers.SerializerMethodField()
 	fotoTutorURL = serializers.SerializerMethodField()
+	idUsuarioSessao = serializers.SerializerMethodField()
+	nota = serializers.SerializerMethodField()
+	quantidadeAvaliacoes = serializers.SerializerMethodField()
 
 	class Meta:
 		model  = SessaoModel
 		fields = '__all__'
 		read_only_fields = ['id', 'usuarioId', 'tutorId', 'areaId', 'especialidadeId', 'dataSessao', 'horarioInicio', 'horarioFim']
+
+	def _e_papel_tutor(self, obj):
+		request = self.context.get('request')
+		if not request:
+			return False
+
+		tipo_param = request.query_params.get('tipo', '').lower()
+		if tipo_param == 'tutor':
+			return True
+		if tipo_param == 'aprendiz':
+			return False
+
+		user = request.user
+		return obj.tutorId.usuarioId_id == user.id
+
+	def get_idUsuarioSessao(self, obj):
+		if self._e_papel_tutor(obj):
+			return obj.usuarioId.id
+		else:
+			return obj.tutorId.usuarioId.id
+
+	def get_nota(self, obj):
+		if self._e_papel_tutor(obj):
+			return obj.usuarioId.notaAvaliacao
+		else:
+			return obj.tutorId.notaAvaliacao
+
+	def get_quantidadeAvaliacoes(self, obj):
+		if self._e_papel_tutor(obj):
+			aprendiz = obj.usuarioId
+			if hasattr(aprendiz, 'qtd_avaliacoes_aprendiz'):
+				return aprendiz.qtd_avaliacoes_aprendiz
+			return aprendiz.avaliacoes_aprendiz.count()
+		else:
+			tutor = obj.tutorId
+			if hasattr(tutor, 'qtd_avaliacoes_tutor'):
+				return tutor.qtd_avaliacoes_tutor
+			return tutor.avaliacoes_tutor.count()
 
 	def get_fotoAprendizURL(self, obj):
 		request = self.context.get('request')
