@@ -67,6 +67,9 @@ OFFLINE_COORDINATES = {
 }
 
 class GeoLocalizacaoUtil:
+    MockPointField = PointField
+    PointField = PointField
+    
     @staticmethod
     def geocode(cidade: str, estado: str) -> Point:
         """
