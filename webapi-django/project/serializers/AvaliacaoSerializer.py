@@ -36,6 +36,33 @@ class SessaoPendenteAvaliacaoSerializer(serializers.Serializer):
 	sessaoId = serializers.IntegerField(source='id')
 	dataSessao = serializers.DateField()
 	horarioInicio = serializers.TimeField()
-	tutorNome = serializers.CharField(source='tutorId.usuarioId.nomePerfil', read_only=True)
-	aprendizNome = serializers.CharField(source='usuarioId.nomePerfil', read_only=True)
+
+	usuarioAvaliadoId = serializers.SerializerMethodField()
+	nome = serializers.SerializerMethodField()
+	fotoURL = serializers.SerializerMethodField()
+
+	nomeArea = serializers.ReadOnlyField(source='areaId.nomeArea')
+	nomeEspecialidade = serializers.ReadOnlyField(source='especialidadeId.nomeEspecialidade')
+
 	tipoPendente = serializers.CharField()
+
+	def get_usuarioAvaliadoId(self, obj):
+		if getattr(obj, 'tipoPendente', None) == 'APRENDIZ':
+			return obj.tutorId.usuarioId.id
+		return obj.usuarioId.id
+
+	def get_nome(self, obj):
+		if getattr(obj, 'tipoPendente', None) == 'APRENDIZ':
+			return obj.tutorId.usuarioId.nomePerfil
+		return obj.usuarioId.nomePerfil
+
+	def get_fotoURL(self, obj):
+		request = self.context.get('request')
+		if getattr(obj, 'tipoPendente', None) == 'APRENDIZ':
+			usuario_avaliado = obj.tutorId.usuarioId
+		else:
+			usuario_avaliado = obj.usuarioId
+
+		if usuario_avaliado and hasattr(usuario_avaliado, 'email'):
+			return UsuarioUtils.get_fotoUrl(usuario_avaliado.email, request)
+		return None

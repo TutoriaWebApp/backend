@@ -16,39 +16,39 @@
 USE tutoriadb;
 
 -- USUARIOS (Total: 30)
-INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, is_active, is_staff, is_superuser) VALUES
-('admin@tutoria.com', 'pbkdf2_sha256$1000000$zZBLgMtlMlfKvomGWZKEKt$ifR7/CLjG7xZUl6+iFjJ0W3mXON2p3smJGnn2XuBUSY=', 'Admin', 'Não Aplicado', 'NA', '1971-03-15', 1, 1, 1);
+INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, localizacao, is_active, is_staff, is_superuser) VALUES
+('admin@tutoria.com', 'pbkdf2_sha256$1000000$zZBLgMtlMlfKvomGWZKEKt$ifR7/CLjG7xZUl6+iFjJ0W3mXON2p3smJGnn2XuBUSY=', 'Admin', 'Não Aplicado', 'NA', '1971-03-15', ST_GeomFromText('POINT(0 0)', 4326), 1, 1, 1);
 
-INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario) VALUES
-('ana.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ana Lima', 'Curitiba', 'PR', '1985-03-05'),
-('joao.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'João Silva', 'São Paulo', 'SP', '1990-01-03'),
-('maria.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', '1979-03-05'),
-('carlos.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Carlos Souza', 'Belo Horizonte', 'MG', '1988-02-18'),
-('paula.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Paula Mendes', 'Salvador', 'BA', '1988-01-05'),
-('fernanda.rocha@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Fernanda Rocha', 'Porto Alegre', 'RS', '1992-07-12'),
-('ricardo.alves@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ricardo Alves', 'Fortaleza', 'CE', '1983-11-25'),
-('gabriela.costa@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Gabriela Costa', 'Brasília', 'DF', '1995-05-30'),
-('bruno.ferreira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Bruno Ferreira', 'Manaus', 'AM', '1987-09-14'),
-('juliana.pereira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Juliana Pereira', 'Recife', 'PE', '1991-12-08'),
-('lucas.martins@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Lucas Martins', 'Florianópolis', 'SC', '1989-04-22'),
-('amanda.santos@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Amanda Santos', 'Vitória', 'ES', '1994-10-05'),
-('tiago.gomes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Tiago Gomes', 'Goiânia', 'GO', '1986-01-19'),
-('patricia.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Patricia Lima', 'Belém', 'PA', '1984-06-27'),
-('rafael.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Rafael Silva', 'São Luís', 'MA', '1993-08-03'),
-('larissa.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Larissa Souza', 'Natal', 'RN', '1996-02-15'),
-('andre.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Andre Oliveira', 'Teresina', 'PI', '1982-12-20'),
-('camila.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Camila Mendes', 'João Pessoa', 'PB', '1990-05-10'),
-('felipe.alves@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Felipe Alves', 'Maceió', 'AL', '1985-09-02'),
-('beatriz.costa@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Beatriz Costa', 'Aracaju', 'SE', '1994-03-25'),
-('rodrigo.ferreira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Rodrigo Ferreira', 'Campo Grande', 'MS', '1988-07-08'),
-('vanessa.pereira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Vanessa Pereira', 'Cuiabá', 'MT', '1991-11-14'),
-('marcelo.martins@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Marcelo Martins', 'Porto Velho', 'RO', '1987-04-30'),
-('elaine.santos@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Elaine Santos', 'Rio Branco', 'AC', '1984-10-18'),
-('igor.gomes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Igor Gomes', 'Boa Vista', 'RR', '1993-01-22'),
-('leticia.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Leticia Lima', 'São Paulo', 'SP', '1995-06-05'),
-('danilo.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Danilo Silva', 'Rio de Janeiro', 'RJ', '1989-08-28'),
-('monica.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Monica Souza', 'Belo Horizonte', 'MG', '1992-02-14'),
-('eduardo.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Eduardo Oliveira', 'Salvador', 'BA', '1986-11-09');
+INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, localizacao) VALUES
+('ana.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ana Lima', 'Curitiba', 'PR', '1985-03-05', ST_GeomFromText('POINT(-25.4284 -49.2733)', 4326)),
+('joao.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'João Silva', 'São Paulo', 'SP', '1990-01-03', ST_GeomFromText('POINT(-23.5505 -46.6333)', 4326)),
+('maria.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', '1979-03-05', ST_GeomFromText('POINT(-22.9068 -43.1729)', 4326)),
+('carlos.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Carlos Souza', 'Belo Horizonte', 'MG', '1988-02-18', ST_GeomFromText('POINT(-19.9167 -43.9345)', 4326)),
+('paula.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Paula Mendes', 'Salvador', 'BA', '1988-01-05', ST_GeomFromText('POINT(-12.9777 -38.5016)', 4326)),
+('fernanda.rocha@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Fernanda Rocha', 'Porto Alegre', 'RS', '1992-07-12', ST_GeomFromText('POINT(-30.0346 -51.2177)', 4326)),
+('ricardo.alves@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ricardo Alves', 'Fortaleza', 'CE', '1983-11-25', ST_GeomFromText('POINT(-3.7319 -38.5267)', 4326)),
+('gabriela.costa@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Gabriela Costa', 'Brasília', 'DF', '1995-05-30', ST_GeomFromText('POINT(-15.7975 -47.8919)', 4326)),
+('bruno.ferreira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Bruno Ferreira', 'Manaus', 'AM', '1987-09-14', ST_GeomFromText('POINT(-3.1190 -60.0217)', 4326)),
+('juliana.pereira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Juliana Pereira', 'Recife', 'PE', '1991-12-08', ST_GeomFromText('POINT(-8.0476 -34.8770)', 4326)),
+('lucas.martins@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Lucas Martins', 'Florianópolis', 'SC', '1989-04-22', ST_GeomFromText('POINT(-27.5954 -48.5480)', 4326)),
+('amanda.santos@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Amanda Santos', 'Vitória', 'ES', '1994-10-05', ST_GeomFromText('POINT(-20.3155 -40.3128)', 4326)),
+('tiago.gomes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Tiago Gomes', 'Goiânia', 'GO', '1986-01-19', ST_GeomFromText('POINT(-16.6869 -49.2648)', 4326)),
+('patricia.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Patricia Lima', 'Belém', 'PA', '1984-06-27', ST_GeomFromText('POINT(-1.4558 -48.4902)', 4326)),
+('rafael.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Rafael Silva', 'São Luís', 'MA', '1993-08-03', ST_GeomFromText('POINT(-2.5307 -44.3068)', 4326)),
+('larissa.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Larissa Souza', 'Natal', 'RN', '1996-02-15', ST_GeomFromText('POINT(-5.7945 -35.2110)', 4326)),
+('andre.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Andre Oliveira', 'Teresina', 'PI', '1982-12-20', ST_GeomFromText('POINT(-5.0920 -42.8038)', 4326)),
+('camila.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Camila Mendes', 'João Pessoa', 'PB', '1990-05-10', ST_GeomFromText('POINT(-7.1195 -34.8450)', 4326)),
+('felipe.alves@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Felipe Alves', 'Maceió', 'AL', '1985-09-02', ST_GeomFromText('POINT(-9.6658 -35.7353)', 4326)),
+('beatriz.costa@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Beatriz Costa', 'Aracaju', 'SE', '1994-03-25', ST_GeomFromText('POINT(-10.9472 -37.0731)', 4326)),
+('rodrigo.ferreira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Rodrigo Ferreira', 'Campo Grande', 'MS', '1988-07-08', ST_GeomFromText('POINT(-20.4697 -54.6201)', 4326)),
+('vanessa.pereira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Vanessa Pereira', 'Cuiabá', 'MT', '1991-11-14', ST_GeomFromText('POINT(-15.6010 -56.0974)', 4326)),
+('marcelo.martins@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Marcelo Martins', 'Porto Velho', 'RO', '1987-04-30', ST_GeomFromText('POINT(-8.7619 -63.9039)', 4326)),
+('elaine.santos@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Elaine Santos', 'Rio Branco', 'AC', '1984-10-18', ST_GeomFromText('POINT(-9.9754 -67.8249)', 4326)),
+('igor.gomes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Igor Gomes', 'Boa Vista', 'RR', '1993-01-22', ST_GeomFromText('POINT(2.8235 -60.6758)', 4326)),
+('leticia.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Leticia Lima', 'São Paulo', 'SP', '1995-06-05', ST_GeomFromText('POINT(-23.5505 -46.6333)', 4326)),
+('danilo.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Danilo Silva', 'Rio de Janeiro', 'RJ', '1989-08-28', ST_GeomFromText('POINT(-22.9068 -43.1729)', 4326)),
+('monica.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Monica Souza', 'Belo Horizonte', 'MG', '1992-02-14', ST_GeomFromText('POINT(-19.9167 -43.9345)', 4326)),
+('eduardo.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Eduardo Oliveira', 'Salvador', 'BA', '1986-11-09', ST_GeomFromText('POINT(-12.9777 -38.5016)', 4326));
 
 -- CONQUISTAS (Total: 25)
 INSERT INTO CONQUISTA (pontos, titulo, descricao, urlImagem) VALUES
@@ -266,61 +266,79 @@ INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataS
 (40, 26, 24, 24, 24, '2026-05-19', '08:00:00', '10:00:00'),
 (41, 26, 25, 25, 25, '2026-05-19', '14:00:00', '16:00:00');
 
+INSERT INTO SESSAO (
+    dataSessao, 
+    horarioInicio, 
+    horarioFim, 
+    usuarioId, 
+    tutorId, 
+    areaId, 
+    especialidadeId
+) VALUES (
+    '2026-07-25',      -- Data passada
+    '14:00:00', 
+    '15:00:00', 
+    1,                 -- Admin (Aprendiz)
+    2,                 -- Tutor 2 (Quem o Admin precisa avaliar)
+    1, 
+    1
+);
+
+-------------------------------------------------------------------------
+-- 2. Sessão onde o Admin participou como TUTOR (ficou pendente de avaliar o Aprendiz)
+-- *Nota: Requer que o Admin possua um registro na tabela TUTOR (ex: tutorId = 1)
+-------------------------------------------------------------------------
+INSERT INTO SESSAO (
+    dataSessao, 
+    horarioInicio, 
+    horarioFim, 
+    usuarioId, 
+    tutorId, 
+    areaId, 
+    especialidadeId
+) VALUES (
+    '2026-07-26',      -- Data passada
+    '10:00:00', 
+    '11:00:00', 
+    2,                 -- Aprendiz 2 (Quem o Admin precisa avaliar)
+    1,                 -- Admin (Tutor)
+    1,                 -- areaId
+    1                  -- especialidadeId
+);                     -- Parêntese e ponto e vírgula fechados corretamente!
+
 -- =========================================================================
 -- AVALIACOES_APRENDIZ (Total: 41 - Mapeamento 1:1 exato com as sessões)
 -- =========================================================================
-INSERT INTO AVALIACAO_APRENDIZ (usuarioId, sessaoId, nota, comentario) VALUES
-(26, 1, 5, 'Excelente'), (27, 2, 5, 'Ótimo'), (28, 3, 4, 'Bom'), (29, 4, 5, 'Muito bom'),
-(26, 5, 4, 'Ok'), (27, 6, 4, 'Ok'), (28, 7, 4, 'Ok'), (29, 8, 4, 'Ok'), (30, 9, 4, 'Ok'), (26, 10, 4, 'Ok'),
-(26, 11, 5, ''), (27, 12, 5, ''), (28, 13, 5, ''), (29, 14, 4, ''), (30, 15, 5, ''),
-(26, 16, 3, ''), (27, 17, 3, ''), (28, 18, 4, ''),
-(26, 19, 4, ''), (27, 20, 4, ''),
-(26, 21, 5, ''), (27, 22, 5, ''),
-(26, 23, 5, ''),
-(26, 24, 3, ''), (26, 25, 4, ''), (26, 26, 4, ''), (26, 27, 5, ''), (26, 28, 4, ''),
-(26, 29, 2, ''), (26, 30, 3, ''), (26, 31, 4, ''), (26, 32, 4, ''), (26, 33, 3, ''),
-(26, 34, 5, ''), (26, 35, 4, ''), (26, 36, 4, ''), (26, 37, 3, ''), (26, 38, 4, ''),
-(26, 39, 3, ''), (26, 40, 5, ''), (26, 41, 3, '');
+INSERT INTO AVALIACAO_APRENDIZ (usuarioId, sessaoId, nota, comentario, dataCriacao) VALUES
+(26, 1, 5, 'Excelente', '2026-05-19 10:05:00'), (27, 2, 5, 'Ótimo', '2026-05-20 12:05:00'), (28, 3, 4, 'Bom', '2026-05-21 11:05:00'), (29, 4, 5, 'Muito bom', '2026-05-22 17:05:00'),
+(26, 5, 4, 'Ok', '2026-05-20 12:05:00'), (27, 6, 4, 'Ok', '2026-05-21 12:05:00'), (28, 7, 4, 'Ok', '2026-05-22 12:05:00'), (29, 8, 4, 'Ok', '2026-05-23 12:05:00'), (30, 9, 4, 'Ok', '2026-05-24 12:05:00'), (26, 10, 4, 'Ok', '2026-05-25 12:05:00'),
+(26, 11, 5, '', '2026-05-19 11:05:00'), (27, 12, 5, '', '2026-05-20 11:05:00'), (28, 13, 5, '', '2026-05-21 11:05:00'), (29, 14, 4, '', '2026-05-22 11:05:00'), (30, 15, 5, '', '2026-05-23 11:05:00'),
+(26, 16, 3, '', '2026-05-19 17:05:00'), (27, 17, 3, '', '2026-05-20 17:05:00'), (28, 18, 4, '', '2026-05-21 17:05:00'),
+(26, 19, 4, '', '2026-05-19 10:05:00'), (27, 20, 4, '', '2026-05-20 10:05:00'),
+(26, 21, 5, '', '2026-05-19 11:05:00'), (27, 22, 5, '', '2026-05-20 11:05:00'),
+(26, 23, 5, '', '2026-05-19 16:05:00'),
+(26, 24, 3, '', '2026-05-19 15:05:00'), (26, 25, 4, '', '2026-05-19 18:05:00'), (26, 26, 4, '', '2026-05-19 16:05:00'), (26, 27, 5, '', '2026-05-19 12:05:00'), (26, 28, 4, '', '2026-05-19 10:05:00'),
+(26, 29, 2, '', '2026-05-19 16:05:00'), (26, 30, 3, '', '2026-05-19 12:05:00'), (26, 31, 4, '', '2026-05-19 11:05:00'), (26, 32, 4, '', '2026-05-19 17:05:00'), (26, 33, 3, '', '2026-05-19 18:05:00'),
+(26, 34, 5, '', '2026-05-19 10:05:00'), (26, 35, 4, '', '2026-05-19 15:05:00'), (26, 36, 4, '', '2026-05-19 12:05:00'), (26, 37, 3, '', '2026-05-19 11:05:00'), (26, 38, 4, '', '2026-05-19 17:05:00'),
+(26, 39, 3, '', '2026-05-19 12:05:00'), (26, 40, 5, '', '2026-05-19 10:05:00'), (26, 41, 3, '', '2026-05-19 16:05:00');
 
 
 -- =========================================================================
 -- AVALIACOES_TUTOR (Total: 41 - Uma avaliação real casando com cada Sessão)
 -- =========================================================================
 
--- Avaliações do Tutor 1 (Sessões 1, 2, 3, 4)
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(1, 1, 5, 'Excelente didática.'), (1, 2, 5, 'Ótimo.'), (1, 3, 5, 'Muito prestativo.'), (1, 4, 5, 'Perfeito.');
-
--- Avaliações do Tutor 2 (Sessões 5, 6, 7, 8, 9, 10)
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(2, 5, 4, ''), (2, 6, 4, ''), (2, 7, 5, ''), (2, 8, 4, ''), (2, 9, 4, ''), (2, 10, 5, '');
-
--- Avaliações do Tutor 3 (Sessões 11, 12, 13, 14, 15)
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(3, 11, 5, ''), (3, 12, 5, ''), (3, 13, 4, ''), (3, 14, 5, ''), (3, 15, 5, '');
-
--- Avaliações do Tutor 4 (Sessões 16, 17, 18)
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(4, 16, 3, ''), (4, 17, 4, ''), (4, 18, 3, '');
-
--- Avaliações do Tutor 5 (Sessões 19, 20)
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(5, 19, 4, ''), (5, 20, 4, '');
-
--- Avaliações do Tutor 8 (Sessões 21, 22)
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(8, 21, 5, ''), (8, 22, 5, '');
-
--- Avaliação do Tutor 20 (Sessão 23)
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(20, 23, 5, '');
-
--- Restante dos Tutores (Sessões de 24 a 41)
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario) VALUES
-(6, 24, 3, ''), (7, 25, 4, ''), (9, 26, 4, ''), (10, 27, 5, ''), (11, 28, 4, ''),
-(12, 29, 2, ''), (13, 30, 3, ''), (14, 31, 4, ''), (15, 32, 4, ''), (16, 33, 3, ''),
-(17, 34, 5, ''), (18, 35, 4, ''), (19, 36, 4, ''), (21, 37, 3, ''), (22, 38, 4, ''),
-(23, 39, 3, ''), (24, 40, 5, ''), (25, 41, 3, '');
+INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario, dataCriacao) VALUES
+(1, 1, 5, 'Excelente didática.', '2026-05-19 10:05:00'), (1, 2, 5, 'Ótimo.', '2026-05-20 12:05:00'), (1, 3, 5, 'Muito prestativo.', '2026-05-21 11:05:00'), (1, 4, 5, 'Perfeito.', '2026-05-22 17:05:00'),
+(2, 5, 4, '', '2026-05-20 12:05:00'), (2, 6, 4, '', '2026-05-21 12:05:00'), (2, 7, 5, '', '2026-05-22 12:05:00'), (2, 8, 4, '', '2026-05-23 12:05:00'), (2, 9, 4, '', '2026-05-24 12:05:00'), (2, 10, 5, '', '2026-05-25 12:05:00'),
+(3, 11, 5, '', '2026-05-19 11:05:00'), (3, 12, 5, '', '2026-05-20 11:05:00'), (3, 13, 4, '', '2026-05-21 11:05:00'), (3, 14, 5, '', '2026-05-22 11:05:00'), (3, 15, 5, '', '2026-05-23 11:05:00'),
+(4, 16, 3, '', '2026-05-19 17:05:00'), (4, 17, 4, '', '2026-05-20 17:05:00'), (4, 18, 3, '', '2026-05-21 17:05:00'),
+(5, 19, 4, '', '2026-05-19 10:05:00'), (5, 20, 4, '', '2026-05-20 10:05:00'),
+(8, 21, 5, '', '2026-05-19 11:05:00'), (8, 22, 5, '', '2026-05-20 11:05:00'),
+(20, 23, 5, '', '2026-05-19 16:05:00'),
+(6, 24, 3, '', '2026-05-19 15:05:00'), (7, 25, 4, '', '2026-05-19 18:05:00'), (9, 26, 4, '', '2026-05-19 16:05:00'), (10, 27, 5, '', '2026-05-19 12:05:00'), (11, 28, 4, '', '2026-05-19 10:05:00'),
+(12, 29, 2, '', '2026-05-19 16:05:00'), (13, 30, 3, '', '2026-05-19 12:05:00'), (14, 31, 4, '', '2026-05-19 11:05:00'), (15, 32, 4, '', '2026-05-19 17:05:00'), (16, 33, 3, '', '2026-05-19 18:05:00'),
+(17, 34, 5, '', '2026-05-19 10:05:00'), (18, 35, 4, '', '2026-05-19 15:05:00'), (19, 36, 4, '', '2026-05-19 12:05:00'), (21, 37, 3, '', '2026-05-19 11:05:00'), (22, 38, 4, '', '2026-05-19 17:05:00'),
+(23, 39, 3, '', '2026-05-19 12:05:00'), (24, 40, 5, '', '2026-05-19 10:05:00'), (25, 41, 3, '', '2026-05-19 16:05:00');
 
 -- CHATS (Total: 25)
 INSERT INTO CHAT (tutorId, usuarioId) VALUES

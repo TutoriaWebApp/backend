@@ -23,6 +23,7 @@ class AvaliacaoAprendizModel(models.Model):
 		null=False
 	)
 	comentario = models.CharField(max_length=200, blank=True, null=True)
+	dataCriacao = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
 		return f"Avaliação Aprendiz - {self.usuarioId.nomePerfil} ({self.nota})"
@@ -52,6 +53,7 @@ class AvaliacaoTutorModel(models.Model):
 		null=False
 	)
 	comentario = models.CharField(max_length=200, blank=True, null=True)
+	dataCriacao = models.DateTimeField(auto_now_add=True)
 
 	def __str__(self):
 		return f"Avaliação Tutor - {self.tutorId.usuarioId.nomePerfil} ({self.nota})"

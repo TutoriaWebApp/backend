@@ -168,15 +168,25 @@ class PendenteAvaliacaoView(APIView):
 			usuarioId=usuario,
 		).exclude(
 			avaliacoes_aprendiz_sessao__usuarioId=usuario
-		)
+        ).select_related(
+            'usuarioId',
+            'tutorId__usuarioId',
+            'areaId',
+            'especialidadeId'
+        )
 
 		try:
 			tutor = TutorModel.objects.get(usuarioId=usuario)
 			sessoes_como_tutor = SessaoModel.objects.filter(
-				tutorId=tutor,
-			).exclude(
-				avaliacoes_tutor_sessao__tutorId=tutor
-			)
+                tutorId=tutor,
+            ).exclude(
+                avaliacoes_tutor_sessao__tutorId=tutor
+            ).select_related(
+                'usuarioId',
+                'tutorId__usuarioId',
+                'areaId',
+                'especialidadeId'
+            )
 		except TutorModel.DoesNotExist:
 			sessoes_como_tutor = SessaoModel.objects.none()
 
@@ -184,13 +194,13 @@ class PendenteAvaliacaoView(APIView):
 
 		for s in sessoes_como_aprendiz:
 			if s.dataSessao < hoje or (s.dataSessao == hoje and s.horarioFim <= agora):
-				s.tipoPendente = 'APRENDIZ'
+				s.tipoPendente = 'APRENDIZ' 
 				pendentes.append(s)
 
 		for s in sessoes_como_tutor:
 			if s.dataSessao < hoje or (s.dataSessao == hoje and s.horarioFim <= agora):
-				s.tipoPendente = 'TUTOR'
+				s.tipoPendente = 'TUTOR' 
 				pendentes.append(s)
 
-		serializer = SessaoPendenteAvaliacaoSerializer(pendentes, many=True)
+		serializer = SessaoPendenteAvaliacaoSerializer(pendentes, many=True, context={'request': request})
 		return Response(serializer.data, status=status.HTTP_200_OK)
