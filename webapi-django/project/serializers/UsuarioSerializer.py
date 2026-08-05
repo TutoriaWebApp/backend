@@ -6,6 +6,10 @@ from project.models import *
 from project.serializers.TutorSerializer import TutorSerializer
 from project.utils import UsuarioUtils, GeoLocalizacaoUtil
 
+import datetime
+from django.utils import timezone
+from django.db.models import Q, Exists, OuterRef
+from project.models.AvaliacaoModel import AvaliacaoAprendizModel, AvaliacaoTutorModel
 
 class UsuarioSerializer(serializers.ModelSerializer):
     fotoURL = serializers.SerializerMethodField()
@@ -53,9 +57,18 @@ class UsuarioSerializer(serializers.ModelSerializer):
         return serializer.data if t_tutor else None
 
     def get_totalAvaliacoes(self, obj):
-        if hasattr(obj, 'qtd_avaliacoes_aprendiz'):
-            return obj.qtd_avaliacoes_aprendiz
-        return obj.avaliacoes_aprendiz.count()
+        agora = timezone.now()
+        limite_48h = agora - datetime.timedelta(hours=48)
+
+        tutor_avaliou_de_volta = AvaliacaoTutorModel.objects.filter(
+            sessaoId=OuterRef('sessaoId')
+        )
+
+        return AvaliacaoAprendizModel.objects.filter(
+            usuarioId=obj
+        ).filter(
+            Q(dataCriacao__lte=limite_48h) | Exists(tutor_avaliou_de_volta)
+        ).count()
 
     def get_tutorId(self, obj):
         t_tutor = TutorModel.objects.filter(usuarioId=obj.id).first()
@@ -111,9 +124,18 @@ class UsuarioPublicoSerializer(serializers.ModelSerializer):
         return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
     
     def get_totalAvaliacoes(self, obj):
-        if hasattr(obj, 'qtd_avaliacoes_aprendiz'):
-            return obj.qtd_avaliacoes_aprendiz
-        return obj.avaliacoes_aprendiz.count()
+        agora = timezone.now()
+        limite_48h = agora - datetime.timedelta(hours=48)
+
+        tutor_avaliou_de_volta = AvaliacaoTutorModel.objects.filter(
+            sessaoId=OuterRef('sessaoId')
+        )
+
+        return AvaliacaoAprendizModel.objects.filter(
+            usuarioId=obj
+        ).filter(
+            Q(dataCriacao__lte=limite_48h) | Exists(tutor_avaliou_de_volta)
+        ).count()
 
     def get_tutorId(self, obj):
         t_tutor = TutorModel.objects.filter(usuarioId=obj.id).first()

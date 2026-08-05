@@ -1,3 +1,7 @@
+import datetime
+from django.utils import timezone
+from django.db.models import Q, Exists, OuterRef
+from project.models.AvaliacaoModel import AvaliacaoAprendizModel, AvaliacaoTutorModel
 from rest_framework import serializers
 from project.models import *
 from project.utils import UsuarioUtils, GeoLocalizacaoUtil
@@ -74,10 +78,19 @@ class TutorSerializer(serializers.ModelSerializer):
                     return round(dist, 2)
         return None
 
-    def get_totalAvaliacoes(self, obj):
-        if hasattr(obj, 'qtd_avaliacoes_tutor'):
-            return obj.qtd_avaliacoes_tutor
-        return obj.avaliacoes_tutor.count()
+    def get_totalAvaliacoes(self, obj) -> int:
+        agora = timezone.now()
+        limite_48h = agora - datetime.timedelta(hours=48)
+
+        aprendiz_avaliou_de_volta = AvaliacaoAprendizModel.objects.filter(
+            sessaoId=OuterRef('sessaoId')
+        )
+
+        return AvaliacaoTutorModel.objects.filter(
+            tutorId=obj
+        ).filter(
+            Q(dataCriacao__lte=limite_48h) | Exists(aprendiz_avaliou_de_volta)
+        ).count()
 
 class AreaSerializer(serializers.ModelSerializer):
     class Meta:

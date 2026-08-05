@@ -1,3 +1,6 @@
+import datetime
+from django.utils import timezone
+from django.db.models import Q, Exists, OuterRef
 from rest_framework.filters import OrderingFilter
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
@@ -5,7 +8,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
-from django.utils import timezone
 
 from project.models import *
 from project.serializers import *
@@ -32,18 +34,6 @@ class AvaliacaoPagination(PageNumberPagination):
             type=int
         ),
 		OpenApiParameter(
-            name='area', 
-            description='ID da Área de Conhecimento vinculada à sessão para filtrar', 
-            required=False, 
-            type=int
-        ),
-        OpenApiParameter(
-            name='especialidade', 
-            description='ID da Especialidade vinculada à sessão para filtrar', 
-            required=False, 
-            type=int
-        ),
-		OpenApiParameter(
             name='ordering', 
             description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
             required=False, 
@@ -62,26 +52,25 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 	http_method_names = ['get', 'post']
 
 	def get_queryset(self):
-		queryset = AvaliacaoAprendizModel.objects.all().select_related(
+		agora = timezone.now()
+		limite_48h = agora - datetime.timedelta(hours=48)
+		tutor_avaliou_de_volta = AvaliacaoTutorModel.objects.filter(
+            sessaoId=OuterRef('sessaoId')
+        )
+		queryset = AvaliacaoAprendizModel.objects.filter(
+            Q(dataCriacao__lte=limite_48h) | Exists(tutor_avaliou_de_volta)
+        ).select_related(
             'usuarioId',
             'sessaoId',
             'sessaoId__tutorId__usuarioId',
             'sessaoId__areaId',
             'sessaoId__especialidadeId'
-        )        
+        )    
 
 		usuario_id = self.request.query_params.get('usuario')
-		area_id = self.request.query_params.get('area')
-		especialidade_id = self.request.query_params.get('especialidade')        
 	
 		if usuario_id is not None:
 			queryset = queryset.filter(usuarioId=usuario_id)
-		
-		if area_id is not None:
-			queryset = queryset.filter(sessaoId__areaId=area_id)
-
-		if especialidade_id is not None:
-			queryset = queryset.filter(sessaoId__especialidadeId=especialidade_id)	
 		
 		return queryset
 	
@@ -129,11 +118,18 @@ class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 	http_method_names = ['get', 'post']
 
 	def get_queryset(self):
-		queryset = AvaliacaoTutorModel.objects.all().select_related(
+		agora = timezone.now()
+		limite_48h = agora - datetime.timedelta(hours=48)
+		aprendiz_avaliou_de_volta = AvaliacaoAprendizModel.objects.filter(
+            sessaoId=OuterRef('sessaoId')
+        )
+		queryset = AvaliacaoTutorModel.objects.filter(
+            Q(dataCriacao__lte=limite_48h) | Exists(aprendiz_avaliou_de_volta)
+        ).select_related(
             'sessaoId__usuarioId',
             'sessaoId__areaId',
             'sessaoId__especialidadeId'
-        )        
+        )      
 
 		tutor_id = self.request.query_params.get('tutor')
 		area_id = self.request.query_params.get('area')
@@ -164,10 +160,11 @@ class PendenteAvaliacaoView(APIView):
 		hoje = timezone.now().date()
 		agora = timezone.now().time()
 
+		# O Aprendiz avalia o Tutor -> gera registro em avaliacoes_tutor_sessao
 		sessoes_como_aprendiz = SessaoModel.objects.filter(
 			usuarioId=usuario,
 		).exclude(
-			avaliacoes_aprendiz_sessao__usuarioId=usuario
+			avaliacoes_tutor_sessao__isnull=False
         ).select_related(
             'usuarioId',
             'tutorId__usuarioId',
@@ -177,10 +174,11 @@ class PendenteAvaliacaoView(APIView):
 
 		try:
 			tutor = TutorModel.objects.get(usuarioId=usuario)
+			# O Tutor avalia o Aprendiz -> gera registro em avaliacoes_aprendiz_sessao
 			sessoes_como_tutor = SessaoModel.objects.filter(
                 tutorId=tutor,
             ).exclude(
-                avaliacoes_tutor_sessao__tutorId=tutor
+                avaliacoes_aprendiz_sessao__isnull=False
             ).select_related(
                 'usuarioId',
                 'tutorId__usuarioId',
