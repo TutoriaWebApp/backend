@@ -3,10 +3,18 @@ from project.models import ChatModel, TutorModel, MensagemModel
 from project.utils import UsuarioUtils
 
 class MensagemSerializer(serializers.ModelSerializer):
+    ehMinha = serializers.SerializerMethodField()
+
     class Meta:
         model = MensagemModel
-        fields = '__all__'
-        read_only_fields = ['id', 'horario']
+        fields = ['id', 'chatId', 'usuarioId', 'conteudo', 'horario', 'ehMinha']
+        read_only_fields = ['id', 'usuarioId', 'horario', 'ehMinha']
+
+    def get_ehMinha(self, obj) -> bool:
+        request = self.context.get('request')
+        if request and hasattr(request, 'user') and request.user.is_authenticated:
+            return obj.usuarioId == request.user
+        return False
 
 class ChatSerializer(serializers.ModelSerializer):
     tutorId = serializers.PrimaryKeyRelatedField(

@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
@@ -47,7 +47,15 @@ class ChatViewSet(viewsets.ModelViewSet):
 @extend_schema(
     summary="Mensagens do Chat",
     description="Este endpoint permite o envio e visualização de mensagens em um chat.",
-    tags=['06. Chat']
+    tags=['06. Chat'],
+    parameters=[
+        OpenApiParameter(
+            name='chatId', 
+            description='ID do Chat para filtrar apenas as mensagens daquela conversa', 
+            required=False, 
+            type=int
+        ),
+    ]
 )
 class MensagemViewSet(viewsets.ModelViewSet):
     serializer_class = MensagemSerializer
@@ -56,18 +64,26 @@ class MensagemViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return MensagemModel.objects.filter(
+        
+        queryset = MensagemModel.objects.filter(
             Q(chatId__usuarioId=user) | Q(chatId__tutorId__usuarioId=user)
-        )
+        ).select_related('usuarioId')
+
+        chat_id = self.request.query_params.get('chatId') or self.request.query_params.get('chat')
+        if chat_id is not None:
+            queryset = queryset.filter(chatId=chat_id)
+
+        return queryset.order_by('horario')
 
     def perform_create(self, serializer):
         chat_id = self.request.data.get('chatId')
+        user = self.request.user
+
         try:
             chat = ChatModel.objects.get(id=chat_id)
-            user = self.request.user
             if chat.usuarioId != user and chat.tutorId.usuarioId != user:
                 raise ValidationError({"mensagem": "Você não tem permissão para enviar mensagens neste chat."})
         except ChatModel.DoesNotExist:
             raise ValidationError({"mensagem": "Chat não encontrado."})
 
-        serializer.save()
+        serializer.save(usuarioId=user)

@@ -382,18 +382,19 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 	def get_queryset(self):
 		user = self.request.user
 
-		return SessaoModel.objects.filter(
-            Q(usuarioId=user) | Q(tutorId__usuarioId=user)
+		# Ajustado para consultar SolicitacaoModel com as relações de agendaId
+		return SolicitacaoModel.objects.filter(
+            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
         ).select_related(
             'usuarioId', 
-            'tutorId',
-            'tutorId__usuarioId', 
+            'agendaId__tutorId',
+            'agendaId__tutorId__usuarioId', 
             'areaId', 
             'especialidadeId'
         ).annotate(
             qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
-            qtd_avaliacoes_tutor=Count('tutorId__avaliacoes_tutor', distinct=True)
-        ).order_by('-dataSessao', '-horarioInicio')
+            qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
+        ).order_by('-dataPretendida', '-agendaId__horarioInicio')
      
 @extend_schema(
 	summary="Listar todas as sessões do usuário autenticado (Sem Paginação)",
