@@ -1,12 +1,11 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
 from django.db.models import Q
 from rest_framework.exceptions import ValidationError
 
 from project.models import ChatModel, MensagemModel, TutorModel
-from project.serializers import ChatSerializer, MensagemSerializer
+from project.serializers.ChatSerializer import ChatSerializer, MensagemSerializer
 
 @extend_schema(
     summary="Chat entre Aluno e Tutor",
@@ -22,11 +21,14 @@ class ChatViewSet(viewsets.ModelViewSet):
         user = self.request.user
         return ChatModel.objects.filter(
             Q(usuarioId=user) | Q(tutorId__usuarioId=user)
-        )
+        ).select_related('usuarioId', 'tutorId__usuarioId')
 
     def perform_create(self, serializer):
         user = self.request.user
         tutor_id = self.request.data.get('tutorId')
+
+        if not tutor_id:
+            raise ValidationError({"mensagem": "O campo tutorId é obrigatório."})
 
         try:
             tutor = TutorModel.objects.get(id=tutor_id)
@@ -35,7 +37,12 @@ class ChatViewSet(viewsets.ModelViewSet):
         except TutorModel.DoesNotExist:
             raise ValidationError({"mensagem": "Tutor não encontrado."})
 
-        serializer.save(usuarioId=user)
+        chat_existente = ChatModel.objects.filter(usuarioId=user, tutorId=tutor).first()
+        if chat_existente:
+            serializer.instance = chat_existente
+            return
+
+        serializer.save(usuarioId=user, tutorId=tutor)
 
 @extend_schema(
     summary="Mensagens do Chat",
