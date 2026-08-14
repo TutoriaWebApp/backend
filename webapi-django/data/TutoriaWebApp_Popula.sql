@@ -349,32 +349,32 @@ INSERT INTO CHAT (tutorId, usuarioId) VALUES
 (21, 26), (22, 27), (23, 28), (24, 29), (25, 30);
 
 -- MENSAGENS (Total: 25)
-INSERT INTO MENSAGEM (chatId, conteudo) VALUES
-(1, 'Olá, gostaria de tirar dúvidas sobre Cálculo.'),
-(2, 'Poderia revisar o conteúdo de HTML?'),
-(3, 'Como ajustar camadas no Photoshop?'),
-(4, 'Pode corrigir meu texto em inglês?'),
-(5, 'Fiquei com dúvidas na aula de Física.'),
-(6, 'Pode me enviar o material de história?'),
-(7, 'Qual o tema da próxima aula de geografia?'),
-(8, 'Tenho dúvidas sobre DNA.'),
-(9, 'Pode explicar a tabela periódica de novo?'),
-(10, 'O que cai na prova de física?'),
-(11, 'Qual filósofo vamos estudar hoje?'),
-(12, 'Pode me ajudar com o ensaio de sociologia?'),
-(13, 'Quais tintas devo comprar?'),
-(14, 'Como ler partituras mais rápido?'),
-(15, 'Qual o melhor exercício para costas?'),
-(16, 'O que é oferta e demanda?'),
-(17, 'Como funciona o processo civil?'),
-(18, 'Onde fica o fêmur?'),
-(19, 'O que é memória de curto prazo?'),
-(20, 'Como planejar uma praça?'),
-(21, 'Como subir anúncios no Facebook?'),
-(22, 'Qual o ponto do risoto?'),
-(23, 'Como fazer a barra invisível?'),
-(24, 'Qual ISO usar de dia?'),
-(25, 'Como criar um plot twist?');
+INSERT INTO MENSAGEM (chatId, usuarioId, conteudo) VALUES
+(1, 26, 'Olá, gostaria de tirar dúvidas sobre Cálculo.'),
+(2, 27, 'Poderia revisar o conteúdo de HTML?'),
+(3, 28, 'Como ajustar camadas no Photoshop?'),
+(4, 29, 'Pode corrigir meu texto em inglês?'),
+(5, 30, 'Fiquei com dúvidas na aula de Física.'),
+(6, 26, 'Pode me enviar o material de história?'),
+(7, 27, 'Qual o tema da próxima aula de geografia?'),
+(8, 28, 'Tenho dúvidas sobre DNA.'),
+(9, 29, 'Pode explicar a tabela periódica de novo?'),
+(10, 30, 'O que cai na prova de física?'),
+(11, 26, 'Qual filósofo vamos estudar hoje?'),
+(12, 27, 'Pode me ajudar com o ensaio de sociologia?'),
+(13, 28, 'Quais tintas devo comprar?'),
+(14, 29, 'Como ler partituras mais rápido?'),
+(15, 30, 'Qual o melhor exercício para costas?'),
+(16, 26, 'O que é oferta e demanda?'),
+(17, 27, 'Como funciona o processo civil?'),
+(18, 28, 'Onde fica o fêmur?'),
+(19, 29, 'O que é memória de curto prazo?'),
+(20, 30, 'Como planejar uma praça?'),
+(21, 26, 'Como subir anúncios no Facebook?'),
+(22, 27, 'Qual o ponto do risoto?'),
+(23, 28, 'Como fazer a barra invisível?'),
+(24, 29, 'Qual ISO usar de dia?'),
+(25, 30, 'Como criar um plot twist?');
 
 -- CONSEGUE (Relacionamento Usuario-Conquista, Total: 25)
 INSERT INTO consegue (usuarioId, conquistaId) VALUES
