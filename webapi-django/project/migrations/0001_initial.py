@@ -135,6 +135,7 @@ class Migration(migrations.Migration):
                 ('conteudo', models.CharField(max_length=200)),
                 ('horario', models.DateTimeField(auto_now_add=True)),
                 ('chatId', models.ForeignKey(db_column='chatId', on_delete=django.db.models.deletion.CASCADE, related_name='mensagens', to='project.chatmodel')),
+                ('usuarioId', models.ForeignKey(db_column='usuarioId', on_delete=django.db.models.deletion.CASCADE, related_name='mensagens_enviadas', to=settings.AUTH_USER_MODEL)),
             ],
             options={
                 'verbose_name': 'MENSAGEM',
