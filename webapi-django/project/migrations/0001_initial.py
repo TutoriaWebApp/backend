@@ -134,6 +134,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(db_column='mensagemId', primary_key=True, serialize=False)),
                 ('conteudo', models.CharField(max_length=200)),
                 ('horario', models.DateTimeField(auto_now_add=True)),
+                ('lida', models.BooleanField(default=False)),
                 ('chatId', models.ForeignKey(db_column='chatId', on_delete=django.db.models.deletion.CASCADE, related_name='mensagens', to='project.chatmodel')),
                 ('usuarioId', models.ForeignKey(db_column='usuarioId', on_delete=django.db.models.deletion.CASCADE, related_name='mensagens_enviadas', to=settings.AUTH_USER_MODEL)),
             ],
