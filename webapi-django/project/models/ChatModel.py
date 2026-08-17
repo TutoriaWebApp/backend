@@ -46,6 +46,7 @@ class MensagemModel(models.Model):
 	)
 	conteudo = models.CharField(max_length=200)
 	horario = models.DateTimeField(auto_now_add=True)
+	lida = models.BooleanField(default=False)
 
 	def __str__(self):
 		return f"Mensagem de {self.usuarioId.nomePerfil} em {self.chatId} - {self.conteudo[:20]}..."

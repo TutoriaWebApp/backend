@@ -282,6 +282,7 @@ MENSAGEM (
     usuarioId  INT          NOT NULL,
     conteudo   VARCHAR(200) NOT NULL,
     horario    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    lida       BOOLEAN      NOT NULL DEFAULT 0,
 
     CONSTRAINT MENSAGEM_PK
         PRIMARY KEY (mensagemId),

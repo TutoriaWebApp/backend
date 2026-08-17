@@ -72,6 +72,7 @@ class MensagemViewSet(viewsets.ModelViewSet):
         chat_id = self.request.query_params.get('chatId') or self.request.query_params.get('chat')
         if chat_id is not None:
             queryset = queryset.filter(chatId=chat_id)
+            queryset.filter(lida=False).exclude(usuarioId=user).update(lida=True)
 
         return queryset.order_by('horario')
 
