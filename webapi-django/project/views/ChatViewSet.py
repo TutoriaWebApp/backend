@@ -3,6 +3,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from rest_framework.exceptions import ValidationError
+from rest_framework.pagination import PageNumberPagination
 
 from project.models import ChatModel, MensagemModel, TutorModel
 from project.serializers.ChatSerializer import ChatSerializer, MensagemSerializer
@@ -44,6 +45,11 @@ class ChatViewSet(viewsets.ModelViewSet):
 
         serializer.save(usuarioId=user, tutorId=tutor)
 
+class MensagemPagination(PageNumberPagination):
+    page_size = 20
+    page_size_query_param = 'page_size'
+    max_page_size = 100
+
 @extend_schema(
     summary="Mensagens do Chat",
     description="Este endpoint permite o envio e visualização de mensagens em um chat.",
@@ -60,11 +66,11 @@ class ChatViewSet(viewsets.ModelViewSet):
 class MensagemViewSet(viewsets.ModelViewSet):
     serializer_class = MensagemSerializer
     permission_classes = [IsAuthenticated]
+    pagination_class = MensagemPagination
     http_method_names = ['get', 'post']
 
     def get_queryset(self):
         user = self.request.user
-        
         queryset = MensagemModel.objects.filter(
             Q(chatId__usuarioId=user) | Q(chatId__tutorId__usuarioId=user)
         ).select_related('usuarioId')
@@ -74,7 +80,13 @@ class MensagemViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(chatId=chat_id)
             queryset.filter(lida=False).exclude(usuarioId=user).update(lida=True)
 
-        return queryset.order_by('horario')
+        return queryset.order_by('-horario', '-id')
+
+    def list(self, request, *args, **kwargs):
+        response = super().list(request, *args, **kwargs)
+        if isinstance(response.data, dict) and 'results' in response.data:
+            response.data['results'] = list(reversed(response.data['results']))
+        return response
 
     def perform_create(self, serializer):
         chat_id = self.request.data.get('chatId')
