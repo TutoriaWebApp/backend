@@ -55,6 +55,7 @@ urlpatterns = [
 	path('reset-password/request', PasswordResetView.as_view(), name='resetar_senha'),
 	path('reset-password/confirm', PasswordResetConfirmView.as_view(), name='confirmar_alteracao_de_senha'),
 	path('perfil', UsuarioPerfilLogadoView.as_view(), name='perfil_do_usuario'),
+	path('estatistica', ProgressoUsuarioView.as_view(), name='estatistica'),
 
 	path('conquistas/usuario/<int:usuarioId>', Usuario_conseguiu_ConquistaView.as_view(), name='conquistas_do_usuario'),
 ]

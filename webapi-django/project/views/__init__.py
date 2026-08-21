@@ -6,6 +6,7 @@ from .TutorViewSet import *
 from .AvaliacaoViewSet import *
 from .ChatViewSet import *
 from .SistemaRecomendacaoViewSet import *
+from .DashboardViewSet import *
 
 __all__ = [
 	'LogInView',
@@ -42,4 +43,5 @@ __all__ = [
 	'ChatViewSet',
 	'MensagemViewSet',
 	'SistemaRecomendacaoViewSet',
+    'ProgressoUsuarioView'
 ]
