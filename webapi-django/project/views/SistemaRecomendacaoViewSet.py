@@ -36,8 +36,26 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
     def list(self, request):
         user = request.user
 
+        # Identificando tutores que devem ser bloqueados da recomendação:
+
+        # A. Tutores com quem o usuário já tem/teve tutoria agendada
+        tutores_com_sessao = SessaoModel.objects.filter(
+            usuarioId=user
+        ).values_list('tutorId', flat=True)
+
+        # B. Tutores que o usuário avaliou negativamente (nota 1 ou 2)
+        tutores_avaliados_negativamente = AvaliacaoTutorModel.objects.filter(
+            sessaoId__usuarioId=user,
+            nota__lte=2
+        ).values_list('tutorId', flat=True)
+
+        # IDs combinados para exclusão
+        tutores_bloqueados = set(tutores_com_sessao).union(set(tutores_avaliados_negativamente))
+
         # 1. Coleta de Dados e Filtragem (ORM)
-        tutors_qs = TutorModel.objects.exclude(usuarioId=user).select_related('usuarioId')
+        tutors_qs = TutorModel.objects.exclude(
+            Q(usuarioId=user) | Q(id__in=tutores_bloqueados)
+        ).select_related('usuarioId')
 
         # Parâmetros de Filtro (Suporte a Vetores)
         dias = request.query_params.getlist('dia[]') or request.query_params.getlist('dia')
