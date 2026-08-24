@@ -84,13 +84,13 @@ class SessaoViewSetTest(APITestCase):
 		self.client.force_authenticate(user=self.usuario_aluno)
 		response = self.client.get(self.solicitacoes_url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertEqual(len(response.data), 1)
+		self.assertEqual(len(response.data['results']), 1)
 
 	def test_lista_sessoes_aluno(self):
 		self.client.force_authenticate(user=self.usuario_aluno)
 		response = self.client.get(self.sessoes_url)
 		self.assertEqual(response.status_code, status.HTTP_200_OK)
-		self.assertEqual(len(response.data), 1)
+		self.assertEqual(len(response.data['results']), 1)
 
 	def test_aceitar_solicitacao_como_tutor(self):
 		self.client.force_authenticate(user=self.usuario_tutor)

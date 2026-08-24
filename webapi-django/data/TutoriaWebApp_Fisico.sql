@@ -27,7 +27,10 @@ USUARIO (
     nomePerfil  VARCHAR(100) NOT NULL,
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
-    nascimento  DATE         NOT NULL,
+    localizacao POINT        NOT NULL SRID 4326,
+    nascimento  DATE,
+    sobremim    VARCHAR(500),
+    notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
 
     -- Campos obrigatórios para o Django
     is_active       TINYINT(1)  DEFAULT 1,
@@ -35,6 +38,8 @@ USUARIO (
     is_superuser    TINYINT(1)  DEFAULT 0,
     date_joined     DATETIME    DEFAULT CURRENT_TIMESTAMP,
     last_login      DATETIME,
+
+    SPATIAL INDEX `IDX_USUARIO_LOCALIZACAO` (`localizacao`),
 
     CONSTRAINT USUARIO_PK
         PRIMARY KEY (usuarioId),
@@ -62,6 +67,7 @@ CREATE TABLE IF NOT EXISTS
 TUTOR (
     tutorId     INT          NOT NULL AUTO_INCREMENT,
     usuarioId   INT          NOT NULL,
+    notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
 
     CONSTRAINT TUTOR_PK
         PRIMARY KEY (tutorId),
@@ -134,7 +140,7 @@ SOLICITACAO (
     especialidadeId INT,
     dataCriacao     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dataPretendida  DATE NOT NULL,
-    validade        TIME NOT NULL,
+    validade        DATETIME NOT NULL,
     recorrente      BOOLEAN NOT NULL,
     estado          ENUM('ACEITO', 'PENDENTE', 'RECUSADO', 'RECORRENTE') NOT NULL DEFAULT 'PENDENTE',
 
@@ -207,6 +213,7 @@ AVALIACAO_APRENDIZ (
     sessaoId   INT    NOT NULL,
     nota       INT(1) NOT NULL,
     comentario VARCHAR(200),
+    dataCriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT AVALIACAO_APRENDIZ_USUARIO_FK
         FOREIGN KEY (usuarioId)
@@ -228,6 +235,7 @@ AVALIACAO_TUTOR (
     sessaoId   INT    NOT NULL,
     nota       INT(1) NOT NULL,
     comentario VARCHAR(200),
+    dataCriacao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT AVALIACAO_TUTOR_USUARIO_FK
         FOREIGN KEY (tutorId)
@@ -271,15 +279,23 @@ CREATE TABLE IF NOT EXISTS
 MENSAGEM (
     mensagemId INT          NOT NULL AUTO_INCREMENT,
     chatId     INT          NOT NULL,
+    usuarioId  INT          NOT NULL,
     conteudo   VARCHAR(200) NOT NULL,
     horario    DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    lida       BOOLEAN      NOT NULL DEFAULT 0,
 
     CONSTRAINT MENSAGEM_PK
         PRIMARY KEY (mensagemId),
 
-    CONSTRAINT MENSAGEM
+    CONSTRAINT MENSAGEM_CHAT_FK
         FOREIGN KEY (chatId)
         REFERENCES CHAT (chatId)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+    CONSTRAINT MENSAGEM_USUARIO_FK
+        FOREIGN KEY (usuarioId)
+        REFERENCES USUARIO (usuarioId)
         ON DELETE CASCADE
         ON UPDATE CASCADE
 ) ENGINE=InnoDB, AUTO_INCREMENT=1;

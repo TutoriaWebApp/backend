@@ -27,7 +27,7 @@ mysql --skip-ssl-verify-server-cert --force --host=$host --port=$port --user=roo
 
 mysql --skip-ssl-verify-server-cert --force --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < data/TutoriaWebApp_Atualiza.sql
 
-echo "🍆💦 Populando"
+echo "Populando..."
 
 mysql --skip-ssl-verify-server-cert --host=$host --port=$port --user=root --password=$MYSQL_PASSWORD --database=tutoriadb < data/TutoriaWebApp_Popula.sql
 

@@ -9,6 +9,7 @@ class TutorModel(models.Model):
 		on_delete=models.CASCADE,
 		db_column='usuarioId'
 	)
+	notaAvaliacao = models.FloatField(default=5.0, db_default=5.0)
 
 	def __str__(self):
 		return f"{self.usuarioId}"

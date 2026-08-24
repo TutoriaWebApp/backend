@@ -29,3 +29,20 @@ class UsuarioModelTest(TestCase):
         self.assertTrue(user.is_active)
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
+
+    def test_user_location(self):
+        from project.utils.GeoLocalizacaoUtil import Point
+        location_point = Point(-47.882778, -15.793889, srid=4326)
+        user_data = self.user_data.copy()
+        user_data['email'] = 'test_loc@tutoria.com'
+        user_data['localizacao'] = location_point
+        user = UsuarioModel.objects.create_user(**user_data)
+        
+        self.assertIsNotNone(user.localizacao)
+        self.assertIn("POINT", str(user.localizacao))
+        
+        if hasattr(user.localizacao, 'coords'):
+            self.assertEqual(user.localizacao.coords, (-47.882778, -15.793889))
+        else:
+            self.assertEqual(user.localizacao.x, -47.882778)
+            self.assertEqual(user.localizacao.y, -15.793889)

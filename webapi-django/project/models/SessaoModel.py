@@ -80,14 +80,14 @@ class SolicitacaoModel(models.Model):
 
 	dataCriacao = models.DateTimeField(auto_now_add=True)
 	dataPretendida = models.DateField(null=False)
-	validade    = models.TimeField(null=True)
+	validade    = models.DateTimeField(null=True)
 	recorrente  = models.BooleanField(default=False)
 	estado      = models.CharField(max_length=10, choices=EstadoSolicitacao, default=EstadoSolicitacao.PENDENTE)
 
 	def __str__(self):
 		return f"Aluno {self.usuarioId} SOLICITA AGENDA: {self.agendaId}"
 	class Meta:
-		unique_together = ('usuarioId', 'agendaId')
+		unique_together = ('usuarioId', 'agendaId', 'dataPretendida')
 		db_table = 'SOLICITACAO'
 		verbose_name = 'SOLICITACAO'
 		verbose_name_plural = 'SOLICITACOES'

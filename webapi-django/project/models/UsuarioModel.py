@@ -1,4 +1,13 @@
 from django.db import models
+from django.core.exceptions import ImproperlyConfigured
+
+try:
+    from django.contrib.gis.db import models as gis_models
+    models.PointField = gis_models.PointField
+except (ImportError, ImproperlyConfigured):
+    from project.utils.GeoLocalizacaoUtil import PointField
+    models.PointField = PointField
+
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from config.manager import UsuarioManager
 
@@ -11,6 +20,9 @@ class UsuarioModel(AbstractBaseUser, PermissionsMixin):
 	cidade = models.CharField(max_length=80)
 	estado = models.CharField(max_length=2)
 	aniversario = models.DateField(blank=True, null=True, db_default=None, default=None)
+	sobremim = models.CharField(max_length=500, blank=True, db_default=None, default=None, null=True)
+	notaAvaliacao = models.FloatField(default=5.0, db_default=5.0)
+	localizacao = models.PointField(srid=4326)
 
 	# Campos necessários para o funcionamento do Django Admin e Auth
 	is_staff = models.BooleanField(default=False, db_default=False)

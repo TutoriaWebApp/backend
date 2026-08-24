@@ -30,20 +30,26 @@ class ChatModel(models.Model):
 		verbose_name = 'CHAT'
 		verbose_name_plural = 'CHATS'
 
-
 class MensagemModel(models.Model):
-	id     = models.AutoField(primary_key=True, db_column='mensagemId')
+	id = models.AutoField(primary_key=True, db_column='mensagemId')
 	chatId = models.ForeignKey(
 		ChatModel,
 		on_delete=models.CASCADE,
 		db_column='chatId',
 		related_name='mensagens'
 	)
+	usuarioId = models.ForeignKey(
+		UsuarioModel,
+		on_delete=models.CASCADE,
+		db_column='usuarioId',
+		related_name='mensagens_enviadas'
+	)
 	conteudo = models.CharField(max_length=200)
 	horario = models.DateTimeField(auto_now_add=True)
+	lida = models.BooleanField(default=False)
 
 	def __str__(self):
-		return f"Mensagem em {self.chatId} - {self.conteudo[:20]}..."
+		return f"Mensagem de {self.usuarioId.nomePerfil} em {self.chatId} - {self.conteudo[:20]}..."
 
 	class Meta:
 		db_table = 'MENSAGEM'

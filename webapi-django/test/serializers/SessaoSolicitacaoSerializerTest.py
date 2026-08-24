@@ -49,7 +49,7 @@ class SessaoSolicitacaoSerializerTest(TestCase):
             dataPretendida=date(2025, 10, 20)
         )
         serializer = SolicitacaoSerializer(solicitacao)
-        self.assertEqual(serializer.data['usuarioId'], self.aluno.id)
+        self.assertNotIn('usuarioId', serializer.data)
         self.assertEqual(serializer.data['agendaId'], self.agenda.id)
 
     def test_sessao_serializer(self):
