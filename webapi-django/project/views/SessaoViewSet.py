@@ -1,4 +1,5 @@
 import datetime
+from zoneinfo import ZoneInfo
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
@@ -16,6 +17,58 @@ class SessaoPagination(PageNumberPagination):
 	page_size = 6
 	page_size_query_param = 'page_size'
 	max_page_size = 100
+
+import datetime
+from zoneinfo import ZoneInfo
+from django.utils import timezone
+from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
+from django.db.models import Q, Count
+
+# ... demais imports ...
+
+def calcular_validade_solicitacao(data_pretendida, horario_inicio_agenda):
+    """
+    Calcula o prazo de validade no fuso horário do Brasil:
+    - Fim do próximo dia útil (23:59:59)
+    - Ou o próprio horário de início da sessão, caso ocorra antes desse limite.
+    """
+    fuso_brasil = ZoneInfo("America/Sao_Paulo")
+    agora_brasil = datetime.datetime.now(fuso_brasil)
+    hoje_brasil = agora_brasil.date()
+
+    def obter_proximo_dia_util(data_base):
+        # 0=Seg, 1=Ter, 2=Qua, 3=Qui, 4=Sex, 5=Sab, 6=Dom
+        dia_semana = data_base.weekday()
+        if dia_semana == 4:     # Sexta -> Próxima segunda (+3 dias)
+            return data_base + datetime.timedelta(days=3)
+        elif dia_semana == 5:   # Sábado -> Próxima segunda (+2 dias)
+            return data_base + datetime.timedelta(days=2)
+        elif dia_semana == 6:   # Domingo -> Próxima segunda (+1 dia)
+            return data_base + datetime.timedelta(days=1)
+        else:                   # Seg a Qui -> Dia seguinte (+1 dia)
+            return data_base + datetime.timedelta(days=1)
+
+    dia_util_seguinte = obter_proximo_dia_util(hoje_brasil)
+    
+    # Limite padrão: Fim do próximo dia útil às 23:59:59 no horário de Brasília
+    limite_fim_do_dia = datetime.datetime.combine(
+        dia_util_seguinte,
+        datetime.time(23, 59, 59)
+    ).replace(tzinfo=fuso_brasil)
+
+    # Horário exato em que a sessão acontecerá
+    momento_tutoria = datetime.datetime.combine(
+        data_pretendida,
+        horario_inicio_agenda
+    ).replace(tzinfo=fuso_brasil)
+
+    # Se a sessão for antes do limite do fim do dia útil, o prazo é a própria sessão
+    if momento_tutoria < limite_fim_do_dia:
+        return momento_tutoria
+    return limite_fim_do_dia
 
 
 @extend_schema(
@@ -138,84 +191,71 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 
 	def perform_create(self, serializer):
 		logged_user = self.request.user
-
 		agenda = serializer.validated_data.get('agendaId')
 		data_pretendida = serializer.validated_data.get('dataPretendida')
 
-		fuso_local = timezone.get_current_timezone()
-		hoje = timezone.localtime(timezone.now())
-
-		def obter_proximo_dia_util(data_base):
-			proximo_dia = data_base + datetime.timedelta(days=1)
-			if proximo_dia.weekday() == 5:
-				return proximo_dia + datetime.timedelta(days=2)
-			elif proximo_dia.weekday() == 6:
-				return proximo_dia + datetime.timedelta(days=1)
-			return proximo_dia
-
-		dia_util_seguinte = obter_proximo_dia_util(hoje)
-		limite_fim_do_dia = dia_util_seguinte.replace(hour=23, minute=59, second=59, microsecond=0)
-
-		momento_da_tutoria_naive = datetime.datetime.combine(data_pretendida, agenda.horarioInicio)
-		momento_da_tutoria = timezone.make_aware(momento_da_tutoria_naive, fuso_local)
-
-		if momento_da_tutoria < limite_fim_do_dia:
-			data_validade = momento_da_tutoria
-		else:
-			data_validade = limite_fim_do_dia
+		data_validade = calcular_validade_solicitacao(data_pretendida, agenda.horarioInicio)
 
 		serializer.save(
-			usuarioId=logged_user,
-			validade=data_validade
-		)
+            usuarioId=logged_user,
+            validade=data_validade
+        )
 
 
 class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
-	queryset = SolicitacaoModel.objects.all()
-	serializer_class = SolicitacaoSerializer
-	permission_classes = [IsAuthenticated]
-	http_method_names = ['patch']
+    queryset = SolicitacaoModel.objects.all()
+    serializer_class = SolicitacaoSerializer
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['patch']
 
-	def perform_update(self, serializer):
-		solicitacao = self.get_object()
-		user = self.request.user
+    def perform_update(self, serializer):
+        solicitacao = self.get_object()
+        user = self.request.user
 
-		if solicitacao.agendaId.tutorId.usuarioId != user:
-			raise ValidationError(
-				{"mensagem": "Apenas o tutor responsável pode aceitar esta solicitação."})
+        if solicitacao.agendaId.tutorId.usuarioId != user:
+            raise ValidationError(
+                {"mensagem": "Apenas o tutor responsável pode aceitar esta solicitação."})
 
-		if solicitacao.estado == SolicitacaoModel.EstadoSolicitacao.RECORRENTE:
-			solicitacao.recorrente = True
-			solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
-			solicitacao.save()
+        if solicitacao.estado not in [
+            SolicitacaoModel.EstadoSolicitacao.PENDENTE, 
+            SolicitacaoModel.EstadoSolicitacao.RECORRENTE
+        ]:
+            raise ValidationError(
+                {"mensagem": "Apenas solicitações pendentes podem ser aceitas."})
 
-			SessaoModel.objects.create(
-				usuarioId=solicitacao.usuarioId,
-				tutorId=solicitacao.agendaId.tutorId,
-				areaId=solicitacao.areaId,
-				especialidadeId=solicitacao.especialidadeId,
-				dataSessao=solicitacao.dataPretendida,
-				horarioInicio=solicitacao.agendaId.horarioInicio,
-				horarioFim=solicitacao.agendaId.horarioFim
-			)
-			return
+        eh_recorrente = solicitacao.recorrente or (
+            solicitacao.estado == SolicitacaoModel.EstadoSolicitacao.RECORRENTE
+        )
 
-		if solicitacao.estado != SolicitacaoModel.EstadoSolicitacao.PENDENTE:
+        solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
+        solicitacao.save()
 
-			raise ValidationError(
-				{"mensagem": "Apenas solicitações pendentes podem ser aceitas."})
-		solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
-		solicitacao.save()
+        # Cria a sessão atual confirmada
+        SessaoModel.objects.create(
+            usuarioId=solicitacao.usuarioId,
+            tutorId=solicitacao.agendaId.tutorId,
+            areaId=solicitacao.areaId,
+            especialidadeId=solicitacao.especialidadeId,
+            dataSessao=solicitacao.dataPretendida,
+            horarioInicio=solicitacao.agendaId.horarioInicio,
+            horarioFim=solicitacao.agendaId.horarioFim
+        )
 
-		SessaoModel.objects.create(
-			usuarioId=solicitacao.usuarioId,
-			tutorId=solicitacao.agendaId.tutorId,
-			areaId=solicitacao.areaId,
-			especialidadeId=solicitacao.especialidadeId,
-			dataSessao=solicitacao.dataPretendida,
-			horarioInicio=solicitacao.agendaId.horarioInicio,
-			horarioFim=solicitacao.agendaId.horarioFim
-		)
+        # Cascata semanal se for recorrente
+        if eh_recorrente:
+            proxima_data = solicitacao.dataPretendida + datetime.timedelta(days=7)
+            nova_validade = calcular_validade_solicitacao(proxima_data, solicitacao.agendaId.horarioInicio)
+
+            SolicitacaoModel.objects.create(
+                usuarioId=solicitacao.usuarioId,
+                agendaId=solicitacao.agendaId,
+                areaId=solicitacao.areaId,
+                especialidadeId=solicitacao.especialidadeId,
+                dataPretendida=proxima_data,
+                validade=nova_validade,
+                recorrente=True,
+                estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
+            )
 
 
 class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):
@@ -369,9 +409,27 @@ class SessoesTutorVerificacaoViewSet(viewsets.ReadOnlyModelViewSet):
     
 @extend_schema(
 	summary="Listar todas as solicitações do usuário autenticado (Sem Paginação)",
-	description="Retorna a lista completa de todas as solicitações associadas ao usuário logado, englobando tanto as enviadas por ele como Aprendiz quanto as recebidas como Tutor, sem paginação ou filtros obrigatórios.",
+	description=(
+		"Retorna a lista de solicitações associadas ao usuário logado sem paginação. "
+		"Suporta parâmetros opcionais para filtrar pelo papel do usuário ('tutor' ou 'aprendiz') "
+		"e para trazer apenas solicitações pendentes futuras."
+	),
 	responses=SolicitacaoSerializer(many=True),
-	tags=['05. Solicitar Sessão']
+	tags=['05. Solicitar Sessão'],
+	parameters=[
+		OpenApiParameter(
+			name='tipo',
+			description="Filtra pelo papel do usuário logado: 'tutor' (recebidas) ou 'aprendiz' (enviadas)",
+			required=False,
+			type=str
+		),
+		OpenApiParameter(
+			name='apenas_futuras',
+			description="Se 'true', retorna apenas solicitações PENDENTES cujo dia e horário ainda não passaram",
+			required=False,
+			type=bool
+		),
+	]
 )
 class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 	serializer_class = SolicitacaoSerializer
@@ -382,19 +440,43 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 	def get_queryset(self):
 		user = self.request.user
 
-		# Ajustado para consultar SolicitacaoModel com as relações de agendaId
-		return SolicitacaoModel.objects.filter(
-            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-        ).select_related(
-            'usuarioId', 
-            'agendaId__tutorId',
-            'agendaId__tutorId__usuarioId', 
-            'areaId', 
-            'especialidadeId'
-        ).annotate(
-            qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
-            qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
-        ).order_by('-dataPretendida', '-agendaId__horarioInicio')
+		tipo_filtro = self.request.query_params.get('tipo', '').lower()
+		apenas_futuras = self.request.query_params.get('apenas_futuras', '').lower() in ['true', '1']
+
+		# Base QuerySet
+		queryset = SolicitacaoModel.objects.filter(
+			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
+		).select_related(
+			'usuarioId', 
+			'agendaId__tutorId',
+			'agendaId__tutorId__usuarioId', 
+			'areaId', 
+			'especialidadeId'
+		).annotate(
+			qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
+			qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
+		)
+
+		# Filtro opcional de papel (Tutor ou Aprendiz)
+		if tipo_filtro == 'tutor':
+			queryset = queryset.filter(agendaId__tutorId__usuarioId=user)
+		elif tipo_filtro == 'aprendiz':
+			queryset = queryset.filter(usuarioId=user)
+
+		# Filtro opcional: apenas PENDENTES que ainda não venceram o horário
+		if apenas_futuras:
+			agora = timezone.localtime(timezone.now())
+			hoje = agora.date()
+			hora_atual = agora.time()
+
+			queryset = queryset.filter(
+				estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
+			).filter(
+				Q(dataPretendida__gt=hoje) |
+				Q(dataPretendida=hoje, agendaId__horarioInicio__gt=hora_atual)
+			)
+
+		return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
      
 @extend_schema(
 	summary="Listar todas as sessões do usuário autenticado (Sem Paginação)",
