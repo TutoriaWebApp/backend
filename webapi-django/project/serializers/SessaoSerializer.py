@@ -36,14 +36,32 @@ class SolicitacaoSerializer(serializers.ModelSerializer):
 		model  = SolicitacaoModel
 		fields = '__all__'
 		read_only_fields = ['id', 'usuarioId', 'dataCriacao', 'validade']
+		# Removemos o UniqueTogetherValidator daqui para não bloquear RECUSADO
 
-		validators = [
-				UniqueTogetherValidator(
-					queryset=SolicitacaoModel.objects.all(),
-					fields=['usuarioId', 'agendaId', 'dataPretendida'],
-					message="Você já enviou uma solicitação para este horário nesta data específica."
+	def validate(self, attrs):
+		# Em caso de criação (POST), valida se já existe solicitação ATIVA
+		if self.instance is None:
+			usuario = self.context['request'].user
+			agenda = attrs.get('agendaId')
+			data_pretendida = attrs.get('dataPretendida')
+
+			solicitacao_ativa = SolicitacaoModel.objects.filter(
+				usuarioId=usuario,
+				agendaId=agenda,
+				dataPretendida=data_pretendida,
+				estado__in=[
+					SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+					SolicitacaoModel.EstadoSolicitacao.ACEITO,
+					SolicitacaoModel.EstadoSolicitacao.RECORRENTE,
+				]
+			).exists()
+
+			if solicitacao_ativa:
+				raise serializers.ValidationError(
+					"Você já possui uma solicitação pendente ou confirmada para este horário nesta data."
 				)
-		]
+
+		return attrs
 
 	def _e_papel_tutor(self, obj):
 		request = self.context.get('request')

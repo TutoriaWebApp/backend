@@ -86,11 +86,18 @@ class SolicitacaoModel(models.Model):
 
 	def __str__(self):
 		return f"Aluno {self.usuarioId} SOLICITA AGENDA: {self.agendaId}"
+
 	class Meta:
-		unique_together = ('usuarioId', 'agendaId', 'dataPretendida')
 		db_table = 'SOLICITACAO'
 		verbose_name = 'SOLICITACAO'
 		verbose_name_plural = 'SOLICITACOES'
+		constraints = [
+			models.UniqueConstraint(
+				fields=['usuarioId', 'agendaId', 'dataPretendida'],
+				condition=models.Q(estado__in=['PENDENTE', 'ACEITO', 'RECORRENTE']),
+				name='unique_solicitacao_ativa'
+			)
+		]
 
 
 
