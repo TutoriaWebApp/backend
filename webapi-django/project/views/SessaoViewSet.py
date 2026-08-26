@@ -208,20 +208,22 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch']
 
-    def perform_update(self, serializer):
+    def partial_update(self, request, *args, **kwargs):
         solicitacao = self.get_object()
-        user = self.request.user
+        user = request.user
 
         if solicitacao.agendaId.tutorId.usuarioId != user:
             raise ValidationError(
-                {"mensagem": "Apenas o tutor responsável pode aceitar esta solicitação."})
+                {"mensagem": "Apenas o tutor responsável pode aceitar esta solicitação."}
+            )
 
         if solicitacao.estado not in [
-            SolicitacaoModel.EstadoSolicitacao.PENDENTE, 
+            SolicitacaoModel.EstadoSolicitacao.PENDENTE,
             SolicitacaoModel.EstadoSolicitacao.RECORRENTE
         ]:
             raise ValidationError(
-                {"mensagem": "Apenas solicitações pendentes podem ser aceitas."})
+                {"mensagem": "Apenas solicitações pendentes podem ser aceitas."}
+            )
 
         eh_recorrente = solicitacao.recorrente or (
             solicitacao.estado == SolicitacaoModel.EstadoSolicitacao.RECORRENTE
@@ -230,7 +232,6 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
         solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
         solicitacao.save()
 
-        # Cria a sessão atual confirmada
         SessaoModel.objects.create(
             usuarioId=solicitacao.usuarioId,
             tutorId=solicitacao.agendaId.tutorId,
@@ -241,7 +242,6 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
             horarioFim=solicitacao.agendaId.horarioFim
         )
 
-        # Cascata semanal se for recorrente
         if eh_recorrente:
             proxima_data = solicitacao.dataPretendida + datetime.timedelta(days=7)
             nova_validade = calcular_validade_solicitacao(proxima_data, solicitacao.agendaId.horarioInicio)
@@ -257,27 +257,38 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
                 estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
             )
 
+        serializer = self.get_serializer(solicitacao)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):
-	queryset = SolicitacaoModel.objects.all()
-	serializer_class = SolicitacaoSerializer
-	permission_classes = [IsAuthenticated]
-	http_method_names = ['patch']
+    queryset = SolicitacaoModel.objects.all()
+    serializer_class = SolicitacaoSerializer
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['patch']
 
-	def perform_update(self, serializer):
-		solicitacao = self.get_object()
-		user = self.request.user
+    def partial_update(self, request, *args, **kwargs):
+        solicitacao = self.get_object()
+        user = request.user
 
-		if solicitacao.agendaId.tutorId.usuarioId != user:
-			raise ValidationError(
-				{"mensagem": "Apenas o tutor responsável pode recusar esta solicitação."})
+        if solicitacao.agendaId.tutorId.usuarioId != user:
+            raise ValidationError(
+                {"mensagem": "Apenas o tutor responsável pode recusar esta solicitação."}
+            )
 
-		if solicitacao.estado not in [SolicitacaoModel.EstadoSolicitacao.PENDENTE, SolicitacaoModel.EstadoSolicitacao.RECORRENTE]:
-			raise ValidationError(
-				{"mensagem": "Apenas solicitações pendentes ou recorrentes podem ser recusadas."})
+        if solicitacao.estado not in [
+            SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+            SolicitacaoModel.EstadoSolicitacao.RECORRENTE
+        ]:
+            raise ValidationError(
+                {"mensagem": "Apenas solicitações pendentes ou recorrentes podem ser recusadas."}
+            )
 
-		solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.RECUSADO
-		solicitacao.save()
+        solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.RECUSADO
+        solicitacao.save()
+
+        serializer = self.get_serializer(solicitacao)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @extend_schema(

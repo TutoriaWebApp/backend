@@ -91,13 +91,6 @@ class SolicitacaoModel(models.Model):
 		db_table = 'SOLICITACAO'
 		verbose_name = 'SOLICITACAO'
 		verbose_name_plural = 'SOLICITACOES'
-		constraints = [
-			models.UniqueConstraint(
-				fields=['usuarioId', 'agendaId', 'dataPretendida'],
-				condition=models.Q(estado__in=['PENDENTE', 'ACEITO', 'RECORRENTE']),
-				name='unique_solicitacao_ativa'
-			)
-		]
 
 
 

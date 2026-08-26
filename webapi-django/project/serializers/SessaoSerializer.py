@@ -36,30 +36,31 @@ class SolicitacaoSerializer(serializers.ModelSerializer):
 		model  = SolicitacaoModel
 		fields = '__all__'
 		read_only_fields = ['id', 'usuarioId', 'dataCriacao', 'validade']
-		# Removemos o UniqueTogetherValidator daqui para não bloquear RECUSADO
 
 	def validate(self, attrs):
-		# Em caso de criação (POST), valida se já existe solicitação ATIVA
+        # Só valida duplicidade no momento da criação (POST)
 		if self.instance is None:
-			usuario = self.context['request'].user
+			request = self.context.get('request')
+			usuario = getattr(request, 'user', None)
 			agenda = attrs.get('agendaId')
 			data_pretendida = attrs.get('dataPretendida')
 
-			solicitacao_ativa = SolicitacaoModel.objects.filter(
-				usuarioId=usuario,
-				agendaId=agenda,
-				dataPretendida=data_pretendida,
-				estado__in=[
-					SolicitacaoModel.EstadoSolicitacao.PENDENTE,
-					SolicitacaoModel.EstadoSolicitacao.ACEITO,
-					SolicitacaoModel.EstadoSolicitacao.RECORRENTE,
-				]
-			).exists()
+			if usuario and agenda and data_pretendida:
+				solicitacao_ativa = SolicitacaoModel.objects.filter(
+                    usuarioId=usuario,
+                    agendaId=agenda,
+                    dataPretendida=data_pretendida,
+                    estado__in=[
+                        SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+                        SolicitacaoModel.EstadoSolicitacao.ACEITO,
+                        SolicitacaoModel.EstadoSolicitacao.RECORRENTE,
+                    ]
+                ).exists()
 
-			if solicitacao_ativa:
-				raise serializers.ValidationError(
-					"Você já possui uma solicitação pendente ou confirmada para este horário nesta data."
-				)
+				if solicitacao_ativa:
+					raise serializers.ValidationError(
+                        "Você já possui uma solicitação pendente ou confirmada para este horário nesta data."
+                    )
 
 		return attrs
 
