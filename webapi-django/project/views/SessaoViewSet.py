@@ -411,8 +411,8 @@ class SessoesTutorVerificacaoViewSet(viewsets.ReadOnlyModelViewSet):
 	summary="Listar todas as solicitações do usuário autenticado (Sem Paginação)",
 	description=(
 		"Retorna a lista de solicitações associadas ao usuário logado sem paginação. "
-		"Suporta parâmetros opcionais para filtrar pelo papel do usuário ('tutor' ou 'aprendiz') "
-		"e para trazer apenas solicitações pendentes futuras."
+		"Suporta parâmetros opcionais para filtrar pelo papel do usuário ('tutor' ou 'aprendiz'), "
+		"buscar apenas solicitações pendentes futuras ou trazer solicitações resolvidas (aceitas/recusadas)."
 	),
 	responses=SolicitacaoSerializer(many=True),
 	tags=['05. Solicitar Sessão'],
@@ -425,7 +425,13 @@ class SessoesTutorVerificacaoViewSet(viewsets.ReadOnlyModelViewSet):
 		),
 		OpenApiParameter(
 			name='apenas_futuras',
-			description="Se 'true', retorna apenas solicitações PENDENTES cujo dia e horário ainda não passaram",
+			description="Se 'true', retorna apenas solicitações com status PENDENTE cujo dia e horário ainda não passaram",
+			required=False,
+			type=bool
+		),
+		OpenApiParameter(
+			name='apenas_resolvidas',
+			description="Se 'true', retorna apenas solicitações com status ACEITO ou RECUSADO",
 			required=False,
 			type=bool
 		),
@@ -442,8 +448,8 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 
 		tipo_filtro = self.request.query_params.get('tipo', '').lower()
 		apenas_futuras = self.request.query_params.get('apenas_futuras', '').lower() in ['true', '1']
+		apenas_resolvidas = self.request.query_params.get('apenas_resolvidas', '').lower() in ['true', '1']
 
-		# Base QuerySet
 		queryset = SolicitacaoModel.objects.filter(
 			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
 		).select_related(
@@ -457,13 +463,19 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 			qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
 		)
 
-		# Filtro opcional de papel (Tutor ou Aprendiz)
 		if tipo_filtro == 'tutor':
 			queryset = queryset.filter(agendaId__tutorId__usuarioId=user)
 		elif tipo_filtro == 'aprendiz':
 			queryset = queryset.filter(usuarioId=user)
 
-		# Filtro opcional: apenas PENDENTES que ainda não venceram o horário
+		if apenas_resolvidas:
+			queryset = queryset.filter(
+				estado__in=[
+					SolicitacaoModel.EstadoSolicitacao.ACEITO,
+					SolicitacaoModel.EstadoSolicitacao.RECUSADO
+				]
+			)
+
 		if apenas_futuras:
 			agora = timezone.localtime(timezone.now())
 			hoje = agora.date()
