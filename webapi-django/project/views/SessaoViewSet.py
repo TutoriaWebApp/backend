@@ -147,6 +147,13 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 
 	def get_queryset(self):
 		user = self.request.user
+		agora = timezone.localtime(timezone.now())
+
+		# Apaga permanentemente do banco de dados todas as solicitações pendentes cuja validade expirou
+		SolicitacaoModel.objects.filter(
+			estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+			validade__lte=agora
+		).delete()
 
 		tipo_filtro   = self.request.query_params.get('tipo', '').lower()
 		area_id       = self.request.query_params.get('area')
@@ -156,15 +163,15 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 		queryset = SolicitacaoModel.objects.filter(
 			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
 		).select_related(
-            'usuarioId', 
-            'agendaId__tutorId',
-            'agendaId__tutorId__usuarioId', 
-            'areaId', 
-            'especialidadeId'
-        ).annotate(
-            qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
-            qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
-        )
+			'usuarioId', 
+			'agendaId__tutorId',
+			'agendaId__tutorId__usuarioId', 
+			'areaId', 
+			'especialidadeId'
+		).annotate(
+			qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
+			qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
+		)
 
 		if tipo_filtro == 'tutor':
 			queryset = queryset.filter(
@@ -197,9 +204,9 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 		data_validade = calcular_validade_solicitacao(data_pretendida, agenda.horarioInicio)
 
 		serializer.save(
-            usuarioId=logged_user,
-            validade=data_validade
-        )
+			usuarioId=logged_user,
+			validade=data_validade
+		)
 
 
 class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
@@ -456,6 +463,13 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 
 	def get_queryset(self):
 		user = self.request.user
+		agora = timezone.localtime(timezone.now())
+
+		# Apaga permanentemente solicitações vencidas antes de gerar a listagem
+		SolicitacaoModel.objects.filter(
+			estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+			validade__lte=agora
+		).delete()
 
 		tipo_filtro = self.request.query_params.get('tipo', '').lower()
 		apenas_futuras = self.request.query_params.get('apenas_futuras', '').lower() in ['true', '1']
@@ -488,7 +502,6 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 			)
 
 		if apenas_futuras:
-			agora = timezone.localtime(timezone.now())
 			hoje = agora.date()
 			hora_atual = agora.time()
 
