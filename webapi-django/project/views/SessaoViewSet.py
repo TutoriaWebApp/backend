@@ -149,7 +149,6 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 		user = self.request.user
 		agora = timezone.localtime(timezone.now())
 
-		# Apaga permanentemente do banco de dados todas as solicitações pendentes cuja validade expirou
 		SolicitacaoModel.objects.filter(
 			estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
 			validade__lte=agora
@@ -465,7 +464,6 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 		user = self.request.user
 		agora = timezone.localtime(timezone.now())
 
-		# Apaga permanentemente solicitações vencidas antes de gerar a listagem
 		SolicitacaoModel.objects.filter(
 			estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
 			validade__lte=agora
