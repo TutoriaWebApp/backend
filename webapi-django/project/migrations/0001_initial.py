@@ -50,6 +50,9 @@ class Migration(migrations.Migration):
                 ('descricao', models.CharField(max_length=64)),
                 ('urlImagem', models.CharField(max_length=256)),
                 ('pontos', models.IntegerField()),
+                ('tier', models.CharField(choices=[('B', 'BRONZE'), ('P', 'PRATA'), ('O', 'OURO'), ('D', 'DIAMANTE')], default='B', max_length=1)),
+                ('secreta', models.BooleanField(default=False)),
+                ('pista', models.CharField(blank=True, db_default=None, default=None, null=True, max_length=64)),
             ],
             options={
                 'verbose_name': 'CONQUISTA',

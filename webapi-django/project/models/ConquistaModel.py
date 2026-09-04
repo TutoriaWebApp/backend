@@ -2,11 +2,24 @@ from django.db import models
 from .UsuarioModel import UsuarioModel
 
 class ConquistaModel(models.Model):
+	class Tier(models.TextChoices):
+		BRONZE = 'B', 'BRONZE'
+		PRATA = 'P', 'PRATA'
+		OURO = 'O', 'OURO'
+		DIAMANTE = 'D', 'DIAMANTE'
+
 	id        = models.AutoField(primary_key=True, db_column='conquistaId')
 	titulo    = models.CharField(max_length=32)
 	descricao = models.CharField(max_length=64)
 	urlImagem = models.CharField(max_length=256)
 	pontos    = models.IntegerField()
+	tier     = models.CharField(
+		max_length=1,
+		default='B',
+		choices=Tier.choices
+	)
+	secreta   = models.BooleanField(default=False)
+	pista     = models.CharField(max_length=64)
 
 	usuarios  = models.ManyToManyField(
 		UsuarioModel,
