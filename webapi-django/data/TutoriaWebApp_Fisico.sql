@@ -55,6 +55,9 @@ CONQUISTA (
     titulo      VARCHAR(32)  NOT NULL,
     descricao   VARCHAR(64),
     urlImagem   VARCHAR(256) NOT NULL,
+    tier        ENUM('B', 'P', 'O', 'D') NOT NULL DEFAULT 'B',
+    secreta     BOOLEAN      NOT NULL DEFAULT FALSE,
+    pista       VARCHAR(64),
 
     CONSTRAINT CONQUISTA_PK
         PRIMARY KEY (conquistaId),

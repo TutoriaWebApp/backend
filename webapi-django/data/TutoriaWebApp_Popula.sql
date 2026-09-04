@@ -51,34 +51,43 @@ INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, loca
 ('eduardo.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Eduardo Oliveira', 'Salvador', 'BA', '1986-11-09', ST_GeomFromText('POINT(-12.9777 -38.5016)', 4326));
 
 -- CONQUISTAS (Total: 25)
-INSERT INTO CONQUISTA (pontos, titulo, descricao, urlImagem) VALUES
-(100, 'A primeira de muitas!', 'Realize sua primeira sessão de tutoria!', 'https://picsum.photos/100?6'),
-(250, 'Aprendiz', 'Completou 5 aulas', 'https://picsum.photos/100?7'),
-(500, 'Tutor Experiente', 'Completou 20 aulas', 'https://picsum.photos/100?8'),
-(1000, 'Mestre', 'Conquistou 1000 pontos', 'https://picsum.photos/100?9'),
-(1500, 'Lenda', 'Conquistou mais de 1500 pontos', 'https://picsum.photos/100?10'),
-(200, 'Explorador', 'Visitou 5 áreas diferentes', 'https://picsum.photos/100?11'),
-(300, 'Pontual', 'Chegou no horário em 10 sessões', 'https://picsum.photos/100?12'),
-(400, 'Comunicador', 'Enviou 100 mensagens no chat', 'https://picsum.photos/100?13'),
-(600, 'Ajudante', 'Avaliou 10 tutores', 'https://picsum.photos/100?14'),
-(800, 'Dedicado', 'Estudou por 50 horas no total', 'https://picsum.photos/100?15'),
-(50, 'Bem-vindo', 'Completou o perfil', 'https://picsum.photos/100?16'),
-(150, 'Curioso', 'Fez 3 perguntas em uma sessão', 'https://picsum.photos/100?17'),
-(350, 'Notívago', 'Teve uma sessão após as 20h', 'https://picsum.photos/100?18'),
-(450, 'Madrugador', 'Teve uma sessão antes das 9h', 'https://picsum.photos/100?19'),
-(700, 'Especialista', 'Dominou uma especialidade', 'https://picsum.photos/100?20'),
-(900, 'Multitarefa', 'Inscrito em 3 áreas ao mesmo tempo', 'https://picsum.photos/100?21'),
-(1100, 'Mentor', 'Ajudou 5 novos alunos', 'https://picsum.photos/100?22'),
-(1200, 'Sábio', 'Acumulou 100 avaliações 5 estrelas', 'https://picsum.photos/100?23'),
-(1300, 'Veterano', 'Membro há mais de um ano', 'https://picsum.photos/100?24'),
-(1400, 'Influenciador', 'Indicou 3 amigos', 'https://picsum.photos/100?25'),
-(100, 'Social', 'Participou de um chat em grupo', 'https://picsum.photos/100?26'),
-(200, 'Crítico', 'Escreveu um comentário detalhado', 'https://picsum.photos/100?27'),
-(300, 'Fiel', 'Teve 5 sessões com o mesmo tutor', 'https://picsum.photos/100?28'),
-(400, 'Viajante', 'Teve sessões com tutores de 3 estados', 'https://picsum.photos/100?29'),
-(500, 'Gênio', 'Resolveu um problema complexo', 'https://picsum.photos/100?30');
+INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
+('B', 50, 'Olá mundo', 'Se cadastrou no site.', ''),
+('B', 50, 'Primeiro Contato', 'Mandar a primeira mensagem.', ''),
+('B', 100, 'Primeiro Passo', 'Realizar o primeiro agendamento com sucesso.', ''),
+('B', 150, 'Networking Inicial', 'Mandar mensagem para 5 usuários diferentes.', ''),
+('B', 150, 'Primeira Impressão', 'Receber sua primeira avaliação como tutor ou aprendiz.', ''),
+('B', 100, 'Caminho das Pedras I', 'Participar de 5 sessões de tutoria.', ''),
+('B', 150, 'O que?! Quer uma medalha?', 'Conseguiu alcançar o nível 5.', ''),
+('P', 300, 'Volte Sempre', 'Receber sua primeira avaliação 5 estrelas como tutor.', ''),
+('P', 300, 'O prazer foi meu', 'Receber sua primeira avaliação 5 estrelas como aprendiz.', ''),
+('P', 350, 'Fidelidade', 'Realizar 5 ou mais tutorias com o mesmo tutor.', ''),
+('P', 500, 'Pau pra Toda Obra', 'Fornecer tutoria em 3 áreas de conhecimento diferente.', ''),
+('P', 350, 'Caminho das Pedras II', 'Participar de 15 sessões de tutoria.', ''),
+('P', 600, 'Caminho das Pedras III', 'Participar de 30 sessões de tutoria.', ''),
+('P', 500, 'Interessante...', 'Conseguiu alcançar o nível 10', ''),
+('O', 800, 'Feedback de Peso', 'Receber 3 avaliações com comentário > 100 caracteres.', ''),
+('O', 900, 'Incansável', 'Participar de tutorias por 5 dias seguidos.', ''),
+('O', 1200, 'Veterano da Plataforma', '50 tutorias concluídas em uma única especialidade.', ''),
+('O', 1100, 'Caminho das Pedras IV', 'Participar de 60 sessões de tutoria.', ''),
+('O', 1400, 'Caminho das Pedras V', 'Participar de 100 sessões de tutoria.', ''),
+('O', 1200, 'O que você quer provar?', 'Conseguiu alcançar o nível 25.', ''),
+('D', 2500, 'Caminho das Pedras VI', 'Participar de 300 sessões de tutoria.', ''),
+('D', 3000, 'Lenda', 'Conseguiu alcançar o nível 50.', '');
 
--- AREAS (Total: 25)
+INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem, secreta, pista) VALUES
+('B', 150, 'Agora é minha vez!', 'Modifique seu perfil para se tornar um tutor.', '', true, 'Quem aprende também pode ensinar...'),
+('B', 200, 'Fim de Semana Ativo', 'Realizar tutoria em final de semana.', '', true, 'O conhecimento não tira folga no sábado ou domingo...'),
+('P', 400, 'Coruja', 'Realizar tutoria na madrugada (22h às 05h).', '', true, 'Para aqueles cujas mentes brilham sob o luar...'),
+('P', 500, 'Pioneiro', 'Cadastrar-se no site em até 6 meses do início.', '', true, 'Você esteve aqui quando tudo começou...'),
+('P', 450, 'Guerreiro do Feriado', 'Realizar tutoria em feriados nacionais.', '', true, 'Enquanto todos descansam, você evolui...'),
+('O', 850, 'Estrela Ascendente', 'Receber 5 avaliações 5 estrelas.', '', true, 'A constelação começa a se formar com notas perfeitas...'),
+('O', 1000, 'Mestre Bem-Avaliado', 'Média ≥ 4.7 como tutor após 10 avaliações.', '', true, 'A excelência é reconhecida pelos seus aprendizes...'),
+('O', 800, 'O Nascimento do Conhecimento', 'Participar de uma tutoria no seu aniversário.', '', true, 'Uma tutoria em um dia muito especial para você...'),
+('D', 1600, 'Mestre das Estrelas', 'Receber 15 avaliações 5 estrelas.', '', true, 'O céu inteiro curva-se à perfeição do seu ensino...'),
+('D', 2000, 'Deixando uma Marca', 'Média ≥ 4.7 como tutor/aprendiz após 80 avaliações.', '', true, 'Um legado indelével gravado na história do sistema...');
+
+-- AREAS (Total: 25
 INSERT INTO AREA (nomeArea) VALUES
 ('Matemática'), ('Programação'), ('Design Gráfico'), ('Idiomas'), ('Ciências Exatas'),
 ('História'), ('Geografia'), ('Biologia'), ('Química'), ('Física'),
