@@ -1,4 +1,6 @@
 from django.test import TestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from project.models import UsuarioModel, AreaModel, EspecialidadeModel, TutorModel, ContemModel
 from project.serializers import *
 from datetime import date
@@ -13,7 +15,8 @@ class UsuarioSerializerTest(TestCase):
             'nomePerfil': 'Teste User',
             'cidade': 'Brasília',
             'estado': 'DF',
-            'aniversario': date(1990, 1, 1)
+            'aniversario': date(1990, 1, 1),
+            'localizacao': Point(0, 0, srid=4326)
         }
         self.user = UsuarioModel.objects.create_user(**self.user_data)
         self.request = self.factory.get('/')

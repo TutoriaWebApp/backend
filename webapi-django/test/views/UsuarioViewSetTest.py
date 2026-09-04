@@ -9,6 +9,8 @@ from django.test import override_settings
 from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework import status
 from rest_framework.test import APITestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 
 from project.models import UsuarioModel, TutorModel, AreaModel, EspecialidadeModel, ContemModel
 
@@ -23,7 +25,7 @@ class UsuarioViewSetTest(APITestCase):
 
 	def setUp(self):
 		self.usuario = UsuarioModel.objects.create_user(
-			email='test@example.com',
+			localizacao=Point(0, 0, srid=4326), email='test@example.com',
 			password='testpassword123',
 			nomePerfil='Test User',
 			cidade='Test City',
@@ -57,7 +59,9 @@ class UsuarioViewSetTest(APITestCase):
 			'password': 'newpassword123',
 			'nomePerfil': 'New User',
 			'cidade': 'New City',
-			'estado': 'NW'
+			'estado': 'NW',
+			'latitude': 0,
+			'longitude': 0
 		}
 		response = self.client.post(self.registro_url, data)
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -76,7 +80,9 @@ class UsuarioViewSetTest(APITestCase):
 			'nomePerfil': 'Tutor User',
 			'cidade': 'New City',
 			'estado': 'NW',
-			'especialidades': [esp.id]
+			'especialidades': [esp.id],
+			'latitude': 0,
+			'longitude': 0
 		}
 		response = self.client.post(self.registro_url, data)
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -105,7 +111,9 @@ class UsuarioViewSetTest(APITestCase):
 			'nomePerfil': 'Photo User',
 			'cidade': 'New City',
 			'estado': 'NW',
-			'foto': foto
+			'foto': foto,
+			'latitude': 0,
+			'longitude': 0
 		}
 		response = self.client.post(self.registro_url, data, format='multipart')
 		self.assertEqual(response.status_code, status.HTTP_201_CREATED)

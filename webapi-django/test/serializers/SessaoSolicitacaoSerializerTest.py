@@ -1,13 +1,16 @@
 from django.test import TestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from project.models import AgendaModel, SolicitacaoModel, SessaoModel, TutorModel, UsuarioModel, AreaModel, EspecialidadeModel
 from project.serializers import AgendaSerializer, SolicitacaoSerializer, SessaoSerializer
 from datetime import date, time
+from django.utils import timezone
 
 class SessaoSolicitacaoSerializerTest(TestCase):
     def setUp(self):
         # Aluno
         self.aluno = UsuarioModel.objects.create_user(
-            email='aluno@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='aluno@tutoria.com',
             password='password123',
             nomePerfil='Aluno',
             cidade='City',
@@ -16,7 +19,7 @@ class SessaoSolicitacaoSerializerTest(TestCase):
         )
         # Tutor
         self.usuario_tutor = UsuarioModel.objects.create_user(
-            email='tutor@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@tutoria.com',
             password='password123',
             nomePerfil='Tutor',
             cidade='City',
@@ -41,16 +44,21 @@ class SessaoSolicitacaoSerializerTest(TestCase):
         self.assertEqual(serializer.data['tutorId'], self.tutor.id)
 
     def test_solicitacao_serializer(self):
+        agora = timezone.now()
         solicitacao = SolicitacaoModel.objects.create(
             usuarioId=self.aluno,
             agendaId=self.agenda,
             areaId=self.area,
             especialidadeId=self.esp,
-            dataPretendida=date(2025, 10, 20)
+            dataPretendida=date(2025, 10, 20),
+            recorrente=True,
+            validade=agora
         )
         serializer = SolicitacaoSerializer(solicitacao)
         self.assertNotIn('usuarioId', serializer.data)
         self.assertEqual(serializer.data['agendaId'], self.agenda.id)
+        self.assertEqual(serializer.data['recorrente'], True)
+        self.assertEqual(serializer.data['validade'], agora.isoformat().replace('+00:00', 'Z'))
 
     def test_sessao_serializer(self):
         sessao = SessaoModel.objects.create(

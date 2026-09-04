@@ -1,4 +1,6 @@
 from django.test import TestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from django.db.utils import IntegrityError
 from project.models import ChatModel, MensagemModel, UsuarioModel, TutorModel
 from datetime import date
@@ -7,7 +9,7 @@ class ChatModelTest(TestCase):
     def setUp(self):
         # Create a user for the student
         self.usuario = UsuarioModel.objects.create_user(
-            email='aluno@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='aluno@tutoria.com',
             password='password123',
             nomePerfil='Aluno Teste',
             cidade='Brasília',
@@ -17,7 +19,7 @@ class ChatModelTest(TestCase):
         
         # Create a user for the tutor
         self.usuario_tutor = UsuarioModel.objects.create_user(
-            email='tutor@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@tutoria.com',
             password='password123',
             nomePerfil='Tutor Teste',
             cidade='Brasília',
@@ -51,7 +53,8 @@ class ChatModelTest(TestCase):
         chat = ChatModel.objects.create(usuarioId=self.usuario, tutorId=self.tutor)
         mensagem = MensagemModel.objects.create(
             chatId=chat,
-            conteudo='Olá, tudo bem?'
+            conteudo='Olá, tudo bem?',
+            usuarioId=self.usuario
         )
         self.assertEqual(mensagem.chatId, chat)
         self.assertEqual(mensagem.conteudo, 'Olá, tudo bem?')
@@ -62,8 +65,9 @@ class ChatModelTest(TestCase):
         conteudo = 'Teste mensagem longa para verificar o slice do str'
         mensagem = MensagemModel.objects.create(
             chatId=chat,
-            conteudo=conteudo
+            conteudo=conteudo,
+            usuarioId=self.usuario
         )
-        expected_str = f"Mensagem em {chat} - {conteudo[:20]}..."
+        expected_str = f"Mensagem de {mensagem.usuarioId.nomePerfil} em {chat} - {conteudo[:20]}..."
         self.assertEqual(str(mensagem), expected_str)
         self.assertEqual(mensagem._meta.verbose_name, 'MENSAGEM')

@@ -1,4 +1,6 @@
 from django.test import TestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from project.models import AvaliacaoAprendizModel, AvaliacaoTutorModel, SessaoModel, TutorModel, UsuarioModel, AreaModel, EspecialidadeModel
 from project.serializers import AvaliacaoAprendizSerializer, AvaliacaoTutorSerializer
 from datetime import date, time
@@ -7,7 +9,7 @@ class AvaliacaoSerializerTest(TestCase):
     def setUp(self):
         # Aluno
         self.aluno = UsuarioModel.objects.create_user(
-            email='aluno@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='aluno@tutoria.com',
             password='password123',
             nomePerfil='Aluno',
             cidade='City',
@@ -16,7 +18,7 @@ class AvaliacaoSerializerTest(TestCase):
         )
         # Tutor
         self.usuario_tutor = UsuarioModel.objects.create_user(
-            email='tutor@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@tutoria.com',
             password='password123',
             nomePerfil='Tutor',
             cidade='City',

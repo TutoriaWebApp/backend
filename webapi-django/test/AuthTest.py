@@ -5,6 +5,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from rest_framework.test import APITestCase, APIClient
+from project.utils.GeoLocalizacaoUtil import Point
 from rest_framework import status
 from unittest.mock import patch
 
@@ -14,6 +15,7 @@ class LogInViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = Usuario.objects.create_user(
+            localizacao=Point(0, 0, srid=4326),
             email='test@example.com',
             nomePerfil='Test User',
             cidade='Test City',
@@ -44,6 +46,7 @@ class LoginRefreshViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = Usuario.objects.create_user(
+            localizacao=Point(0, 0, srid=4326),
             email='test@example.com',
             nomePerfil='Test User',
             cidade='Test City',
@@ -87,6 +90,7 @@ class LogOutViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = Usuario.objects.create_user(
+            localizacao=Point(0, 0, srid=4326),
             email='test@example.com',
             nomePerfil='Test User',
             cidade='Test City',
@@ -122,6 +126,7 @@ class PasswordResetViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = Usuario.objects.create_user(
+            localizacao=Point(0, 0, srid=4326),
             email='test@example.com',
             nomePerfil='Test User',
             cidade='Test City',
@@ -155,6 +160,7 @@ class PasswordResetConfirmViewTest(APITestCase):
     def setUp(self):
         self.client = APIClient()
         self.user = Usuario.objects.create_user(
+            localizacao=Point(0, 0, srid=4326),
             email='test@example.com',
             nomePerfil='Test User',
             cidade='Test City',

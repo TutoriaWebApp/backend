@@ -1,4 +1,6 @@
 from rest_framework.test import APITestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from rest_framework import status
 from django.urls import reverse
 from project.models import ChatModel, MensagemModel, UsuarioModel, TutorModel
@@ -7,7 +9,7 @@ from datetime import date
 class ChatViewSetTest(APITestCase):
     def setUp(self):
         self.aluno = UsuarioModel.objects.create_user(
-            email='aluno@test.com',
+            localizacao=Point(0, 0, srid=4326), email='aluno@test.com',
             password='password123',
             nomePerfil='Aluno',
             cidade='Brasília',
@@ -15,7 +17,7 @@ class ChatViewSetTest(APITestCase):
             aniversario=date(2000, 1, 1)
         )
         self.usuario_tutor = UsuarioModel.objects.create_user(
-            email='tutor@test.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@test.com',
             password='password123',
             nomePerfil='Tutor',
             cidade='Brasília',
@@ -25,7 +27,7 @@ class ChatViewSetTest(APITestCase):
         self.tutor = TutorModel.objects.create(usuarioId=self.usuario_tutor)
         
         self.other_user = UsuarioModel.objects.create_user(
-            email='other@test.com',
+            localizacao=Point(0, 0, srid=4326), email='other@test.com',
             password='password123',
             nomePerfil='Outro',
             cidade='Brasília',
@@ -67,7 +69,7 @@ class ChatViewSetTest(APITestCase):
 class MensagemViewSetTest(APITestCase):
     def setUp(self):
         self.aluno = UsuarioModel.objects.create_user(
-            email='aluno@test.com',
+            localizacao=Point(0, 0, srid=4326), email='aluno@test.com',
             password='password123',
             nomePerfil='Aluno',
             cidade='Brasília',
@@ -75,7 +77,7 @@ class MensagemViewSetTest(APITestCase):
             aniversario=date(2000, 1, 1)
         )
         self.usuario_tutor = UsuarioModel.objects.create_user(
-            email='tutor@test.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@test.com',
             password='password123',
             nomePerfil='Tutor',
             cidade='Brasília',
@@ -86,7 +88,7 @@ class MensagemViewSetTest(APITestCase):
         self.chat = ChatModel.objects.create(usuarioId=self.aluno, tutorId=self.tutor)
         
         self.other_user = UsuarioModel.objects.create_user(
-            email='other@test.com',
+            localizacao=Point(0, 0, srid=4326), email='other@test.com',
             password='password123',
             nomePerfil='Outro',
             cidade='Brasília',
@@ -109,3 +111,15 @@ class MensagemViewSetTest(APITestCase):
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.data['mensagem'], "Você não tem permissão para enviar mensagens neste chat.")
+
+    def test_list_messages_marks_as_read(self):
+        MensagemModel.objects.create(chatId=self.chat, usuarioId=self.usuario_tutor, conteudo="Mensagem do tutor", lida=False)
+        self.client.force_authenticate(user=self.aluno)
+        url = reverse('mensagem-list')
+        response = self.client.get(url, {'chatId': self.chat.id})
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        
+        # O queryset que retorna já deve estar com lida=True ou será atualizado
+        # Vamos verificar no banco se a mensagem agora está lida
+        msg = MensagemModel.objects.first()
+        self.assertTrue(msg.lida)

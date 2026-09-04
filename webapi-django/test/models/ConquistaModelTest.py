@@ -1,11 +1,13 @@
 from django.test import TestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from project.models import ConquistaModel, consegueModel, UsuarioModel
 from datetime import date
 
 class ConquistaModelTest(TestCase):
     def setUp(self):
         self.user = UsuarioModel.objects.create_user(
-            email='test@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='test@tutoria.com',
             password='password123',
             nomePerfil='User',
             cidade='City',
