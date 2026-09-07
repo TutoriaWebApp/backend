@@ -10,7 +10,7 @@ class ConquistaModel(models.Model):
 
 	id        = models.AutoField(primary_key=True, db_column='conquistaId')
 	titulo    = models.CharField(max_length=32)
-	descricao = models.CharField(max_length=64)
+	descricao = models.CharField(max_length=128)
 	urlImagem = models.CharField(max_length=256)
 	pontos    = models.IntegerField()
 	tier     = models.CharField(

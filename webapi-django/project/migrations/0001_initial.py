@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='conquistaId', primary_key=True, serialize=False)),
                 ('titulo', models.CharField(max_length=32)),
-                ('descricao', models.CharField(max_length=64)),
+                ('descricao', models.CharField(max_length=128)),
                 ('urlImagem', models.CharField(max_length=256)),
                 ('pontos', models.IntegerField()),
                 ('tier', models.CharField(choices=[('B', 'BRONZE'), ('P', 'PRATA'), ('O', 'OURO'), ('D', 'DIAMANTE')], default='B', max_length=1)),
