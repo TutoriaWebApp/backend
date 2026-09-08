@@ -28,7 +28,7 @@ class consegueViewSet(viewsets.ModelViewSet):
 	queryset = consegueModel.objects.all()
 	serializer_class = consegueSerializer
 	permission_classes = [IsAuthenticated]
-	http_method_names = ['get']
+	http_method_names = ['get', 'post']
 
 @extend_schema(
 	summary="Confirma a alteração de senha",
