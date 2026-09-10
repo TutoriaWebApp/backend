@@ -52,7 +52,7 @@ INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, loca
 
 -- CONQUISTAS (Total: 25)
 INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
-('B', 50, 'Olá mundo', 'Se cadastrou no site.', 'OlaMundo.png'),
+('B', 50, 'Olá Mundo!', 'Se cadastrou no site.', 'OlaMundo.png'),
 ('B', 50, 'Primeiro Contato', 'Mandou sua primeira mensagem.', 'contato.png'),
 ('B', 100, 'Primeiro Passo', 'Realizou a primeira tutoria com sucesso.', 'passo.png'),
 ('B', 150, 'Networking Inicial', 'Mandou mensagem para 5 usuários diferentes.', 'networking.png'),
@@ -62,10 +62,10 @@ INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
 ('P', 300, 'Volte Sempre', 'Recebeu sua primeira avaliação 5 estrelas como tutor.', 'volteSempre.png'),
 ('P', 300, 'O prazer foi meu', 'Recebeu sua primeira avaliação 5 estrelas como aprendiz.', 'prazer.png'),
 ('P', 350, 'Fidelidade', 'Realizou 5 ou mais tutorias com o mesmo tutor.', 'fidelidade.png'),
-('P', 500, 'Pau pra Toda Obra', 'Forneceu tutoria em 3 áreas de conhecimento diferente.', 'todaObra.png'),
+('P', 500, 'Pau pra Toda Obra', 'Forneceu tutoria em 3 áreas de conhecimento diferentes.', 'todaObra.png'),
 ('P', 350, 'Caminho das Pedras II', 'Participou de 15 sessões de tutoria.', 'caminho2.png'),
 ('P', 600, 'Caminho das Pedras III', 'Participou de 30 sessões de tutoria.', 'caminho3.png'),
-('P', 500, 'Interessante...', 'Conseguiu alcançar o nível 10', 'interessante.png'),
+('P', 500, 'Interessante...', 'Conseguiu alcançar o nível 10.', 'interessante.png'),
 ('O', 800, 'Feedback de Peso', 'Recebeu 3 avaliações com comentário maior que 100 caracteres.', 'feedback.png'),
 ('O', 900, 'Incansável', 'Participou de tutorias por 5 dias seguidos.', 'incansavel.png'),
 ('O', 1200, 'Veterano da Plataforma', 'Concluiu 50 tutorias em uma única especialidade.', 'veterano.png'),
