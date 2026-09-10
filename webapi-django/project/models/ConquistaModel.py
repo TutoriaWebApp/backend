@@ -10,7 +10,7 @@ class ConquistaModel(models.Model):
 
 	id        = models.AutoField(primary_key=True, db_column='conquistaId')
 	titulo    = models.CharField(max_length=32)
-	descricao = models.CharField(max_length=128)
+	descricao = models.CharField(max_length=128, blank=True, null=True)
 	urlImagem = models.CharField(max_length=256)
 	pontos    = models.IntegerField()
 	tier     = models.CharField(
@@ -19,7 +19,7 @@ class ConquistaModel(models.Model):
 		choices=Tier.choices
 	)
 	secreta   = models.BooleanField(default=False)
-	pista     = models.CharField(max_length=64)
+	pista     = models.CharField(max_length=64, blank=True, null=True)
 
 	usuarios  = models.ManyToManyField(
 		UsuarioModel,

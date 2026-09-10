@@ -28,7 +28,7 @@ USUARIO (
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
     localizacao POINT        NOT NULL SRID 4326,
-    nascimento  DATE,
+    aniversario  DATE,
     sobremim    VARCHAR(500),
     notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
 

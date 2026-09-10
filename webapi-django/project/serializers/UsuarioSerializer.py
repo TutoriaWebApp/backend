@@ -38,7 +38,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'perfilTutor',
             'tutorId',
         ]
-        read_only_fields = ['pontuacao', 'fotoURL', 'localziacao',
+        read_only_fields = ['pontuacao', 'fotoURL', 'localizacao',
                             'notaAvaliacao', 'totalAvaliacoes', 'perfilTutor', 'tutorId']
 
     def create(self, validated_data):
