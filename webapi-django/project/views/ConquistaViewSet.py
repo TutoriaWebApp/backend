@@ -14,7 +14,7 @@ from project.serializers import *
 	tags=['Conquistas']
 )
 class ConquistaViewSet(viewsets.ReadOnlyModelViewSet):
-	queryset = ConquistaModel.objects.all()
+	queryset = ConquistaModel.objects.all().order_by('pontos')
 	serializer_class = ConquistaSerializer
 
 @extend_schema(
