@@ -1,6 +1,7 @@
 import datetime
 from django.utils import timezone
-from django.db.models import Q, Exists, OuterRef
+from django.db import transaction
+from django.db.models import F, Q, Exists, OuterRef
 from rest_framework.filters import OrderingFilter
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import viewsets, status
@@ -13,35 +14,35 @@ from project.models import *
 from project.serializers import *
 
 class AvaliacaoPagination(PageNumberPagination):
-    page_size = 6
-    page_size_query_param = 'page_size'  
-    max_page_size = 50  
+	page_size = 6
+	page_size_query_param = 'page_size'  
+	max_page_size = 50  
 
 @extend_schema(
-    summary="Avaliação do Aprendiz",
+	summary="Avaliação do Aprendiz",
 	description=(
-        "Este endpoint permite gerenciar e listar as avaliações feitas pelos aprendizes sobre as sessões. "
+		"Este endpoint permite gerenciar e listar as avaliações feitas pelos aprendizes sobre as sessões. "
 		"Utilize o parâmetro '?usuario=ID' para filtrar as avaliações e notas recebidas por um aprendiz específico."    
 	),    
 	request=AvaliacaoAprendizSerializer,
-    responses=AvaliacaoAprendizSerializer,
-    tags=['06. Avaliações'],
-    parameters=[
+	responses=AvaliacaoAprendizSerializer,
+	tags=['06. Avaliações'],
+	parameters=[
 		OpenApiParameter(
-            name='usuario', 
-            description='ID do Usuário (Aprendiz) para buscar o feedback recebido sobre ele', 
-            required=False, 
-            type=int
-        ),
+			name='usuario', 
+			description='ID do Usuário (Aprendiz) para buscar o feedback recebido sobre ele', 
+			required=False, 
+			type=int
+		),
 		OpenApiParameter(
-            name='ordering', 
-            description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
-            required=False, 
-            type=str
-        ),
-        OpenApiParameter(name='page', description='Número da página', required=False, type=int),
-        OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
-    ]
+			name='ordering', 
+			description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
+			required=False, 
+			type=str
+		),
+		OpenApiParameter(name='page', description='Número da página', required=False, type=int),
+		OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
+	]
 )
 class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 	serializer_class = AvaliacaoAprendizSerializer
@@ -55,17 +56,17 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 		agora = timezone.now()
 		limite_48h = agora - datetime.timedelta(hours=48)
 		tutor_avaliou_de_volta = AvaliacaoTutorModel.objects.filter(
-            sessaoId=OuterRef('sessaoId')
-        )
+			sessaoId=OuterRef('sessaoId')
+		)
 		queryset = AvaliacaoAprendizModel.objects.filter(
-            Q(dataCriacao__lte=limite_48h) | Exists(tutor_avaliou_de_volta)
-        ).select_related(
-            'usuarioId',
-            'sessaoId',
-            'sessaoId__tutorId__usuarioId',
-            'sessaoId__areaId',
-            'sessaoId__especialidadeId'
-        )    
+			Q(dataCriacao__lte=limite_48h) | Exists(tutor_avaliou_de_volta)
+		).select_related(
+			'usuarioId',
+			'sessaoId',
+			'sessaoId__tutorId__usuarioId',
+			'sessaoId__areaId',
+			'sessaoId__especialidadeId'
+		)    
 
 		usuario_id = self.request.query_params.get('usuario')
 	
@@ -73,41 +74,48 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 			queryset = queryset.filter(usuarioId=usuario_id)
 		
 		return queryset
+
+	@transaction.atomic
+	def perform_create(self, serializer):
+		serializer.save()
+		UsuarioModel.objects.filter(pk=self.request.user.pk).update(
+			pontuacao=F('pontuacao') + 50
+		)
 	
 @extend_schema(
-    summary="Avaliação do Tutor",
-    description="Este endpoint permite gerenciar e listar as avaliações feitas sobre os tutores após as sessões de forma paginada.",
-    request=AvaliacaoTutorSerializer,
-    responses=AvaliacaoTutorSerializer,
-    tags=['06. Avaliações'],
-    parameters=[
+	summary="Avaliação do Tutor",
+	description="Este endpoint permite gerenciar e listar as avaliações feitas sobre os tutores após as sessões de forma paginada.",
+	request=AvaliacaoTutorSerializer,
+	responses=AvaliacaoTutorSerializer,
+	tags=['06. Avaliações'],
+	parameters=[
 		OpenApiParameter(
-            name='tutor', 
-            description='ID do Tutor para buscar o feedback/reputação recebido por ele', 
-            required=False, 
-            type=int
-        ),
+			name='tutor', 
+			description='ID do Tutor para buscar o feedback/reputação recebido por ele', 
+			required=False, 
+			type=int
+		),
 		OpenApiParameter(
-            name='area', 
-            description='ID da Área de Conhecimento vinculada à sessão para filtrar', 
-            required=False, 
-            type=int
-        ),
-        OpenApiParameter(
-            name='especialidade', 
-            description='ID da Especialidade vinculada à sessão para filtrar', 
-            required=False, 
-            type=int
-        ),
+			name='area', 
+			description='ID da Área de Conhecimento vinculada à sessão para filtrar', 
+			required=False, 
+			type=int
+		),
 		OpenApiParameter(
-            name='ordering', 
-            description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
-            required=False, 
-            type=str
-        ),
-        OpenApiParameter(name='page', description='Número da página', required=False, type=int),
-        OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
-    ]
+			name='especialidade', 
+			description='ID da Especialidade vinculada à sessão para filtrar', 
+			required=False, 
+			type=int
+		),
+		OpenApiParameter(
+			name='ordering', 
+			description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
+			required=False, 
+			type=str
+		),
+		OpenApiParameter(name='page', description='Número da página', required=False, type=int),
+		OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
+	]
 )
 class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 	serializer_class = AvaliacaoTutorSerializer
@@ -121,15 +129,15 @@ class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 		agora = timezone.now()
 		limite_48h = agora - datetime.timedelta(hours=48)
 		aprendiz_avaliou_de_volta = AvaliacaoAprendizModel.objects.filter(
-            sessaoId=OuterRef('sessaoId')
-        )
+			sessaoId=OuterRef('sessaoId')
+		)
 		queryset = AvaliacaoTutorModel.objects.filter(
-            Q(dataCriacao__lte=limite_48h) | Exists(aprendiz_avaliou_de_volta)
-        ).select_related(
-            'sessaoId__usuarioId',
-            'sessaoId__areaId',
-            'sessaoId__especialidadeId'
-        )      
+			Q(dataCriacao__lte=limite_48h) | Exists(aprendiz_avaliou_de_volta)
+		).select_related(
+			'sessaoId__usuarioId',
+			'sessaoId__areaId',
+			'sessaoId__especialidadeId'
+		)      
 
 		tutor_id = self.request.query_params.get('tutor')
 		area_id = self.request.query_params.get('area')
@@ -143,8 +151,15 @@ class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 
 		if especialidade_id is not None:
 			queryset = queryset.filter(sessaoId__especialidadeId=especialidade_id)
-            
+			
 		return queryset
+
+	@transaction.atomic
+	def perform_create(self, serializer):
+		serializer.save()
+		UsuarioModel.objects.filter(pk=self.request.user.pk).update(
+			pontuacao=F('pontuacao') + 50
+		)
 
 @extend_schema(
 	summary="Sessões Pendentes de Avaliação",
@@ -160,31 +175,29 @@ class PendenteAvaliacaoView(APIView):
 		hoje = timezone.now().date()
 		agora = timezone.now().time()
 
-		# O Aprendiz avalia o Tutor -> gera registro em avaliacoes_tutor_sessao
 		sessoes_como_aprendiz = SessaoModel.objects.filter(
 			usuarioId=usuario,
 		).exclude(
 			avaliacoes_tutor_sessao__isnull=False
-        ).select_related(
-            'usuarioId',
-            'tutorId__usuarioId',
-            'areaId',
-            'especialidadeId'
-        )
+		).select_related(
+			'usuarioId',
+			'tutorId__usuarioId',
+			'areaId',
+			'especialidadeId'
+		)
 
 		try:
 			tutor = TutorModel.objects.get(usuarioId=usuario)
-			# O Tutor avalia o Aprendiz -> gera registro em avaliacoes_aprendiz_sessao
 			sessoes_como_tutor = SessaoModel.objects.filter(
-                tutorId=tutor,
-            ).exclude(
-                avaliacoes_aprendiz_sessao__isnull=False
-            ).select_related(
-                'usuarioId',
-                'tutorId__usuarioId',
-                'areaId',
-                'especialidadeId'
-            )
+				tutorId=tutor,
+			).exclude(
+				avaliacoes_aprendiz_sessao__isnull=False
+			).select_related(
+				'usuarioId',
+				'tutorId__usuarioId',
+				'areaId',
+				'especialidadeId'
+			)
 		except TutorModel.DoesNotExist:
 			sessoes_como_tutor = SessaoModel.objects.none()
 
