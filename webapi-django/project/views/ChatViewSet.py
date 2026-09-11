@@ -1,9 +1,11 @@
 from drf_spectacular.utils import extend_schema, OpenApiParameter
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from rest_framework.exceptions import ValidationError
 from rest_framework.pagination import PageNumberPagination
+from rest_framework.decorators import action
+from rest_framework.response import Response
 
 from project.models import ChatModel, MensagemModel, TutorModel
 from project.serializers.ChatSerializer import ChatSerializer, MensagemSerializer
@@ -67,7 +69,8 @@ class MensagemViewSet(viewsets.ModelViewSet):
     serializer_class = MensagemSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = MensagemPagination
-    http_method_names = ['get', 'post']
+    # 1. Permite o método PATCH na viewset:
+    http_method_names = ['get', 'post', 'patch']
 
     def get_queryset(self):
         user = self.request.user
@@ -78,9 +81,51 @@ class MensagemViewSet(viewsets.ModelViewSet):
         chat_id = self.request.query_params.get('chatId') or self.request.query_params.get('chat')
         if chat_id is not None:
             queryset = queryset.filter(chatId=chat_id)
-            queryset.filter(lida=False).exclude(usuarioId=user).update(lida=True)
 
         return queryset.order_by('-horario', '-id')
+
+    @extend_schema(
+        summary="Marcar mensagens de um chat como lidas",
+        description="Marca todas as mensagens recebidas em determinado chat como lidas pelo usuário autenticado.",
+        request={
+            'application/json': {
+                'type': 'object',
+                'properties': {
+                    'chatId': {'type': 'integer', 'example': 1}
+                },
+                'required': ['chatId']
+            }
+        },
+        responses={
+            200: {
+                'type': 'object',
+                'properties': {
+                    'mensagem': {'type': 'string', 'example': 'Mensagens marcadas como lidas.'}
+                }
+            },
+            400: {
+                'type': 'object',
+                'properties': {
+                    'mensagem': {'type': 'string', 'example': 'chatId é obrigatório.'}
+                }
+            }
+        },
+        tags=['06. Chat']
+    )
+    @action(detail=False, methods=['patch'], url_path='marcar-lidas')
+    def marcar_como_lidas(self, request):
+        chat_id = request.data.get('chatId')
+        if not chat_id:
+            return Response({"mensagem": "chatId é obrigatório."}, status=status.HTTP_400_BAD_REQUEST)
+
+        MensagemModel.objects.filter(
+            chatId=chat_id,
+            lida=False
+        ).exclude(usuarioId=request.user).update(lida=True)
+
+        return Response({"mensagem": "Mensagens marcadas como lidas."}, status=status.HTTP_200_OK)
+
+        return Response({"mensagem": "Mensagens marcadas como lidas."}, status=status.HTTP_200_OK)
 
     def list(self, request, *args, **kwargs):
         response = super().list(request, *args, **kwargs)
