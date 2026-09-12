@@ -41,7 +41,6 @@ class consegueViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST
             )
 
-        # Busca ou cria o vínculo sem estourar o erro de UniqueTogetherValidator
         consegue, criado = consegueModel.objects.get_or_create(
             usuarioId_id=usuario_id,
             conquistaId_id=conquista_id
