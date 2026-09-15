@@ -46,6 +46,13 @@ class consegueViewSet(viewsets.ModelViewSet):
             conquistaId_id=conquista_id
         )
 
+        if criado:
+            usuario = get_object_or_404(UsuarioModel, pk=usuario_id)
+            conquista = get_object_or_404(ConquistaModel, pk=conquista_id)
+            
+            usuario.pontuacao = (usuario.pontuacao or 0) + conquista.pontos
+            usuario.save(update_fields=['pontuacao'])
+
         serializer = self.get_serializer(consegue)
         return Response(
             {
