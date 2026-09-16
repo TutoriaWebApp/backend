@@ -150,7 +150,7 @@ class TutorViewSet(viewsets.ModelViewSet):
     tags=['04. Areas']
 )
 class AreaViewSet(viewsets.ModelViewSet):
-    queryset = AreaModel.objects.all()
+    queryset = AreaModel.objects.all().order_by('nomeArea')
     serializer_class = AreaSerializer
     http_method_names = ['get']
 
@@ -176,7 +176,7 @@ class EspecialidadeFilter(filters.FilterSet):
     ]
 )
 class EspecialidadeViewSet(viewsets.ModelViewSet):
-    queryset = EspecialidadeModel.objects.all()
+    queryset = EspecialidadeModel.objects.all().order_by('nomeEspecialidade')
     serializer_class = EspecialidadeSerializer
     http_method_names = ['get']
 
