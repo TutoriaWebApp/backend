@@ -238,7 +238,7 @@ class PasswordResetConfirmView(APIView):
 			user = None
 
 		if user is None or not default_token_generator.check_token(user, token):
-			return Response({"mensagem": "Link inválido ou experado"}, status=400)
+			return Response({"mensagem": "Link inválido ou expirado"}, status=400)
 
 		update_last_login(None, user)
 		user.set_password(new_password)
