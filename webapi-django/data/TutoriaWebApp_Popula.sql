@@ -19,38 +19,40 @@ USE tutoriadb;
 INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, localizacao, is_active, is_staff, is_superuser) VALUES
 ('admin@tutoria.com', 'pbkdf2_sha256$1000000$zZBLgMtlMlfKvomGWZKEKt$ifR7/CLjG7xZUl6+iFjJ0W3mXON2p3smJGnn2XuBUSY=', 'Admin', 'Não Aplicado', 'NA', '1971-03-15', ST_GeomFromText('POINT(0 0)', 4326), 1, 1, 1);
 
+-- Para fins de testes a senha destes usuários será Senha@123456
 INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, localizacao) VALUES
-('ana.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ana Lima', 'Curitiba', 'PR', '1985-03-05', ST_GeomFromText('POINT(-25.4284 -49.2733)', 4326)),
-('joao.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'João Silva', 'São Paulo', 'SP', '1990-01-03', ST_GeomFromText('POINT(-23.5505 -46.6333)', 4326)),
-('maria.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', '1979-03-05', ST_GeomFromText('POINT(-22.9068 -43.1729)', 4326)),
-('carlos.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Carlos Souza', 'Belo Horizonte', 'MG', '1988-02-18', ST_GeomFromText('POINT(-19.9167 -43.9345)', 4326)),
-('paula.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Paula Mendes', 'Salvador', 'BA', '1988-01-05', ST_GeomFromText('POINT(-12.9777 -38.5016)', 4326)),
-('fernanda.rocha@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Fernanda Rocha', 'Porto Alegre', 'RS', '1992-07-12', ST_GeomFromText('POINT(-30.0346 -51.2177)', 4326)),
-('ricardo.alves@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Ricardo Alves', 'Fortaleza', 'CE', '1983-11-25', ST_GeomFromText('POINT(-3.7319 -38.5267)', 4326)),
-('gabriela.costa@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Gabriela Costa', 'Brasília', 'DF', '1995-05-30', ST_GeomFromText('POINT(-15.7975 -47.8919)', 4326)),
-('bruno.ferreira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Bruno Ferreira', 'Manaus', 'AM', '1987-09-14', ST_GeomFromText('POINT(-3.1190 -60.0217)', 4326)),
-('juliana.pereira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Juliana Pereira', 'Recife', 'PE', '1991-12-08', ST_GeomFromText('POINT(-8.0476 -34.8770)', 4326)),
-('lucas.martins@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Lucas Martins', 'Florianópolis', 'SC', '1989-04-22', ST_GeomFromText('POINT(-27.5954 -48.5480)', 4326)),
-('amanda.santos@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Amanda Santos', 'Vitória', 'ES', '1994-10-05', ST_GeomFromText('POINT(-20.3155 -40.3128)', 4326)),
-('tiago.gomes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Tiago Gomes', 'Goiânia', 'GO', '1986-01-19', ST_GeomFromText('POINT(-16.6869 -49.2648)', 4326)),
-('patricia.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Patricia Lima', 'Belém', 'PA', '1984-06-27', ST_GeomFromText('POINT(-1.4558 -48.4902)', 4326)),
-('rafael.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Rafael Silva', 'São Luís', 'MA', '1993-08-03', ST_GeomFromText('POINT(-2.5307 -44.3068)', 4326)),
-('larissa.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Larissa Souza', 'Natal', 'RN', '1996-02-15', ST_GeomFromText('POINT(-5.7945 -35.2110)', 4326)),
-('andre.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Andre Oliveira', 'Teresina', 'PI', '1982-12-20', ST_GeomFromText('POINT(-5.0920 -42.8038)', 4326)),
-('camila.mendes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Camila Mendes', 'João Pessoa', 'PB', '1990-05-10', ST_GeomFromText('POINT(-7.1195 -34.8450)', 4326)),
-('felipe.alves@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Felipe Alves', 'Maceió', 'AL', '1985-09-02', ST_GeomFromText('POINT(-9.6658 -35.7353)', 4326)),
-('beatriz.costa@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Beatriz Costa', 'Aracaju', 'SE', '1994-03-25', ST_GeomFromText('POINT(-10.9472 -37.0731)', 4326)),
-('rodrigo.ferreira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Rodrigo Ferreira', 'Campo Grande', 'MS', '1988-07-08', ST_GeomFromText('POINT(-20.4697 -54.6201)', 4326)),
-('vanessa.pereira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Vanessa Pereira', 'Cuiabá', 'MT', '1991-11-14', ST_GeomFromText('POINT(-15.6010 -56.0974)', 4326)),
-('marcelo.martins@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Marcelo Martins', 'Porto Velho', 'RO', '1987-04-30', ST_GeomFromText('POINT(-8.7619 -63.9039)', 4326)),
-('elaine.santos@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Elaine Santos', 'Rio Branco', 'AC', '1984-10-18', ST_GeomFromText('POINT(-9.9754 -67.8249)', 4326)),
-('igor.gomes@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Igor Gomes', 'Boa Vista', 'RR', '1993-01-22', ST_GeomFromText('POINT(2.8235 -60.6758)', 4326)),
-('leticia.lima@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Leticia Lima', 'São Paulo', 'SP', '1995-06-05', ST_GeomFromText('POINT(-23.5505 -46.6333)', 4326)),
-('danilo.silva@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Danilo Silva', 'Rio de Janeiro', 'RJ', '1989-08-28', ST_GeomFromText('POINT(-22.9068 -43.1729)', 4326)),
-('monica.souza@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Monica Souza', 'Belo Horizonte', 'MG', '1992-02-14', ST_GeomFromText('POINT(-19.9167 -43.9345)', 4326)),
-('eduardo.oliveira@gmail.com', 'pbkdf2_sha256$1000000$l8XBm8Z49Qkms3QVmkQYP1$2wYS/+kyD9G259Si3zvA/T8JzdevHAWZG9pD/sMjkpc=', 'Eduardo Oliveira', 'Salvador', 'BA', '1986-11-09', ST_GeomFromText('POINT(-12.9777 -38.5016)', 4326));
+('webapp.tutoria+teste01@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Ana Lima', 'Curitiba', 'PR', '1985-03-05', ST_GeomFromText('POINT(-25.4284 -49.2733)', 4326)),
+('webapp.tutoria+teste02@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'João Silva', 'São Paulo', 'SP', '1990-01-03', ST_GeomFromText('POINT(-23.5505 -46.6333)', 4326)),
+('webapp.tutoria+teste03@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', '1979-03-05', ST_GeomFromText('POINT(-22.9068 -43.1729)', 4326)),
+('webapp.tutoria+teste04@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Carlos Souza', 'Belo Horizonte', 'MG', '1988-02-18', ST_GeomFromText('POINT(-19.9167 -43.9345)', 4326)),
+('webapp.tutoria+teste05@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Paula Mendes', 'Salvador', 'BA', '1988-01-05', ST_GeomFromText('POINT(-12.9777 -38.5016)', 4326)),
+('webapp.tutoria+teste06@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Fernanda Rocha', 'Porto Alegre', 'RS', '1992-07-12', ST_GeomFromText('POINT(-30.0346 -51.2177)', 4326)),
+('webapp.tutoria+teste07@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Ricardo Alves', 'Fortaleza', 'CE', '1983-11-25', ST_GeomFromText('POINT(-3.7319 -38.5267)', 4326)),
+('webapp.tutoria+teste08@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Gabriela Costa', 'Brasília', 'DF', '1995-05-30', ST_GeomFromText('POINT(-15.7975 -47.8919)', 4326)),
+('webapp.tutoria+teste09@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Bruno Ferreira', 'Manaus', 'AM', '1987-09-14', ST_GeomFromText('POINT(-3.1190 -60.0217)', 4326)),
+('webapp.tutoria+teste10@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Juliana Pereira', 'Recife', 'PE', '1991-12-08', ST_GeomFromText('POINT(-8.0476 -34.8770)', 4326)),
+('webapp.tutoria+teste11@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Lucas Martins', 'Florianópolis', 'SC', '1989-04-22', ST_GeomFromText('POINT(-27.5954 -48.5480)', 4326)),
+('webapp.tutoria+teste12@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Amanda Santos', 'Vitória', 'ES', '1994-10-05', ST_GeomFromText('POINT(-20.3155 -40.3128)', 4326)),
+('webapp.tutoria+teste13@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Tiago Gomes', 'Goiânia', 'GO', '1986-01-19', ST_GeomFromText('POINT(-16.6869 -49.2648)', 4326)),
+('webapp.tutoria+teste14@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Patricia Lima', 'Belém', 'PA', '1984-06-27', ST_GeomFromText('POINT(-1.4558 -48.4902)', 4326)),
+('webapp.tutoria+teste15@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Rafael Silva', 'São Luís', 'MA', '1993-08-03', ST_GeomFromText('POINT(-2.5307 -44.3068)', 4326)),
+('webapp.tutoria+teste16@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Larissa Souza', 'Natal', 'RN', '1996-02-15', ST_GeomFromText('POINT(-5.7945 -35.2110)', 4326)),
+('webapp.tutoria+teste17@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Andre Oliveira', 'Teresina', 'PI', '1982-12-20', ST_GeomFromText('POINT(-5.0920 -42.8038)', 4326)),
+('webapp.tutoria+teste18@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Camila Mendes', 'João Pessoa', 'PB', '1990-05-10', ST_GeomFromText('POINT(-7.1195 -34.8450)', 4326)),
+('webapp.tutoria+teste19@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Felipe Alves', 'Maceió', 'AL', '1985-09-02', ST_GeomFromText('POINT(-9.6658 -35.7353)', 4326)),
+('webapp.tutoria+teste20@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Beatriz Costa', 'Aracaju', 'SE', '1994-03-25', ST_GeomFromText('POINT(-10.9472 -37.0731)', 4326)),
+('webapp.tutoria+teste21@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Rodrigo Ferreira', 'Campo Grande', 'MS', '1988-07-08', ST_GeomFromText('POINT(-20.4697 -54.6201)', 4326)),
+('webapp.tutoria+teste22@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Vanessa Pereira', 'Cuiabá', 'MT', '1991-11-14', ST_GeomFromText('POINT(-15.6010 -56.0974)', 4326)),
+('webapp.tutoria+teste23@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Marcelo Martins', 'Porto Velho', 'RO', '1987-04-30', ST_GeomFromText('POINT(-8.7619 -63.9039)', 4326)),
+('webapp.tutoria+teste24@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Elaine Santos', 'Rio Branco', 'AC', '1984-10-18', ST_GeomFromText('POINT(-9.9754 -67.8249)', 4326)),
+('webapp.tutoria+teste25@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Igor Gomes', 'Boa Vista', 'RR', '1993-01-22', ST_GeomFromText('POINT(2.8235 -60.6758)', 4326)),
+('webapp.tutoria+teste26@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Leticia Lima', 'São Paulo', 'SP', '1995-06-05', ST_GeomFromText('POINT(-23.5505 -46.6333)', 4326)),
+('webapp.tutoria+teste27@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Danilo Silva', 'Rio de Janeiro', 'RJ', '1989-08-28', ST_GeomFromText('POINT(-22.9068 -43.1729)', 4326)),
+('webapp.tutoria+teste28@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Monica Souza', 'Belo Horizonte', 'MG', '1992-02-14', ST_GeomFromText('POINT(-19.9167 -43.9345)', 4326)),
+('webapp.tutoria+teste29@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Eduardo Oliveira', 'Salvador', 'BA', '1986-11-09', ST_GeomFromText('POINT(-12.9777 -38.5016)', 4326)),
+('webapp.tutoria+teste30@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Vanderson Silva', 'Recife', 'PE', '2002-08-10', ST_GeomFromText('POINT(-8.0476 -34.8770)', 4326));
 
--- CONQUISTAS (Total: 25)
+-- CONQUISTAS (Total: 31)
 INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
 ('B', 50, 'Olá Mundo!', 'Se cadastrou no site.', 'OlaMundo.png'),
 ('B', 50, 'Primeiro Contato', 'Mandou sua primeira mensagem.', 'contato.png'),
@@ -136,7 +138,8 @@ INSERT INTO TUTOR (tutorId, usuarioId, notaAvaliacao) VALUES
 
 -- CONTEM (Relacionamento Tutor-Especialidade, Total: 25)
 INSERT INTO contem (tutorId, especialidadeId) VALUES
-(1, 1), (1, 2), (2, 2),
+(1, 1), (1, 2),
+(2, 2),
 (3, 3), (3, 2),
 (4, 4), (4, 2),
 (5, 5), (5, 2),
@@ -386,6 +389,28 @@ INSERT INTO MENSAGEM (chatId, usuarioId, conteudo) VALUES
 
 -- CONSEGUE (Relacionamento Usuario-Conquista, Total: 25)
 INSERT INTO consegue (usuarioId, conquistaId) VALUES
-(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10),
-(11, 11), (12, 12), (13, 13), (14, 14), (15, 15), (16, 16), (17, 17), (18, 18), (19, 19), (20, 20),
-(21, 21), (22, 22), (23, 23), (24, 24), (25, 25);
+(1, 1),
+(1, 2),
+(1, 3),
+(1, 4),
+(1, 5),
+(1, 6),
+(1, 7),
+(1, 8),
+(1, 9),
+(1, 10),
+(1, 11),
+(1, 12),
+(1, 13),
+(1, 14),
+(1, 15),
+(1, 16),
+(1, 17),
+(1, 18),
+(1, 19),
+(1, 20),
+(1, 21),
+(1, 22),
+(1, 23),
+(1, 24),
+(1, 25);

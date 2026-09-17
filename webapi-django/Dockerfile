@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /app/
 
-RUN chmod +x wait-for-db.sh
+RUN sed -i 's/\r$//' wait-for-db.sh && chmod +x wait-for-db.sh
 
 EXPOSE 8000
 
