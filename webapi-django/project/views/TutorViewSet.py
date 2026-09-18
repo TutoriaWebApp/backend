@@ -47,21 +47,21 @@ class TutorFilter(filters.FilterSet):
         OpenApiParameter(
             name='especialidade', description='ID da Especialidade para filtrar', required=False, type=int),
         OpenApiParameter(
-            name='ordenar_nota', 
-            description="Ordenação por nota. Use 'asc' (menores notas primeiro) ou 'desc' (maiores notas primeiro).", 
-            required=False, 
+            name='ordenar_nota',
+            description="Ordenação por nota. Use 'asc' (menores notas primeiro) ou 'desc' (maiores notas primeiro).",
+            required=False,
             type=str
         ),
         OpenApiParameter(
-            name='ordenar_tutorias', 
-            description="Ordenação por quantidade de tutorias realizadas. Use 'asc' (menos tutorias) ou 'desc' (mais tutorias).", 
-            required=False, 
+            name='ordenar_tutorias',
+            description="Ordenação por quantidade de tutorias realizadas. Use 'asc' (menos tutorias) ou 'desc' (mais tutorias).",
+            required=False,
             type=str
         ),
         OpenApiParameter(
-            name='raio', 
-            description='Raio máximo de busca (em quilômetros) a partir da localização do usuário logado.', 
-            required=False, 
+            name='raio',
+            description='Raio máximo de busca (em quilômetros) a partir da localização do usuário logado.',
+            required=False,
             type=float
         ),
         OpenApiParameter(
@@ -80,17 +80,17 @@ class TutorViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        
+
         queryset = TutorModel.objects.all().select_related('usuarioId').prefetch_related(
-            'especialidades', 
+            'especialidades',
             'especialidades__areaId'
         ).annotate(
-            qtd_tutorias_realizadas=Count('sessoes') 
+            qtd_tutorias_realizadas=Count('sessoes')
         )
-        
+
         if user and user.is_authenticated:
             queryset = queryset.exclude(usuarioId=user)
-            
+
             raio_param = (
                 self.request.query_params.get('raio') or
                 self.request.query_params.get('raio_km') or
@@ -109,14 +109,16 @@ class TutorViewSet(viewsets.ModelViewSet):
 
                 try:
                     from django.contrib.gis.measure import D
-                    queryset = queryset.filter(usuarioId__localizacao__distance_lte=(user_loc, D(km=raio)))
+                    qs_test = queryset.filter(usuarioId__localizacao__distance_lte=(user_loc, D(km=raio)))
+                    qs_test.exists()
+                    queryset = qs_test
                 except Exception:
                     valid_tutor_ids = [
                         t.id for t in queryset
                         if GeoLocalizacaoUtil.haversine_distance(user_loc, getattr(t.usuarioId, 'localizacao', None)) <= raio
                     ]
                     queryset = queryset.filter(id__in=valid_tutor_ids)
-            
+
         ordem_nota = self.request.query_params.get('ordenar_nota', '').lower()
         ordem_tutorias = self.request.query_params.get('ordenar_tutorias', '').lower()
 
