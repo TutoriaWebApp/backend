@@ -28,6 +28,7 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
         parameters=[
             OpenApiParameter(name='area', description='Id de área de pesquisa', type=int, required=False),
             OpenApiParameter(name='especialidade', description='Id de especialidade de pesquisa', type=int, required=False),
+            OpenApiParameter(name='raio', description='Raio máximo de busca (em quilômetros) a partir da localização do usuário.', type=float, required=False),
             OpenApiParameter(name='page', description='Número da página', type=int, required=False),
             OpenApiParameter(name='page_size', description='Quantidade de itens por página', type=int, required=False),
         ],
@@ -61,6 +62,7 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
         dias = request.query_params.getlist('dia[]') or request.query_params.getlist('dia')
         horarios = request.query_params.getlist('horario[]') or request.query_params.getlist('horario')
         area = request.query_params.get('area')
+        raio_param = request.query_params.get('raio') or request.query_params.get('raio_km')
 
         if not area:
             return Response({"mensagem": "O parâmetro 'area' é obrigatório para a recomendação."}, status=400)
@@ -83,6 +85,26 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
         elif area:
             tutors_qs = tutors_qs.filter(especialidades__areaId=area).distinct()
 
+        if raio_param is not None:
+            try:
+                raio = float(raio_param)
+                user_loc = getattr(user, 'localizacao', None)
+                if user_loc:
+                    from django.contrib.gis.measure import D
+                    from project.utils.GeoLocalizacaoUtil import GeoLocalizacaoUtil
+                    try:
+                        qs_test = tutors_qs.filter(usuarioId__localizacao__distance_lte=(user_loc, D(km=raio)))
+                        qs_test.exists()
+                        tutors_qs = qs_test
+                    except Exception:
+                        valid_tutor_ids = [
+                            t.id for t in tutors_qs
+                            if GeoLocalizacaoUtil.haversine_distance(user_loc, getattr(t.usuarioId, 'localizacao', None)) <= raio
+                        ]
+                        tutors_qs = tutors_qs.filter(id__in=valid_tutor_ids)
+            except (ValueError, TypeError):
+                return Response({"mensagem": "O parâmetro de raio/distância deve ser um número válido em quilômetros (Km)."}, status=400)
+
         if not tutors_qs.exists():
             return Response([])
 
@@ -103,6 +125,7 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
                 'cidade': t.usuarioId.cidade,
                 'estado': t.usuarioId.estado,
                 'pontuacao': t.usuarioId.pontuacao,
+                'notaAvaliacao': getattr(t, 'notaAvaliacao', 5.0),
                 'especialidades': tutor_specs_map.get(t.id, [])
             })
 
@@ -153,11 +176,11 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
         else:
             content_scores = np.zeros(len(df_tutors))
 
-        # Ajuste por Localização e Pontuação
+        # Ajuste por Localização, Pontuação e Nota de Avaliação
         loc_scores = np.where(df_tutors['cidade'] == user.cidade, 3.0,
                              np.where(df_tutors['estado'] == user.estado, 1.0, 0.0))
 
-        final_content_scores = (content_scores * 5.0) + loc_scores + (df_tutors['pontuacao'] / 500.0)
+        final_content_scores = (content_scores * 5.0) + loc_scores + (df_tutors['pontuacao'] / 500.0) + (df_tutors['notaAvaliacao'] / 2.0)
 
         # 3. FILTRAGEM COLABORATIVA (User-Item Matrix)
 
