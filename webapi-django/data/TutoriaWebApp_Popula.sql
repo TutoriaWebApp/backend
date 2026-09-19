@@ -70,7 +70,7 @@ INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
 ('P', 500, 'Interessante...', 'Conseguiu alcançar o nível 10.', 'interessante.png'),
 ('O', 800, 'Feedback de Peso', 'Recebeu 3 avaliações com comentário maior que 100 caracteres.', 'feedback.png'),
 ('O', 900, 'Incansável', 'Participou de tutorias por 5 dias seguidos.', 'incansavel.png'),
-('O', 1200, 'Veterano', 'Forneceu 50 tutorias em uma única especialidade.', 'veterano.png'),
+('O', 1200, 'Veterano', 'Forneceu 50 tutorias em uma única área.', 'veterano.png'),
 ('O', 1100, 'Caminho das Pedras IV', 'Participou de 60 sessões de tutoria.', 'caminho4.png'),
 ('O', 1400, 'Caminho das Pedras V', 'Participou de 100 sessões de tutoria.', 'caminho5.png'),
 ('O', 1200, 'O que você quer provar?', 'Conseguiu alcançar o nível 25.', 'oQueVoceQuerProvar.png'),
