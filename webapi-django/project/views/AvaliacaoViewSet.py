@@ -117,6 +117,30 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 		OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
 	]
 )
+
+class TodasAvaliacoesUsuarioViewSet(viewsets.ViewSet):
+    """
+    Retorna o conjunto completo de avaliações recebidas pelo usuário
+    autenticado (tanto como aprendiz quanto como tutor) sem paginação.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        usuario = request.user
+
+        avaliacoes_aprendiz = AvaliacaoAprendizModel.objects.filter(
+            usuarioId=usuario
+        ).values('id', 'nota', 'comentario')
+
+        avaliacoes_tutor = AvaliacaoTutorModel.objects.filter(
+            tutorId__usuarioId=usuario
+        ).values('id', 'nota', 'comentario')
+
+        return Response({
+            'comoAprendiz': list(avaliacoes_aprendiz),
+            'comoTutor': list(avaliacoes_tutor)
+        }, status=status.HTTP_200_OK)
+
 class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 	serializer_class = AvaliacaoTutorSerializer
 	permission_classes = [IsAuthenticated]

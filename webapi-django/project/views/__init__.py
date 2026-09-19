@@ -38,6 +38,7 @@ __all__ = [
 
 	'AvaliacaoAprendizViewSet',
 	'AvaliacaoTutorViewSet',
+    'TodasAvaliacoesUsuarioViewSet',
 	'PendenteAvaliacaoView',
 
 	'ChatViewSet',
