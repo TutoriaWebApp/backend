@@ -82,10 +82,10 @@ INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem, secreta, pist
 ('B', 200, 'Fim de Semana Ativo', 'Realizou uma tutoria em final de semana.', 'fimdesemana.png', true, 'O conhecimento não tira folga no sábado ou domingo...'),
 ('P', 400, 'Coruja', 'Realizou uma tutoria na madrugada (22h às 05h).', 'coruja.png', true, 'Para aqueles cujas mentes brilham sob o luar...'),
 ('P', 450, 'Guerreiro do Feriado', 'Realizou uma tutoria em um feriado nacional.', 'guerreiro.png', true, 'Enquanto todos festeja e comemoram, você evolui...'),
-('O', 850, 'Estrela Ascendente', 'Recebeu 5 avaliações 5 estrelas.', 'estrela.png', true, 'Um céu bonito é cheio de estrelas...'),
+('O', 850, 'Estrela Ascendente', 'Recebeu 20 avaliações 5 estrelas.', 'estrela.png', true, 'Um céu bonito é cheio de estrelas...'),
 ('O', 1000, 'Mestre Bem-Avaliado', 'Manteve uma média maior ou igual a 4.7 como tutor após 20 avaliações.', 'bemAvaliado.png', true, 'A excelência é reconhecida pelos seus aprendizes...'),
 ('O', 800, 'O Nascimento do Conhecimento', 'Participou de uma tutoria no seu aniversário.', 'nascimento.png', true, 'Nesse dia tão especial, seu presente é o conhecimento!'),
-('D', 1600, 'Mestre das Estrelas', 'Recebeu 15 avaliações 5 estrelas.', 'mestreEstrelas.png', true, 'Seu comprometimento tem uma constelação própria!'),
+('D', 1600, 'Mestre das Estrelas', 'Recebeu 50 avaliações 5 estrelas.', 'mestreEstrelas.png', true, 'Seu comprometimento tem uma constelação própria!'),
 ('D', 2000, 'Deixando uma Marca', 'Manteve uma média maior ou igual a 4.7 como tutor ou aprendiz após 80 avaliações.', 'marca.png', true, 'Um legado gravado na história da plataforma...');
 
 -- AREAS (Total: 25
