@@ -57,7 +57,7 @@ INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
 ('B', 50, 'Olá Mundo!', 'Se cadastrou na plataforma.', 'OlaMundo.png'),
 ('B', 50, 'Primeiro Contato', 'Mandou sua primeira mensagem.', 'contato.png'),
 ('B', 100, 'Primeiro Passo', 'Realizou a primeira tutoria com sucesso.', 'passo.png'),
-('B', 150, 'Networking Inicial', 'Mandou mensagem para 5 tutores diferentes.', 'networking.png'),
+('B', 150, 'Networking Inicial', 'Iniciou uma conversa com 5 usuários diferentes.', 'networking.png'),
 ('B', 150, 'Primeira Impressão', 'Recebeu sua primeira avaliação como tutor ou aprendiz.', 'impressao.png'),
 ('B', 100, 'Caminho das Pedras I', 'Participou de 5 sessões de tutoria.', 'caminho1.png'),
 ('B', 150, 'O que?! Quer uma medalha?', 'Conseguiu alcançar o nível 5.', 'querUmaMedalha.png'),
@@ -368,7 +368,6 @@ INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario, dataCriacao) V
 (17, 34, 5, '', '2026-05-19 10:05:00'), (18, 35, 4, '', '2026-05-19 15:05:00'), (19, 36, 4, '', '2026-05-19 12:05:00'), (21, 37, 3, '', '2026-05-19 11:05:00'), (22, 38, 4, '', '2026-05-19 17:05:00'),
 (23, 39, 3, '', '2026-05-19 12:05:00'), (24, 40, 5, '', '2026-05-19 10:05:00'), (25, 41, 3, '', '2026-05-19 16:05:00');
 
--- CHATS (Total: 25)
 INSERT INTO CHAT (tutorId, usuarioId) VALUES
 (1, 26), (2, 27), (3, 28), (4, 29), (5, 30),
 (6, 26), (7, 27), (8, 28), (9, 29), (10, 30),
@@ -376,7 +375,6 @@ INSERT INTO CHAT (tutorId, usuarioId) VALUES
 (16, 26), (17, 27), (18, 28), (19, 29), (20, 30),
 (21, 26), (22, 27), (23, 28), (24, 29), (25, 30);
 
--- MENSAGENS (Total: 25)
 INSERT INTO MENSAGEM (chatId, usuarioId, conteudo) VALUES
 (1, 26, 'Olá, gostaria de tirar dúvidas sobre Cálculo.'),
 (2, 27, 'Poderia revisar o conteúdo de HTML?'),
