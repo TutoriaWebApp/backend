@@ -13,7 +13,7 @@ from project.serializers.ChatSerializer import ChatSerializer, MensagemSerialize
 @extend_schema(
     summary="Chat entre Aluno e Tutor",
     description="Este endpoint gerencia os chats entre alunos e tutores.",
-    tags=['06. Chat']
+    tags=['09. Chat']
 )
 class ChatViewSet(viewsets.ModelViewSet):
     serializer_class = ChatSerializer
@@ -55,7 +55,7 @@ class MensagemPagination(PageNumberPagination):
 @extend_schema(
     summary="Mensagens do Chat",
     description="Este endpoint permite o envio e visualização de mensagens em um chat.",
-    tags=['06. Chat'],
+    tags=['09. Chat'],
     parameters=[
         OpenApiParameter(
             name='chatId', 
@@ -110,7 +110,7 @@ class MensagemViewSet(viewsets.ModelViewSet):
                 }
             }
         },
-        tags=['06. Chat']
+        tags=['09. Chat']
     )
     @action(detail=False, methods=['patch'], url_path='marcar-lidas')
     def marcar_como_lidas(self, request):

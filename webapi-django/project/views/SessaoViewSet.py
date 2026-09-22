@@ -286,7 +286,24 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
             validade=data_validade
         )
 
-
+@extend_schema(
+	summary="Aceitar Solicitação",
+	description=(
+		"Este endpoint gerencia as solicitações de tutoria feitas por alunos. "
+		"Permite filtrar por tipo de participação ('tutor' ou 'aprendiz'), ID da Área, "
+		"ID da Especialidade, escolher a direção da ordenação por data ('desc' ou 'asc') e possui paginação."
+	),
+	request=SolicitacaoSerializer,
+	responses=SolicitacaoSerializer,
+	tags=['05. Solicitar Sessão'],
+	parameters=[
+		OpenApiParameter(name='tipo', description="Filtra pelo papel do usuário logado ('tutor' ou 'aprendiz')", required=False, type=str),
+		OpenApiParameter(name='area', description="ID da Área para filtrar as solicitações", required=False, type=int),
+		OpenApiParameter(name='especialidade', description="ID da Especialidade para filtrar as solicitações", required=False, type=int),
+		OpenApiParameter(name='ordem', description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)", required=False, type=str),
+		OpenApiParameter(name='page', description="Número da página que deseja buscar", required=False, type=int),
+	]
+)
 class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
     queryset = SolicitacaoModel.objects.all()
     serializer_class = SolicitacaoSerializer
@@ -352,7 +369,24 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
                     estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
                 )
 
-
+@extend_schema(
+	summary="Recusar Solicitação",
+	description=(
+		"Este endpoint gerencia as solicitações de tutoria feitas por alunos. "
+		"Permite filtrar por tipo de participação ('tutor' ou 'aprendiz'), ID da Área, "
+		"ID da Especialidade, escolher a direção da ordenação por data ('desc' ou 'asc') e possui paginação."
+	),
+	request=SolicitacaoSerializer,
+	responses=SolicitacaoSerializer,
+	tags=['05. Solicitar Sessão'],
+	parameters=[
+		OpenApiParameter(name='tipo', description="Filtra pelo papel do usuário logado ('tutor' ou 'aprendiz')", required=False, type=str),
+		OpenApiParameter(name='area', description="ID da Área para filtrar as solicitações", required=False, type=int),
+		OpenApiParameter(name='especialidade', description="ID da Especialidade para filtrar as solicitações", required=False, type=int),
+		OpenApiParameter(name='ordem', description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)", required=False, type=str),
+		OpenApiParameter(name='page', description="Número da página que deseja buscar", required=False, type=int),
+	]
+)
 class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):
     queryset = SolicitacaoModel.objects.all()
     serializer_class = SolicitacaoSerializer

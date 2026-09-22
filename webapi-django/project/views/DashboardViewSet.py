@@ -15,7 +15,7 @@ class ProgressoUsuarioView(APIView):
         summary="Progresso e Estatísticas do Usuário",
         description="Retorna o ID do usuário, consolidado de sessões concluídas, conquistas desbloqueadas e pontuação total.",
         responses={200: EstatisticaProgressoSerializer},
-        tags=['01. Usuário']
+        tags=['02. Usuário']
     )
     def get(self, request):
         user = request.user

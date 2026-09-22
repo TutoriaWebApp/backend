@@ -12,7 +12,7 @@ from project.serializers import *
 	description="Este endpoint retorna uma lista com todas as conquistas exibidas na plataforma",
 	request=ConquistaSerializer,
 	responses=ConquistaSerializer,
-	tags=['Conquistas']
+	tags=['10. Conquistas']
 )
 class ConquistaViewSet(viewsets.ReadOnlyModelViewSet):
 	queryset = ConquistaModel.objects.all().order_by('pontos')
@@ -23,7 +23,7 @@ class ConquistaViewSet(viewsets.ReadOnlyModelViewSet):
 	description="Este endpoint recebe uid, token e a nova senha. Caso o uid e o token sejam válidos, a senha é alterada",
 	request=consegueSerializer,
 	responses=consegueSerializer,
-	tags=['Conquistas']
+	tags=['10. Conquistas']
 )
 class consegueViewSet(viewsets.ModelViewSet):
     queryset = consegueModel.objects.all()
@@ -67,7 +67,7 @@ class consegueViewSet(viewsets.ModelViewSet):
 	description="Este endpoint recebe uid, token e a nova senha. Caso o uid e o token sejam válidos, a senha é alterada",
 	request=ConquistaUsuarioSerializer,
 	responses=ConquistaUsuarioSerializer,
-	tags=['Conquistas']
+	tags=['10. Conquistas']
 )
 class Usuario_conseguiu_ConquistaView(generics.ListAPIView):
 	serializer_class = ConquistaUsuarioSerializer

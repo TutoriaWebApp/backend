@@ -32,7 +32,8 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
             OpenApiParameter(name='page', description='Número da página', type=int, required=False),
             OpenApiParameter(name='page_size', description='Quantidade de itens por página', type=int, required=False),
         ],
-        responses={200: SistemaRecomendacaoSerializer(many=True)}
+        responses={200: SistemaRecomendacaoSerializer(many=True)},
+        tags=['11. Recomendações']
     )
     def list(self, request):
         user = request.user
