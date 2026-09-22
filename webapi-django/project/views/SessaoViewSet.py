@@ -274,6 +274,18 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
 
         return queryset
 
+    def perform_create(self, serializer):
+        logged_user = self.request.user
+        agenda = serializer.validated_data.get('agendaId')
+        data_pretendida = serializer.validated_data.get('dataPretendida')
+
+        data_validade = calcular_validade_solicitacao(data_pretendida, agenda.horarioInicio)
+
+        serializer.save(
+            usuarioId=logged_user,
+            validade=data_validade
+        )
+
 
 class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
     queryset = SolicitacaoModel.objects.all()
@@ -281,57 +293,64 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     http_method_names = ['patch']
 
-    def partial_update(self, request, *args, **kwargs):
+    def perform_update(self, serializer):
         solicitacao = self.get_object()
-        user = request.user
+        user = self.request.user
 
+        # 1. Validação de permissão do tutor
         if solicitacao.agendaId.tutorId.usuarioId != user:
             raise ValidationError(
                 {"mensagem": "Apenas o tutor responsável pode aceitar esta solicitação."}
             )
 
+        # 2. Validação de status elegível
         if solicitacao.estado not in [
             SolicitacaoModel.EstadoSolicitacao.PENDENTE,
-            SolicitacaoModel.EstadoSolicitacao.RECORRENTE
+            SolicitacaoModel.EstadoSolicitacao.RECORRENTE,
         ]:
             raise ValidationError(
                 {"mensagem": "Apenas solicitações pendentes podem ser aceitas."}
             )
 
-        eh_recorrente = solicitacao.recorrente or (
+        # Checa se é recorrente ANTES de alterar o estado para ACEITO
+        eh_recorrente = bool(
+            solicitacao.recorrente or 
             solicitacao.estado == SolicitacaoModel.EstadoSolicitacao.RECORRENTE
         )
 
-        solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.ACEITO
-        solicitacao.save()
+        with transaction.atomic():
+            # Salva o estado atual como ACEITO
+            serializer.save(estado=SolicitacaoModel.EstadoSolicitacao.ACEITO)
 
-        SessaoModel.objects.create(
-            usuarioId=solicitacao.usuarioId,
-            tutorId=solicitacao.agendaId.tutorId,
-            areaId=solicitacao.areaId,
-            especialidadeId=solicitacao.especialidadeId,
-            dataSessao=solicitacao.dataPretendida,
-            horarioInicio=solicitacao.agendaId.horarioInicio,
-            horarioFim=solicitacao.agendaId.horarioFim
-        )
-
-        if eh_recorrente:
-            proxima_data = solicitacao.dataPretendida + datetime.timedelta(days=7)
-            nova_validade = calcular_validade_solicitacao(proxima_data, solicitacao.agendaId.horarioInicio)
-
-            SolicitacaoModel.objects.create(
+            # Cria a sessão confirmada referente a esta data
+            SessaoModel.objects.create(
                 usuarioId=solicitacao.usuarioId,
-                agendaId=solicitacao.agendaId,
+                tutorId=solicitacao.agendaId.tutorId,
                 areaId=solicitacao.areaId,
                 especialidadeId=solicitacao.especialidadeId,
-                dataPretendida=proxima_data,
-                validade=nova_validade,
-                recorrente=True,
-                estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
+                dataSessao=solicitacao.dataPretendida,
+                horarioInicio=solicitacao.agendaId.horarioInicio,
+                horarioFim=solicitacao.agendaId.horarioFim,
             )
 
-        serializer = self.get_serializer(solicitacao)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            # Se for recorrente, agenda a próxima semana (+7 dias)
+            if eh_recorrente:
+                proxima_data = solicitacao.dataPretendida + datetime.timedelta(days=7)
+                nova_validade = calcular_validade_solicitacao(
+                    proxima_data, 
+                    solicitacao.agendaId.horarioInicio
+                )
+
+                SolicitacaoModel.objects.create(
+                    usuarioId=solicitacao.usuarioId,
+                    agendaId=solicitacao.agendaId,
+                    areaId=solicitacao.areaId,
+                    especialidadeId=solicitacao.especialidadeId,
+                    dataPretendida=proxima_data,
+                    validade=nova_validade,
+                    recorrente=True,
+                    estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+                )
 
 
 class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):
