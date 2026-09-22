@@ -165,6 +165,14 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
             'agendas',
         ]
 
+    def validate_email(self, value):
+        email_formatado = value.strip().lower()
+        if UsuarioModel.objects.filter(email__iexact=email_formatado).exists():
+            raise serializers.ValidationError(
+                "Já existe uma conta cadastrada com esse e-mail!"
+            )
+        return email_formatado
+
     def create(self, validated_data):
         foto_file = validated_data.pop('foto', None)
         especialidades_data = validated_data.pop('especialidades', [])

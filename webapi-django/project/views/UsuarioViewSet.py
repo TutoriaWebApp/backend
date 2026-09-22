@@ -2,7 +2,7 @@ from datetime import timedelta
 from django.utils import timezone
 from django.db.models import Count
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -37,12 +37,32 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 	tags=['02. Usuário']
 )
 class UsuarioRegistroView(generics.CreateAPIView):
-	queryset = UsuarioModel.objects.all()
-	serializer_class = UsuarioRegistroSerializer
-	permission_classes = [AllowAny]
-	http_method_names = ['post']
+    queryset = UsuarioModel.objects.all()
+    serializer_class = UsuarioRegistroSerializer
+    permission_classes = [AllowAny]
+    http_method_names = ['post']
 
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            errors = serializer.errors
+            
+            if 'email' in errors:
+                email_err = errors['email']
+                msg = email_err[0] if isinstance(email_err, list) else str(email_err)
+                return Response(
+                    {"message": "Já existe uma conta cadastrada com esse e-mail!" if "already exists" in str(msg) or "Já existe" in str(msg) else str(msg)}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
+            primeiro_campo = next(iter(errors))
+            primeiro_erro = errors[primeiro_campo]
+            msg = primeiro_erro[0] if isinstance(primeiro_erro, list) else str(primeiro_erro)
+            return Response({"message": str(msg)}, status=status.HTTP_400_BAD_REQUEST)
+
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 @extend_schema(
 	summary="Exibe/edita informações sobre o Usuário logado",
 	description="Este endpoint exibe/edita um usuário cadastrado na plataforma",
