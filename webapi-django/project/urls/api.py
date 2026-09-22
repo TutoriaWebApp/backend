@@ -42,6 +42,8 @@ router.register(r'recomendacoes', SistemaRecomendacaoViewSet, basename='recomend
 router.register(r'solicitacoes/aceitar', AceitarSolicitacaoViewSet, basename='aceitar-solicitacao')
 router.register(r'solicitacoes/recusar', RecusarSolicitacaoViewSet, basename='recusar-solicitacao')
 
+router.register(r'notificacoes-resumo', ResumoNotificacoesViewSet, basename='notificacoes-resumo')
+
 urlpatterns = [
     path('', include(router.urls)),
 
