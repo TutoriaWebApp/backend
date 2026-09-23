@@ -12,7 +12,7 @@ class ProgressoUsuarioView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        summary="Progresso e Estatísticas do Usuário",
+        summary="Estatísticas do Usuário",
         description="Retorna o ID do usuário, consolidado de sessões concluídas, conquistas desbloqueadas e pontuação total.",
         responses={200: EstatisticaProgressoSerializer},
         tags=['02. Usuário']

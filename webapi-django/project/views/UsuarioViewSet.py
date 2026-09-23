@@ -12,8 +12,8 @@ from project.serializers import *
 
 
 @extend_schema(
-	summary="Lista Usuário da plataforma",
-	description="Este endpoint lista todos os usuários préviamente cadastrado na plataforma",
+	summary="Lista usuário(s) da plataforma",
+	description="Este endpoint lista todos os usuários cadastrados na plataforma.\n\n A versão com o parâmetro ID recebe o ID de um usuário específico e traz suas informações.",
 	request=UsuarioPublicoSerializer,
 	responses=UsuarioPublicoSerializer,
 	tags=['02. Usuário']
@@ -31,7 +31,7 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 
 @extend_schema(
 	summary="Cadastro de Usuário",
-	description="Este endpoint cadastra um usuário na plataforma",
+	description="Este endpoint recebe os dados do usuário e realiza seu cadastro.\n\n Caso o usuário informe dados de tutor no formulário de cadastro (área(s), especialidade(s) e disponibilidade(s)), é realizado seu cadastro como tutor também.",
 	request=UsuarioRegistroSerializer,
 	responses=UsuarioRegistroSerializer,
 	tags=['02. Usuário']
@@ -63,18 +63,19 @@ class UsuarioRegistroView(generics.CreateAPIView):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-@extend_schema(
-	summary="Exibe/edita informações sobre o Usuário logado",
-	description="Este endpoint exibe/edita um usuário cadastrado na plataforma",
-	request=UsuarioSerializer,
-	responses=UsuarioSerializer,
-	tags=['02. Usuário']
-)
+
 class UsuarioPerfilLogadoView(APIView):
 	permission_classes = [IsAuthenticated]
 	serializer_class = UsuarioSerializer
 	http_method_names = ['get', 'patch']
 
+	@extend_schema(
+	summary="Traz informações sobre o usuário logado",
+	description="Este endpoint traz as informações do usuário logado.",
+	request=UsuarioSerializer,
+	responses=UsuarioSerializer,
+	tags=['02. Usuário']
+	)
 	def get(self, request):
 		user = UsuarioModel.objects.annotate(
 			qtd_avaliacoes_aprendiz=Count('avaliacoes_aprendiz')
@@ -86,6 +87,13 @@ class UsuarioPerfilLogadoView(APIView):
 			return Response({'mensagem': str(err)}, status=400)
 		return Response(serializer.data, status=200)
 
+	@extend_schema(
+		summary="Edita informações sobre o usuário logado",
+		description="Este endpoint PATCH permite a edição das informações do usuário logado.",
+		request=UsuarioSerializer,
+		responses=UsuarioSerializer,
+		tags=['02. Usuário']
+	)
 	def patch(self, request):
 		try:
 			serialiazer = UsuarioSerializer(request.user, request.data, partial=True, context={'request': request})
@@ -99,8 +107,8 @@ class UsuarioPerfilLogadoView(APIView):
 
 
 @extend_schema(
-	summary="Altera a senha",
-	description="Este endpoint é para confirmar a senha antiga, antes de alterar a senha do Usuário",
+	summary="Altera a senha do usuário logado",
+	description="Este endpoint é utilizado para o usuário logado alterar a senha de sua conta. Se a senha antiga for confirmada, a senha da conta é alterada.",
 	request=UsuarioAlteraSenhaSerializer,
 	responses=UsuarioAlteraSenhaSerializer,
 	tags=['02. Usuário']

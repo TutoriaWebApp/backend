@@ -18,7 +18,7 @@ from project.models import *
 
 @extend_schema(
 	summary="Fazer Login",
-	description="Este endpoint recebe os dados do usuário para realizar Login.",
+	description="Este endpoint recebe o e-mail e senha do usuário para realizar o Login.",
 	request={
 		'application/json': {
 			'type': 'object',
@@ -84,8 +84,8 @@ class LogInView(APIView):
 		return response
 
 @extend_schema(
-	summary="Refresca o token de login do Usuário",
-	description="Este endpoint recebe Cookies do Usuário e atualiza o dado de refresh_token.",
+	summary="Renova o token de acesso do usuário",
+	description="Este endpoint recebe os cookies de tokens do usuário e renova seu token de acesso (access_token) com usando o token de refresh (refresh_token).",
 	responses={
 		201: {
 			'type': 'object',
@@ -130,7 +130,7 @@ class LoginRefreshView(APIView):
 
 @extend_schema(
 	summary="Logout do Usuário",
-	description="Este endpoint recebe Cookies do Usuário e os remove.",
+	description="Este endpoint recebe os cookies de token do usuário e os remove.",
 	responses={
 		201: {
 			'type': 'object',
@@ -150,8 +150,8 @@ class LogOutView(APIView):
 		return response
 
 @extend_schema(
-	summary="Requisição para alterar a senha",
-	description="Este endpoint recebe e-mail do Usuário e caso este usuário esteja cadastrado envia um email com o link de confirmação de alteração de senha.",
+	summary="Requisição de link para alterar a senha",
+	description="Este endpoint recebe e-mail do usuário. Caso este usuário esteja cadastrado na plataforma, é enviado um e-mail com o link de confirmação de alteração de senha.",
 	request={
 		'application/json': {
 			'type': 'object',
@@ -196,8 +196,8 @@ class PasswordResetView(APIView):
 		return Response({"mensagem": "Se este e-mail estiver cadastrado, um link será enviado para a recuperação de sua senha."}, status=200)
 
 @extend_schema(
-	summary="Confirma a alteração de senha",
-	description="Este endpoint recebe uid, token e a nova senha. Caso o uid e o token sejam válidos, a senha é alterada",
+	summary="Realiza a alteração de senha",
+	description="Este endpoint recebe o UID (ID do usuário no banco, mas transfigurado), um token (ambos token e UID derivados do link de alteração de senha) e a nova senha desejada para a conta. Caso o UID e o token sejam válidos, a senha da conta é alterada.",
 	request={
 		'application/json': {
 			'type': 'object',
