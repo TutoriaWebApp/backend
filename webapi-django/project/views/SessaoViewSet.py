@@ -52,7 +52,7 @@ def calcular_validade_solicitacao(data_pretendida, horario_inicio_agenda):
             return data_base + datetime.timedelta(days=1)
 
     dia_util_seguinte = obter_proximo_dia_util(hoje_brasil)
-    
+
     # Limite padrão: Fim do próximo dia útil às 23:59:59 no horário de Brasília
     limite_fim_do_dia = datetime.datetime.combine(
         dia_util_seguinte,
@@ -98,8 +98,8 @@ def processar_solicitacoes_expiradas():
             for sol in qs:
                 aprendiz_email = sol.usuarioId.email if sol.usuarioId else None
                 tutor_email = (
-                    sol.agendaId.tutorId.usuarioId.email 
-                    if sol.agendaId and sol.agendaId.tutorId and sol.agendaId.tutorId.usuarioId 
+                    sol.agendaId.tutorId.usuarioId.email
+                    if sol.agendaId and sol.agendaId.tutorId and sol.agendaId.tutorId.usuarioId
                     else None
                 )
 
@@ -108,8 +108,8 @@ def processar_solicitacoes_expiradas():
                     'aprendiz_nome': sol.usuarioId.nomePerfil if sol.usuarioId else 'Aprendiz',
                     'tutor_email': tutor_email,
                     'tutor_nome': (
-                        sol.agendaId.tutorId.usuarioId.nomePerfil 
-                        if sol.agendaId and sol.agendaId.tutorId and sol.agendaId.tutorId.usuarioId 
+                        sol.agendaId.tutorId.usuarioId.nomePerfil
+                        if sol.agendaId and sol.agendaId.tutorId and sol.agendaId.tutorId.usuarioId
                         else 'Tutor'
                     ),
                     'area_nome': sol.areaId.nomeArea if sol.areaId else 'Tutoria',
@@ -176,7 +176,7 @@ class AgendaViewSet(viewsets.ModelViewSet):
 	def get_queryset(self):
 		user = self.request.user
 		processar_solicitacoes_expiradas()
-	
+
 		queryset = AgendaModel.objects.all().select_related('tutorId')
 
 		tutor_id = self.request.query_params.get('tutor')
@@ -238,13 +238,16 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
         espec_id      = self.request.query_params.get('especialidade')
         ordem_filtro  = self.request.query_params.get('ordem', '').lower()
 
+        agora = timezone.localtime(timezone.now())
+
         queryset = SolicitacaoModel.objects.filter(
-            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
+            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user),
+			dataPretendida__gte = agora.date()
         ).select_related(
-            'usuarioId', 
+            'usuarioId',
             'agendaId__tutorId',
-            'agendaId__tutorId__usuarioId', 
-            'areaId', 
+            'agendaId__tutorId__usuarioId',
+            'areaId',
             'especialidadeId'
         ).annotate(
             qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
@@ -256,8 +259,10 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
                 agendaId__tutorId__usuarioId=user,
                 estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
             )
+
         elif tipo_filtro == 'aprendiz':
             queryset = queryset.filter(usuarioId=user)
+
         else:
             queryset = queryset.filter(estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE)
 
@@ -268,11 +273,9 @@ class SolicitacaoViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(especialidadeId=espec_id)
 
         if ordem_filtro == 'asc':
-            queryset = queryset.order_by('dataPretendida', 'agendaId__horarioInicio')
-        else:
-            queryset = queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
+            return queryset.order_by('dataPretendida', 'agendaId__horarioInicio')
 
-        return queryset
+        return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
 
     def perform_create(self, serializer):
         logged_user = self.request.user
@@ -331,7 +334,7 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
 
         # Checa se é recorrente ANTES de alterar o estado para ACEITO
         eh_recorrente = bool(
-            solicitacao.recorrente or 
+            solicitacao.recorrente or
             solicitacao.estado == SolicitacaoModel.EstadoSolicitacao.RECORRENTE
         )
 
@@ -354,7 +357,7 @@ class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
             if eh_recorrente:
                 proxima_data = solicitacao.dataPretendida + datetime.timedelta(days=7)
                 nova_validade = calcular_validade_solicitacao(
-                    proxima_data, 
+                    proxima_data,
                     solicitacao.agendaId.horarioInicio
                 )
 
@@ -472,10 +475,10 @@ class SessaoViewSet(viewsets.ModelViewSet):
 		queryset = SessaoModel.objects.filter(
             Q(usuarioId=user) | Q(tutorId__usuarioId=user)
         ).select_related(
-            'usuarioId', 
+            'usuarioId',
             'tutorId',
-            'tutorId__usuarioId', 
-            'areaId', 
+            'tutorId__usuarioId',
+            'areaId',
             'especialidadeId'
         ).annotate(
             qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
@@ -520,30 +523,30 @@ class SessaoViewSet(viewsets.ModelViewSet):
 class SessoesTutorVerificacaoViewSet(viewsets.ReadOnlyModelViewSet):
 	serializer_class = SessaoSerializer
 	permission_classes = [IsAuthenticated]
-	pagination_class = None 
+	pagination_class = None
 	http_method_names = ['get']
 
 	def get_queryset(self):
 		tutor_id = self.request.query_params.get('tutor_id')
-		
+
 		if not tutor_id:
 			return SessaoModel.objects.none()
-			
+
 		try:
 			tutor_registro = TutorModel.objects.get(id=tutor_id)
 			usuario_do_tutor_id = tutor_registro.usuarioId_id
 		except TutorModel.DoesNotExist:
 			return SessaoModel.objects.none()
-			
+
 		return SessaoModel.objects.filter(
 			Q(tutorId=tutor_id) | Q(usuarioId=usuario_do_tutor_id)
 		).select_related(
-			'usuarioId', 
-			'tutorId__usuarioId', 
-			'areaId', 
+			'usuarioId',
+			'tutorId__usuarioId',
+			'areaId',
 			'especialidadeId'
 		).order_by('-dataSessao', '-horarioInicio')
-    
+
 @extend_schema(
 	summary="Listar todas as solicitações do usuário autenticado (Sem Paginação)",
 	description=(
@@ -582,7 +585,7 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        processar_solicitacoes_expiradas() 
+        processar_solicitacoes_expiradas()
 
         agora = timezone.localtime(timezone.now())
 
@@ -593,10 +596,10 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
         queryset = SolicitacaoModel.objects.filter(
             Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
         ).select_related(
-            'usuarioId', 
+            'usuarioId',
             'agendaId__tutorId',
-            'agendaId__tutorId__usuarioId', 
-            'areaId', 
+            'agendaId__tutorId__usuarioId',
+            'areaId',
             'especialidadeId'
         ).annotate(
             qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
@@ -628,7 +631,7 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
             )
 
         return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
-     
+
 @extend_schema(
 	summary="Listar todas as sessões do usuário autenticado (Sem Paginação)",
 	description="Retorna a lista completa de todas as sessões associadas ao usuário logado, englobando tanto o papel de Tutor quanto o de Aprendiz, sem filtros restritivos ou paginação.",
@@ -648,8 +651,8 @@ class TodasSessoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 		return SessaoModel.objects.filter(
 			Q(usuarioId=user) | Q(tutorId__usuarioId=user)
 		).select_related(
-			'usuarioId', 
-			'tutorId__usuarioId', 
-			'areaId', 
+			'usuarioId',
+			'tutorId__usuarioId',
+			'areaId',
 			'especialidadeId'
 		).order_by('-dataSessao', '-horarioInicio')

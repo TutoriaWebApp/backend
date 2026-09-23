@@ -38,6 +38,7 @@ class ResumoNotificacoesViewSet(viewsets.ViewSet):
 
         solicitacoes_resolvidas_aprendiz = SolicitacaoModel.objects.filter(
             usuarioId=user,
+            dataPretendida__gte = agora.date(),
             estado__in=[
                 SolicitacaoModel.EstadoSolicitacao.ACEITO,
                 SolicitacaoModel.EstadoSolicitacao.RECUSADO
