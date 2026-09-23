@@ -20,153 +20,131 @@ class SessaoPagination(PageNumberPagination):
 	page_size_query_param = 'page_size'
 	max_page_size = 100
 
-import datetime
-from zoneinfo import ZoneInfo
-from django.utils import timezone
-from rest_framework import viewsets, status
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.exceptions import ValidationError
-from django.db.models import Q, Count
 
 def calcular_validade_solicitacao(data_pretendida, horario_inicio_agenda):
-    """
-    Calcula o prazo de validade no fuso horário do Brasil:
-    - Fim do próximo dia útil (23:59:59)
-    - Ou o próprio horário de início da sessão, caso ocorra antes desse limite.
-    """
-    fuso_brasil = ZoneInfo("America/Sao_Paulo")
-    agora_brasil = datetime.datetime.now(fuso_brasil)
-    hoje_brasil = agora_brasil.date()
+	"""
+	Calcula o prazo de validade no fuso horário do Brasil:
+	- Fim do próximo dia útil (23:59:59)
+	- Ou o próprio horário de início da sessão, caso ocorra antes desse limite.
+	"""
+	fuso_brasil = ZoneInfo("America/Sao_Paulo")
+	agora_brasil = datetime.datetime.now(fuso_brasil)
+	hoje_brasil = agora_brasil.date()
 
-    def obter_proximo_dia_util(data_base):
-        # 0=Seg, 1=Ter, 2=Qua, 3=Qui, 4=Sex, 5=Sab, 6=Dom
-        dia_semana = data_base.weekday()
-        if dia_semana == 4:     # Sexta -> Próxima segunda (+3 dias)
-            return data_base + datetime.timedelta(days=3)
-        elif dia_semana == 5:   # Sábado -> Próxima segunda (+2 dias)
-            return data_base + datetime.timedelta(days=2)
-        elif dia_semana == 6:   # Domingo -> Próxima segunda (+1 dia)
-            return data_base + datetime.timedelta(days=1)
-        else:                   # Seg a Qui -> Dia seguinte (+1 dia)
-            return data_base + datetime.timedelta(days=1)
+	def obter_proximo_dia_util(data_base):
+		# 0=Seg, 1=Ter, 2=Qua, 3=Qui, 4=Sex, 5=Sab, 6=Dom
+		dia_semana = data_base.weekday()
+		if dia_semana == 4:     # Sexta -> Próxima segunda (+3 dias)
+			return data_base + datetime.timedelta(days=3)
+		elif dia_semana == 5:   # Sábado -> Próxima segunda (+2 dias)
+			return data_base + datetime.timedelta(days=2)
+		elif dia_semana == 6:   # Domingo -> Próxima segunda (+1 dia)
+			return data_base + datetime.timedelta(days=1)
+		else:                   # Seg a Qui -> Dia seguinte (+1 dia)
+			return data_base + datetime.timedelta(days=1)
 
-    dia_util_seguinte = obter_proximo_dia_util(hoje_brasil)
+	dia_util_seguinte = obter_proximo_dia_util(hoje_brasil)
 
-    # Limite padrão: Fim do próximo dia útil às 23:59:59 no horário de Brasília
-    limite_fim_do_dia = datetime.datetime.combine(
-        dia_util_seguinte,
-        datetime.time(23, 59, 59)
-    ).replace(tzinfo=fuso_brasil)
+	# Limite padrão: Fim do próximo dia útil às 23:59:59 no horário de Brasília
+	limite_fim_do_dia = datetime.datetime.combine(
+		dia_util_seguinte,
+		datetime.time(23, 59, 59)
+	).replace(tzinfo=fuso_brasil)
 
-    # Horário exato em que a sessão acontecerá
-    momento_tutoria = datetime.datetime.combine(
-        data_pretendida,
-        horario_inicio_agenda
-    ).replace(tzinfo=fuso_brasil)
+	# Horário exato em que a sessão acontecerá
+	momento_tutoria = datetime.datetime.combine(
+		data_pretendida,
+		horario_inicio_agenda
+	).replace(tzinfo=fuso_brasil)
 
-    # Se a sessão for antes do limite do fim do dia útil, o prazo é a própria sessão
-    if momento_tutoria < limite_fim_do_dia:
-        return momento_tutoria
-    return limite_fim_do_dia
+	# Se a sessão for antes do limite do fim do dia útil, o prazo é a própria sessão
+	if momento_tutoria < limite_fim_do_dia:
+		return momento_tutoria
+	return limite_fim_do_dia
+
 
 def processar_solicitacoes_expiradas():
-    """
-    Bloqueia e remove imediatamente as solicitações pendentes vencidas,
-    garantindo que exatamente 1 processo pegue os dados para disparo de e-mail.
-    """
-    agora = timezone.localtime(timezone.now())
-    solicitacoes_para_notificar = []
+	"""
+	Bloqueia e remove imediatamente as solicitações pendentes vencidas,
+	garantindo que exatamente 1 processo pegue os dados para disparo de e-mail.
+	"""
+	agora = timezone.localtime(timezone.now())
+	solicitacoes_para_notificar = []
 
-    with transaction.atomic():
-        # select_for_update sem joins bloqueia as linhas no MySQL
-        qs_ids = SolicitacaoModel.objects.select_for_update(skip_locked=True).filter(
-            estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
-            validade__lte=agora
-        )
+	with transaction.atomic():
+		# select_for_update sem joins bloqueia as linhas no MySQL
+		qs_ids = SolicitacaoModel.objects.select_for_update(skip_locked=True).filter(
+			estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+			validade__lte=agora
+		)
 
-        # Se outra requisição simultânea já pegou o lock, qs_ids virá vazio
-        ids_expirados = list(qs_ids.values_list('id', flat=True))
+		# Se outra requisição simultânea já pegou o lock, qs_ids virá vazio
+		ids_expirados = list(qs_ids.values_list('id', flat=True))
 
-        if ids_expirados:
-            qs = SolicitacaoModel.objects.filter(id__in=ids_expirados).select_related(
-                'usuarioId',
-                'agendaId__tutorId__usuarioId',
-                'areaId'
-            )
+		if ids_expirados:
+			qs = SolicitacaoModel.objects.filter(id__in=ids_expirados).select_related(
+				'usuarioId',
+				'agendaId__tutorId__usuarioId',
+				'areaId'
+			)
 
-            for sol in qs:
-                aprendiz_email = sol.usuarioId.email if sol.usuarioId else None
-                tutor_email = (
-                    sol.agendaId.tutorId.usuarioId.email
-                    if sol.agendaId and sol.agendaId.tutorId and sol.agendaId.tutorId.usuarioId
-                    else None
-                )
+			for sol in qs:
+				aprendiz_email = sol.usuarioId.email if sol.usuarioId else None
+				tutor_email = (
+					sol.agendaId.tutorId.usuarioId.email
+					if sol.agendaId and sol.agendaId.tutorId and sol.agendaId.tutorId.usuarioId
+					else None
+				)
 
-                solicitacoes_para_notificar.append({
-                    'aprendiz_email': aprendiz_email,
-                    'aprendiz_nome': sol.usuarioId.nomePerfil if sol.usuarioId else 'Aprendiz',
-                    'tutor_email': tutor_email,
-                    'tutor_nome': (
-                        sol.agendaId.tutorId.usuarioId.nomePerfil
-                        if sol.agendaId and sol.agendaId.tutorId and sol.agendaId.tutorId.usuarioId
-                        else 'Tutor'
-                    ),
-                    'area_nome': sol.areaId.nomeArea if sol.areaId else 'Tutoria',
-                    'data_formatada': sol.dataPretendida.strftime('%d/%m/%Y') if sol.dataPretendida else '',
-                })
+				solicitacoes_para_notificar.append({
+					'aprendiz_email': aprendiz_email,
+					'aprendiz_nome': sol.usuarioId.nomePerfil if sol.usuarioId else 'Aprendiz',
+					'tutor_email': tutor_email,
+					'tutor_nome': (
+						sol.agendaId.tutorId.usuarioId.nomePerfil
+						if sol.agendaId and sol.agendaId.tutorId and sol.agendaId.tutorId.usuarioId
+						else 'Tutor'
+					),
+					'area_nome': sol.areaId.nomeArea if sol.areaId else 'Tutoria',
+					'data_formatada': sol.dataPretendida.strftime('%d/%m/%Y') if sol.dataPretendida else '',
+				})
 
-            # Exclui imediatamente do banco antes de liberar a transação
-            SolicitacaoModel.objects.filter(id__in=ids_expirados).delete()
+			# Exclui imediatamente do banco antes de liberar a transação
+			SolicitacaoModel.objects.filter(id__in=ids_expirados).delete()
 
-    # Disparo de e-mails
-    for item in solicitacoes_para_notificar:
-        # 1. E-mail exclusivo para o Aprendiz
-        if item['aprendiz_email']:
-            send_mail(
-                subject='TutoriaWeb - Solicitação Expirada',
-                message=(
-                    f"Olá, {item['aprendiz_nome']}.\n\n"
-                    f"Sua solicitação de tutoria em '{item['area_nome']}' para o dia {item['data_formatada']} "
-                    f"expirou pois não obteve resposta do tutor a tempo.\n\n"
-                    f"O horário foi liberado e você pode realizar uma nova solicitação na plataforma."
-                ),
-                from_email="webapp.tutoria@gmail.com",
-                recipient_list=[item['aprendiz_email']],
-                fail_silently=True,
-            )
+	# Disparo de e-mails
+	for item in solicitacoes_para_notificar:
+		# 1. E-mail exclusivo para o Aprendiz
+		if item['aprendiz_email']:
+			send_mail(
+				subject='TutoriaWeb - Solicitação Expirada',
+				message=(
+					f"Olá, {item['aprendiz_nome']}.\n\n"
+					f"Sua solicitação de tutoria em '{item['area_nome']}' para o dia {item['data_formatada']} "
+					f"expirou pois não obteve resposta do tutor a tempo.\n\n"
+					f"O horário foi liberado e você pode realizar uma nova solicitação na plataforma."
+				),
+				from_email="webapp.tutoria@gmail.com",
+				recipient_list=[item['aprendiz_email']],
+				fail_silently=True,
+			)
 
-        # 2. E-mail exclusivo para o Tutor (somente se não for o mesmo e-mail do aprendiz)
-        if item['tutor_email'] and item['tutor_email'] != item['aprendiz_email']:
-            send_mail(
-                subject='TutoriaWeb - Solicitação Expirada por Falta de Resposta',
-                message=(
-                    f"Olá, {item['tutor_nome']}.\n\n"
-                    f"A solicitação de tutoria enviada por {item['aprendiz_nome']} em '{item['area_nome']}' "
-                    f"para o dia {item['data_formatada']} expirou pelo encerramento do prazo de resposta.\n\n"
-                    f"O horário correspondente na sua agenda voltou a ficar disponível."
-                ),
-                from_email="webapp.tutoria@gmail.com",
-                recipient_list=[item['tutor_email']],
-                fail_silently=True,
-            )
+		# 2. E-mail exclusivo para o Tutor (somente se não for o mesmo e-mail do aprendiz)
+		if item['tutor_email'] and item['tutor_email'] != item['aprendiz_email']:
+			send_mail(
+				subject='TutoriaWeb - Solicitação Expirada por Falta de Resposta',
+				message=(
+					f"Olá, {item['tutor_nome']}.\n\n"
+					f"A solicitação de tutoria enviada por {item['aprendiz_nome']} em '{item['area_nome']}' "
+					f"para o dia {item['data_formatada']} expirou pelo encerramento do prazo de resposta.\n\n"
+					f"O horário correspondente na sua agenda voltou a ficar disponível."
+				),
+				from_email="webapp.tutoria@gmail.com",
+				recipient_list=[item['tutor_email']],
+				fail_silently=True,
+			)
 
 
-@extend_schema(
-	summary="Agenda do Tutor",
-	description="Este endpoint permite gerenciar os horários disponíveis (slots). Usar  o parâmetro '?tutor=ID' na URL para filtra a agenda para a de um tutor específico.",
-	request=AgendaSerializer,
-	responses=AgendaSerializer,
-	tags=['05. Solicitar Sessão'],
-	parameters=[
-		OpenApiParameter(
-			name='tutor',
-			description='ID do Tutor para buscar os horários disponíveis na agenda',
-			required=False,
-			type=int
-		),
-	]
-)
 class AgendaViewSet(viewsets.ModelViewSet):
 	queryset = AgendaModel.objects.all()
 	serializer_class = AgendaSerializer
@@ -179,13 +157,48 @@ class AgendaViewSet(viewsets.ModelViewSet):
 
 		queryset = AgendaModel.objects.all().select_related('tutorId')
 
-		tutor_id = self.request.query_params.get('tutor')
+	@extend_schema(
+		summary="Lista horários da agenda",
+		description=(
+			"Retorna os horários/slots de disponibilidade cadastrados.\n\n"
+			"É possível utilizar o parâmetro '?tutor=ID' na URL para filtrar a agenda e "
+			"exibir apenas os horários de um tutor específico."
+		),
+		responses={200: AgendaSerializer(many=True)},
+		tags=['05. Solicitar Sessão'],
+		parameters=[
+			OpenApiParameter(
+				name='tutor',
+				description='ID do Tutor para buscar os horários disponíveis na agenda',
+				required=False,
+				type=int
+			),
+		]
+	)
+	def list(self, request, *args, **kwargs):
+		return super().list(request, *args, **kwargs)
 
-		if tutor_id is not None:
-			queryset = queryset.filter(tutorId=tutor_id)
+	@extend_schema(
+		summary="Detalha um horário da agenda por ID",
+		description="Recebe o ID de um slot da agenda e retorna as suas informações de disponibilidade.",
+		responses={200: AgendaSerializer},
+		tags=['05. Solicitar Sessão'],
+		parameters=[]
+	)
+	def retrieve(self, request, *args, **kwargs):
+		return super().retrieve(request, *args, **kwargs)
 
-		return queryset
-
+	@extend_schema(
+		summary="Cria um novo horário na agenda do tutor",
+		description=(
+			"Permite cadastrar um novo slot de disponibilidade na agenda.\n\n"
+			"Apenas usuários cadastrados como tutores podem criar novos horários"
+		),
+		request=AgendaSerializer,
+		responses={201: AgendaSerializer},
+		tags=['05. Solicitar Sessão'],
+		parameters=[]  # Zera os parâmetros de query para a criação
+	)
 	def create(self, request, *args, **kwargs):
 
 		try:
@@ -204,286 +217,377 @@ class AgendaViewSet(viewsets.ModelViewSet):
 		headers = self.get_success_headers(serializer.data)
 		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
+	@extend_schema(
+		summary="Remove um horário da agenda",
+		description="Remove um slot de disponibilidade da agenda do tutor a partir do ID de agenda fornecido.",
+		responses={204: None},
+		tags=['05. Solicitar Sessão']
+	)
+	def destroy(self, request, *args, **kwargs):
+		return super().destroy(request, *args, **kwargs)
 
-@extend_schema(
-	summary="Dados de Solicitação",
-	description=(
-		"Este endpoint gerencia as solicitações de tutoria feitas por alunos. "
-		"Permite filtrar por tipo de participação ('tutor' ou 'aprendiz'), ID da Área, "
-		"ID da Especialidade, escolher a direção da ordenação por data ('desc' ou 'asc') e possui paginação."
-	),
-	request=SolicitacaoSerializer,
-	responses=SolicitacaoSerializer,
-	tags=['05. Solicitar Sessão'],
-	parameters=[
-		OpenApiParameter(name='tipo', description="Filtra pelo papel do usuário logado ('tutor' ou 'aprendiz')", required=False, type=str),
-		OpenApiParameter(name='area', description="ID da Área para filtrar as solicitações", required=False, type=int),
-		OpenApiParameter(name='especialidade', description="ID da Especialidade para filtrar as solicitações", required=False, type=int),
-		OpenApiParameter(name='ordem', description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)", required=False, type=str),
-		OpenApiParameter(name='page', description="Número da página que deseja buscar", required=False, type=int),
-	]
-)
+	def get_queryset(self):
+		user = self.request.user
+		processar_solicitacoes_expiradas()
+
+		queryset = AgendaModel.objects.all().select_related('tutorId')
+
+		tutor_id = self.request.query_params.get('tutor')
+
+		if tutor_id is not None:
+			queryset = queryset.filter(tutorId=tutor_id)
+
+		return queryset
+
+
+
 class SolicitacaoViewSet(viewsets.ModelViewSet):
-    serializer_class = SolicitacaoSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = SessaoPagination
-    http_method_names = ['get', 'post', 'patch']
+	serializer_class = SolicitacaoSerializer
+	permission_classes = [IsAuthenticated]
+	pagination_class = SessaoPagination
+	http_method_names = ['get', 'post', 'patch']
 
-    def get_queryset(self):
-        user = self.request.user
-        processar_solicitacoes_expiradas()
+	@extend_schema(
+		summary="Lista solicitações de tutoria",
+		description=(
+			"Este endpoint lista as solicitações de tutoria pendentes vinculadas ao usuário logado.\n\n"
+			"Permite filtrar pelo papel ('tutor' para solicitações recebidas ou 'aprendiz' para enviadas), "
+			"por ID de Área e Especialidade, controlar a ordenação por data e possui paginação."
+		),
+		responses={200: SolicitacaoSerializer(many=True)},
+		tags=['05. Solicitar Sessão'],
+		parameters=[
+			OpenApiParameter(
+				name='tipo',
+				description="Filtra pelo papel do usuário logado ('tutor' ou 'aprendiz')",
+				required=False,
+				type=str
+			),
+			OpenApiParameter(
+				name='area',
+				description="ID da Área para filtrar as solicitações",
+				required=False,
+				type=int
+			),
+			OpenApiParameter(
+				name='especialidade',
+				description="ID da Especialidade para filtrar as solicitações",
+				required=False,
+				type=int
+			),
+			OpenApiParameter(
+				name='ordem',
+				description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)",
+				required=False,
+				type=str
+			),
+			OpenApiParameter(
+				name='page',
+				description="Número da página que deseja buscar",
+				required=False,
+				type=int
+			),
+		]
+	)
+	def list(self, request, *args, **kwargs):
+		return super().list(request, *args, **kwargs)
 
-        tipo_filtro   = self.request.query_params.get('tipo', '').lower()
-        area_id       = self.request.query_params.get('area')
-        espec_id      = self.request.query_params.get('especialidade')
-        ordem_filtro  = self.request.query_params.get('ordem', '').lower()
+	@extend_schema(
+		summary="Detalha uma solicitação por ID",
+		description="Recebe o ID de uma solicitação de tutoria e retorna seus detalhes.",
+		responses={200: SolicitacaoSerializer},
+		tags=['05. Solicitar Sessão'],
+		parameters=[]
+	)
+	def retrieve(self, request, *args, **kwargs):
+		return super().retrieve(request, *args, **kwargs)
 
-        agora = timezone.localtime(timezone.now())
+	@extend_schema(
+		summary="Cria uma nova solicitação de tutoria",
+		description=(
+			"Permite que um aprendiz solicite um pedido de tutoria para uma agenda específica de um tutor.\n\n"
+			"O sistema associa o usuário logado como aprendiz e calcula a data limite de validade da solicitação."
+		),
+		request=SolicitacaoSerializer,
+		responses={201: SolicitacaoSerializer},
+		tags=['05. Solicitar Sessão'],
+		parameters=[]
+	)
+	def create(self, request, *args, **kwargs):
+		return super().create(request, *args, **kwargs)
 
-        queryset = SolicitacaoModel.objects.filter(
-            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user),
+	@extend_schema(
+		summary="Atualiza parcialmente uma solicitação (Aceitar/Recusar)",
+		description=(
+			"Permite alterar o status de uma solicitação (ex: aceitar ou recusar o pedido de tutoria).\n\n"
+			"Ao aceitar, o sistema confirma o agendamento e gera a sessão correspondente."
+		),
+		request=SolicitacaoSerializer,
+		responses={200: SolicitacaoSerializer},
+		tags=['05. Solicitar Sessão'],
+		parameters=[]
+	)
+	def partial_update(self, request, *args, **kwargs):
+		return super().partial_update(request, *args, **kwargs)
+
+	def get_queryset(self):
+		user = self.request.user
+		processar_solicitacoes_expiradas()
+
+		tipo_filtro = self.request.query_params.get('tipo', '').lower()
+		area_id = self.request.query_params.get('area')
+		espec_id = self.request.query_params.get('especialidade')
+		ordem_filtro = self.request.query_params.get('ordem', '').lower()
+
+		agora = timezone.localtime(timezone.now())
+
+		queryset = SolicitacaoModel.objects.filter(
+			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user),
 			dataPretendida__gte = agora.date()
-        ).select_related(
-            'usuarioId',
-            'agendaId__tutorId',
-            'agendaId__tutorId__usuarioId',
-            'areaId',
-            'especialidadeId'
-        ).annotate(
-            qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
-            qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
-        )
+		).select_related(
+			'usuarioId',
+			'agendaId__tutorId',
+			'agendaId__tutorId__usuarioId',
+			'areaId',
+			'especialidadeId'
+		).annotate(
+			qtd_avaliacoes_aprendiz=Count(
+				'usuarioId__avaliacoes_aprendiz', distinct=True),
+			qtd_avaliacoes_tutor=Count(
+				'agendaId__tutorId__avaliacoes_tutor', distinct=True)
+		)
 
-        if tipo_filtro == 'tutor':
-            queryset = queryset.filter(
-                agendaId__tutorId__usuarioId=user,
-                estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
-            )
+		if tipo_filtro == 'tutor':
+			queryset = queryset.filter(
+				agendaId__tutorId__usuarioId=user,
+				estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
+			)
 
-        elif tipo_filtro == 'aprendiz':
-            queryset = queryset.filter(usuarioId=user)
+		elif tipo_filtro == 'aprendiz':
+			queryset = queryset.filter(usuarioId=user)
 
-        else:
-            queryset = queryset.filter(estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE)
+		else:
+			queryset = queryset.filter(
+				estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE)
 
-        if area_id is not None:
-            queryset = queryset.filter(areaId=area_id)
+		if area_id is not None:
+			queryset = queryset.filter(areaId=area_id)
 
-        if espec_id is not None:
-            queryset = queryset.filter(especialidadeId=espec_id)
+		if espec_id is not None:
+			queryset = queryset.filter(especialidadeId=espec_id)
 
-        if ordem_filtro == 'asc':
-            return queryset.order_by('dataPretendida', 'agendaId__horarioInicio')
+		if ordem_filtro == 'asc':
+			return queryset.order_by('dataPretendida', 'agendaId__horarioInicio')
 
-        return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
+		return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
 
-    def perform_create(self, serializer):
-        logged_user = self.request.user
-        agenda = serializer.validated_data.get('agendaId')
-        data_pretendida = serializer.validated_data.get('dataPretendida')
+	def perform_create(self, serializer):
+		logged_user = self.request.user
+		agenda = serializer.validated_data.get('agendaId')
+		data_pretendida = serializer.validated_data.get('dataPretendida')
 
-        data_validade = calcular_validade_solicitacao(data_pretendida, agenda.horarioInicio)
+		data_validade = calcular_validade_solicitacao(
+			data_pretendida, agenda.horarioInicio)
 
-        serializer.save(
-            usuarioId=logged_user,
-            validade=data_validade
-        )
+		serializer.save(
+			usuarioId=logged_user,
+			validade=data_validade
+		)
+
 
 @extend_schema(
-	summary="Aceitar Solicitação",
+	summary="Aceita Solicitação",
 	description=(
-		"Este endpoint gerencia as solicitações de tutoria feitas por alunos. "
-		"Permite filtrar por tipo de participação ('tutor' ou 'aprendiz'), ID da Área, "
-		"ID da Especialidade, escolher a direção da ordenação por data ('desc' ou 'asc') e possui paginação."
+		"Este endpoint é usado para um tutor aceitar uma solicitação de tutoria, criando uma sessão."
 	),
 	request=SolicitacaoSerializer,
 	responses=SolicitacaoSerializer,
 	tags=['05. Solicitar Sessão'],
-	parameters=[
-		OpenApiParameter(name='tipo', description="Filtra pelo papel do usuário logado ('tutor' ou 'aprendiz')", required=False, type=str),
-		OpenApiParameter(name='area', description="ID da Área para filtrar as solicitações", required=False, type=int),
-		OpenApiParameter(name='especialidade', description="ID da Especialidade para filtrar as solicitações", required=False, type=int),
-		OpenApiParameter(name='ordem', description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)", required=False, type=str),
-		OpenApiParameter(name='page', description="Número da página que deseja buscar", required=False, type=int),
-	]
-)
+	parameters=[]
+	)
 class AceitarSolicitacaoViewSet(viewsets.ModelViewSet):
-    queryset = SolicitacaoModel.objects.all()
-    serializer_class = SolicitacaoSerializer
-    permission_classes = [IsAuthenticated]
-    http_method_names = ['patch']
+	queryset = SolicitacaoModel.objects.all()
+	serializer_class = SolicitacaoSerializer
+	permission_classes = [IsAuthenticated]
+	http_method_names = ['patch']
 
-    def perform_update(self, serializer):
-        solicitacao = self.get_object()
-        user = self.request.user
+	def perform_update(self, serializer):
+		solicitacao = self.get_object()
+		user = self.request.user
 
-        # 1. Validação de permissão do tutor
-        if solicitacao.agendaId.tutorId.usuarioId != user:
-            raise ValidationError(
-                {"mensagem": "Apenas o tutor responsável pode aceitar esta solicitação."}
-            )
+		# 1. Validação de permissão do tutor
+		if solicitacao.agendaId.tutorId.usuarioId != user:
+			raise ValidationError(
+				{"mensagem": "Apenas o tutor responsável pode aceitar esta solicitação."}
+			)
 
-        # 2. Validação de status elegível
-        if solicitacao.estado not in [
-            SolicitacaoModel.EstadoSolicitacao.PENDENTE,
-            SolicitacaoModel.EstadoSolicitacao.RECORRENTE,
-        ]:
-            raise ValidationError(
-                {"mensagem": "Apenas solicitações pendentes podem ser aceitas."}
-            )
+		# 2. Validação de status elegível
+		if solicitacao.estado not in [
+			SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+			SolicitacaoModel.EstadoSolicitacao.RECORRENTE,
+		]:
+			raise ValidationError(
+				{"mensagem": "Apenas solicitações pendentes podem ser aceitas."}
+			)
 
-        # Checa se é recorrente ANTES de alterar o estado para ACEITO
-        eh_recorrente = bool(
-            solicitacao.recorrente or
-            solicitacao.estado == SolicitacaoModel.EstadoSolicitacao.RECORRENTE
-        )
+		# Checa se é recorrente ANTES de alterar o estado para ACEITO
+		eh_recorrente = bool(
+			solicitacao.recorrente or
+			solicitacao.estado == SolicitacaoModel.EstadoSolicitacao.RECORRENTE
+		)
 
-        with transaction.atomic():
-            # Salva o estado atual como ACEITO
-            serializer.save(estado=SolicitacaoModel.EstadoSolicitacao.ACEITO)
+		with transaction.atomic():
+			# Salva o estado atual como ACEITO
+			serializer.save(estado=SolicitacaoModel.EstadoSolicitacao.ACEITO)
 
-            # Cria a sessão confirmada referente a esta data
-            SessaoModel.objects.create(
-                usuarioId=solicitacao.usuarioId,
-                tutorId=solicitacao.agendaId.tutorId,
-                areaId=solicitacao.areaId,
-                especialidadeId=solicitacao.especialidadeId,
-                dataSessao=solicitacao.dataPretendida,
-                horarioInicio=solicitacao.agendaId.horarioInicio,
-                horarioFim=solicitacao.agendaId.horarioFim,
-            )
+			# Cria a sessão confirmada referente a esta data
+			SessaoModel.objects.create(
+				usuarioId=solicitacao.usuarioId,
+				tutorId=solicitacao.agendaId.tutorId,
+				areaId=solicitacao.areaId,
+				especialidadeId=solicitacao.especialidadeId,
+				dataSessao=solicitacao.dataPretendida,
+				horarioInicio=solicitacao.agendaId.horarioInicio,
+				horarioFim=solicitacao.agendaId.horarioFim,
+			)
 
-            # Se for recorrente, agenda a próxima semana (+7 dias)
-            if eh_recorrente:
-                proxima_data = solicitacao.dataPretendida + datetime.timedelta(days=7)
-                nova_validade = calcular_validade_solicitacao(
-                    proxima_data,
-                    solicitacao.agendaId.horarioInicio
-                )
+			# Se for recorrente, agenda a próxima semana (+7 dias)
+			if eh_recorrente:
+				proxima_data = solicitacao.dataPretendida + \
+					datetime.timedelta(days=7)
+				nova_validade = calcular_validade_solicitacao(
+					proxima_data,
+					solicitacao.agendaId.horarioInicio
+				)
 
-                SolicitacaoModel.objects.create(
-                    usuarioId=solicitacao.usuarioId,
-                    agendaId=solicitacao.agendaId,
-                    areaId=solicitacao.areaId,
-                    especialidadeId=solicitacao.especialidadeId,
-                    dataPretendida=proxima_data,
-                    validade=nova_validade,
-                    recorrente=True,
-                    estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
-                )
+				SolicitacaoModel.objects.create(
+					usuarioId=solicitacao.usuarioId,
+					agendaId=solicitacao.agendaId,
+					areaId=solicitacao.areaId,
+					especialidadeId=solicitacao.especialidadeId,
+					dataPretendida=proxima_data,
+					validade=nova_validade,
+					recorrente=True,
+					estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+				)
+
 
 @extend_schema(
-	summary="Recusar Solicitação",
+	summary="Recusa Solicitação",
 	description=(
-		"Este endpoint gerencia as solicitações de tutoria feitas por alunos. "
-		"Permite filtrar por tipo de participação ('tutor' ou 'aprendiz'), ID da Área, "
-		"ID da Especialidade, escolher a direção da ordenação por data ('desc' ou 'asc') e possui paginação."
+		"Este endpoint é usado para um tutor recusar uma solicitação de tutoria."
 	),
 	request=SolicitacaoSerializer,
 	responses=SolicitacaoSerializer,
 	tags=['05. Solicitar Sessão'],
-	parameters=[
-		OpenApiParameter(name='tipo', description="Filtra pelo papel do usuário logado ('tutor' ou 'aprendiz')", required=False, type=str),
-		OpenApiParameter(name='area', description="ID da Área para filtrar as solicitações", required=False, type=int),
-		OpenApiParameter(name='especialidade', description="ID da Especialidade para filtrar as solicitações", required=False, type=int),
-		OpenApiParameter(name='ordem', description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)", required=False, type=str),
-		OpenApiParameter(name='page', description="Número da página que deseja buscar", required=False, type=int),
-	]
+	parameters=[]
 )
 class RecusarSolicitacaoViewSet(viewsets.ModelViewSet):
-    queryset = SolicitacaoModel.objects.all()
-    serializer_class = SolicitacaoSerializer
-    permission_classes = [IsAuthenticated]
-    http_method_names = ['patch']
+	queryset = SolicitacaoModel.objects.all()
+	serializer_class = SolicitacaoSerializer
+	permission_classes = [IsAuthenticated]
+	http_method_names = ['patch']
 
-    def partial_update(self, request, *args, **kwargs):
-        solicitacao = self.get_object()
-        user = request.user
+	def partial_update(self, request, *args, **kwargs):
+		solicitacao = self.get_object()
+		user = request.user
 
-        if solicitacao.agendaId.tutorId.usuarioId != user:
-            raise ValidationError(
-                {"mensagem": "Apenas o tutor responsável pode recusar esta solicitação."}
-            )
+		if solicitacao.agendaId.tutorId.usuarioId != user:
+			raise ValidationError(
+				{"mensagem": "Apenas o tutor responsável pode recusar esta solicitação."}
+			)
 
-        if solicitacao.estado not in [
-            SolicitacaoModel.EstadoSolicitacao.PENDENTE,
-            SolicitacaoModel.EstadoSolicitacao.RECORRENTE
-        ]:
-            raise ValidationError(
-                {"mensagem": "Apenas solicitações pendentes ou recorrentes podem ser recusadas."}
-            )
+		if solicitacao.estado not in [
+			SolicitacaoModel.EstadoSolicitacao.PENDENTE,
+			SolicitacaoModel.EstadoSolicitacao.RECORRENTE
+		]:
+			raise ValidationError(
+				{"mensagem": "Apenas solicitações pendentes ou recorrentes podem ser recusadas."}
+			)
 
-        solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.RECUSADO
-        solicitacao.save()
+		solicitacao.estado = SolicitacaoModel.EstadoSolicitacao.RECUSADO
+		solicitacao.save()
 
-        serializer = self.get_serializer(solicitacao)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+		serializer = self.get_serializer(solicitacao)
+		return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@extend_schema(
-	summary="Sessão de Tutoria",
-	description=(
-		"Este endpoint gerencia as sessões de tutoria confirmadas. "
-		"Permite filtrar por tipo de participação ('tutor' ou 'aprendiz'), ID da Área, "
-		"ID da Especialidade, escolher a ordenação por data ('desc' ou 'asc') e possui paginação."
-	),
-	request=SessaoSerializer,
-	responses=SessaoSerializer,
-	tags=['05. Solicitar Sessão'],
-	parameters=[
-		OpenApiParameter(
-			name='tipo',
-			description="Filtra as sessões pelo papel do usuário logado ('tutor' ou 'aprendiz')",
-			required=False,
-			type=str
-		),
-		OpenApiParameter(
-			name='area',
-			description="Filtra as sessões por um ID de Área específico",
-			required=False,
-			type=int
-		),
-		OpenApiParameter(
-			name='especialidade',
-			description="Filtra as sessões por um ID de Especialidade específico",
-			required=False,
-			type=int
-		),
-		OpenApiParameter(
-			name='ordem',
-			description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)",
-			required=False,
-			type=str
-		),
-		OpenApiParameter(
-			name='page',
-			description="Número da página que deseja buscar",
-			required=False,
-			type=int
-		),
-	]
-)
 class SessaoViewSet(viewsets.ModelViewSet):
 	serializer_class = SessaoSerializer
 	permission_classes = [IsAuthenticated]
 	pagination_class = SessaoPagination
 	http_method_names = ['get']
 
+	@extend_schema(
+		summary="Lista as sessões de tutoria confirmadas",
+		description=(
+			"Este endpoint lista as sessões de tutoria confirmadas do usuário logado.\n\n"
+			"Permite filtrar por tipo de participação ('tutor' ou 'aprendiz'), ID da Área, "
+			"ID da Especialidade, escolher a ordenação por data ('desc' ou 'asc') e possui paginação."
+		),
+		responses={200: SessaoSerializer(many=True)},
+		tags=['05. Solicitar Sessão'],
+		parameters=[
+			OpenApiParameter(
+				name='tipo',
+				description="Filtra as sessões pelo papel do usuário logado ('tutor' ou 'aprendiz')",
+				required=False,
+				type=str
+			),
+			OpenApiParameter(
+				name='area',
+				description="Filtra as sessões por um ID de Área específico",
+				required=False,
+				type=int
+			),
+			OpenApiParameter(
+				name='especialidade',
+				description="Filtra as sessões por um ID de Especialidade específico",
+				required=False,
+				type=int
+			),
+			OpenApiParameter(
+				name='ordem',
+				description="Direção da ordenação por data: 'desc' (mais recentes primeiro, padrão) ou 'asc' (mais antigas primeiro)",
+				required=False,
+				type=str
+			),
+			OpenApiParameter(
+				name='page',
+				description="Número da página que deseja buscar",
+				required=False,
+				type=int
+			),
+		]
+	)
+	def list(self, request, *args, **kwargs):
+		return super().list(request, *args, **kwargs)
+
+	@extend_schema(
+		summary="Detalha uma sessão de tutoria por ID",
+		description="Recebe o ID de uma sessão de tutoria confirmada e retorna suas informações detalhadas.",
+		responses={200: SessaoSerializer},
+		tags=['05. Solicitar Sessão'],
+		parameters=[]
+	)
+	def retrieve(self, request, *args, **kwargs):
+		return super().retrieve(request, *args, **kwargs)
+
 	def get_queryset(self):
 		user = self.request.user
 
 		queryset = SessaoModel.objects.filter(
-            Q(usuarioId=user) | Q(tutorId__usuarioId=user)
-        ).select_related(
-            'usuarioId',
-            'tutorId',
-            'tutorId__usuarioId',
-            'areaId',
-            'especialidadeId'
-        ).annotate(
-            qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
-            qtd_avaliacoes_tutor=Count('tutorId__avaliacoes_tutor', distinct=True)
-        )
+			Q(usuarioId=user) | Q(tutorId__usuarioId=user)
+		).select_related(
+			'usuarioId',
+			'tutorId',
+			'tutorId__usuarioId',
+			'areaId',
+			'especialidadeId'
+		).annotate(
+			qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
+			qtd_avaliacoes_tutor=Count('tutorId__avaliacoes_tutor', distinct=True)
+		)
 
 		tipo_filtro   = self.request.query_params.get('tipo', '').lower()
 		area_id       = self.request.query_params.get('area')
@@ -578,59 +682,102 @@ class SessoesTutorVerificacaoViewSet(viewsets.ReadOnlyModelViewSet):
 	]
 )
 class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = SolicitacaoSerializer
-    permission_classes = [IsAuthenticated]
-    pagination_class = None
-    http_method_names = ['get']
+	serializer_class = SolicitacaoSerializer
+	permission_classes = [IsAuthenticated]
+	pagination_class = None
+	http_method_names = ['get']
 
-    def get_queryset(self):
-        user = self.request.user
-        processar_solicitacoes_expiradas()
+	@extend_schema(
+		summary="Lista todas as solicitações do usuário autenticado (Sem Paginação)",
+		description=(
+			"Retorna a lista de solicitações associadas ao usuário logado sem paginação.\n\n"
+			"Suporta parâmetros opcionais para filtrar pelo papel do usuário ('tutor' ou 'aprendiz'), "
+			"buscar apenas solicitações pendentes futuras ou trazer solicitações resolvidas (aceitas/recusadas)."
+		),
+		responses={200: SolicitacaoSerializer(many=True)},
+		tags=['05. Solicitar Sessão'],
+		parameters=[
+			OpenApiParameter(
+				name='tipo',
+				description="Filtra pelo papel do usuário logado: 'tutor' (recebidas) ou 'aprendiz' (enviadas)",
+				required=False,
+				type=str
+			),
+			OpenApiParameter(
+				name='apenas_futuras',
+				description="Se 'true', retorna apenas solicitações com status PENDENTE cujo dia e horário ainda não passaram",
+				required=False,
+				type=bool
+			),
+			OpenApiParameter(
+				name='apenas_resolvidas',
+				description="Se 'true', retorna apenas solicitações com status ACEITO ou RECUSADO",
+				required=False,
+				type=bool
+			),
+		]
+	)
+	def list(self, request, *args, **kwargs):
+		return super().list(request, *args, **kwargs)
 
-        agora = timezone.localtime(timezone.now())
+	@extend_schema(
+		summary="Detalha uma solicitação por ID",
+		description="Recebe o ID de uma solicitação do usuário autenticado e retorna suas informações detalhadas.",
+		responses={200: SolicitacaoSerializer},
+		tags=['05. Solicitar Sessão'],
+		parameters=[]
+	)
+	def retrieve(self, request, *args, **kwargs):
+		return super().retrieve(request, *args, **kwargs)
 
-        tipo_filtro = self.request.query_params.get('tipo', '').lower()
-        apenas_futuras = self.request.query_params.get('apenas_futuras', '').lower() in ['true', '1']
-        apenas_resolvidas = self.request.query_params.get('apenas_resolvidas', '').lower() in ['true', '1']
+	def get_queryset(self):
+		user = self.request.user
+		processar_solicitacoes_expiradas()
 
-        queryset = SolicitacaoModel.objects.filter(
-            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
-        ).select_related(
-            'usuarioId',
-            'agendaId__tutorId',
-            'agendaId__tutorId__usuarioId',
-            'areaId',
-            'especialidadeId'
-        ).annotate(
-            qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
-            qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
-        )
+		agora = timezone.localtime(timezone.now())
 
-        if tipo_filtro == 'tutor':
-            queryset = queryset.filter(agendaId__tutorId__usuarioId=user)
-        elif tipo_filtro == 'aprendiz':
-            queryset = queryset.filter(usuarioId=user)
+		tipo_filtro = self.request.query_params.get('tipo', '').lower()
+		apenas_futuras = self.request.query_params.get('apenas_futuras', '').lower() in ['true', '1']
+		apenas_resolvidas = self.request.query_params.get('apenas_resolvidas', '').lower() in ['true', '1']
 
-        if apenas_resolvidas:
-            queryset = queryset.filter(
-                estado__in=[
-                    SolicitacaoModel.EstadoSolicitacao.ACEITO,
-                    SolicitacaoModel.EstadoSolicitacao.RECUSADO
-                ]
-            )
+		queryset = SolicitacaoModel.objects.filter(
+			Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user)
+		).select_related(
+			'usuarioId',
+			'agendaId__tutorId',
+			'agendaId__tutorId__usuarioId',
+			'areaId',
+			'especialidadeId'
+		).annotate(
+			qtd_avaliacoes_aprendiz=Count('usuarioId__avaliacoes_aprendiz', distinct=True),
+			qtd_avaliacoes_tutor=Count('agendaId__tutorId__avaliacoes_tutor', distinct=True)
+		)
 
-        if apenas_futuras:
-            hoje = agora.date()
-            hora_atual = agora.time()
+		if tipo_filtro == 'tutor':
+			queryset = queryset.filter(agendaId__tutorId__usuarioId=user)
+		elif tipo_filtro == 'aprendiz':
+			queryset = queryset.filter(usuarioId=user)
 
-            queryset = queryset.filter(
-                estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
-            ).filter(
-                Q(dataPretendida__gt=hoje) |
-                Q(dataPretendida=hoje, agendaId__horarioInicio__gt=hora_atual)
-            )
+		if apenas_resolvidas:
+			queryset = queryset.filter(
+				estado__in=[
+					SolicitacaoModel.EstadoSolicitacao.ACEITO,
+					SolicitacaoModel.EstadoSolicitacao.RECUSADO
+				]
+			)
 
-        return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
+		if apenas_futuras:
+			hoje = agora.date()
+			hora_atual = agora.time()
+
+			queryset = queryset.filter(
+				estado=SolicitacaoModel.EstadoSolicitacao.PENDENTE
+			).filter(
+				Q(dataPretendida__gt=hoje) |
+				Q(dataPretendida=hoje, agendaId__horarioInicio__gt=hora_atual)
+			)
+
+		return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
 
 @extend_schema(
 	summary="Listar todas as sessões do usuário autenticado (Sem Paginação)",
