@@ -13,7 +13,7 @@ from project.serializers.NotificacoesSerializer import ResumoNotificacoesRespons
     summary="Resumo de Notificações para o Header",
     description="Retorna em uma única chamada: contagem de mensagens não lidas, contagem de solicitações pendentes e lista resumida de solicitações resolvidas para avisos.",
     responses={200: ResumoNotificacoesResponseSerializer},
-    tags=['07. Notificações']
+    tags=['08. Notificações']
 )
 class ResumoNotificacoesViewSet(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]

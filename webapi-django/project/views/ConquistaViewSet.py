@@ -7,20 +7,32 @@ from rest_framework.permissions import IsAuthenticated
 from project.models import *
 from project.serializers import *
 
-@extend_schema(
-	summary="Lista conquistas da platafoma",
-	description="Este endpoint retorna uma lista com todas as conquistas exibidas na plataforma",
-	request=ConquistaSerializer,
-	responses=ConquistaSerializer,
-	tags=['10. Conquistas']
-)
+
 class ConquistaViewSet(viewsets.ReadOnlyModelViewSet):
-	queryset = ConquistaModel.objects.all().order_by('pontos')
-	serializer_class = ConquistaSerializer
+    queryset = ConquistaModel.objects.all().order_by('pontos')
+    serializer_class = ConquistaSerializer
+
+    @extend_schema(
+        summary="Lista conquistas da plataforma",
+        description="Este endpoint retorna a lista de todas as conquistas cadastradas no banco de dados, ordenadas por pontuação.",
+        responses={200: ConquistaSerializer(many=True)},
+        tags=['10. Conquistas']
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @extend_schema(
+        summary="Detalha uma conquista por ID",
+        description="Recebe o ID de uma conquista específica e retorna seus detalhes.",
+        responses={200: ConquistaSerializer},
+        tags=['10. Conquistas']
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
 
 @extend_schema(
-	summary="Confirma a alteração de senha",
-	description="Este endpoint recebe uid, token e a nova senha. Caso o uid e o token sejam válidos, a senha é alterada",
+	summary="Destrava conquista para um usuário",
+	description="Este endpoint destrava uma conquista para um usuário. Recebe o ID do usuário a qual a conquista será destrava e o ID da conquista.",
 	request=consegueSerializer,
 	responses=consegueSerializer,
 	tags=['10. Conquistas']
@@ -29,7 +41,7 @@ class consegueViewSet(viewsets.ModelViewSet):
     queryset = consegueModel.objects.all()
     serializer_class = consegueSerializer
     permission_classes = [IsAuthenticated]
-    http_method_names = ['get', 'post']
+    http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
         usuario_id = request.data.get('usuarioId')
@@ -63,8 +75,8 @@ class consegueViewSet(viewsets.ModelViewSet):
         )
 
 @extend_schema(
-	summary="Confirma a alteração de senha",
-	description="Este endpoint recebe uid, token e a nova senha. Caso o uid e o token sejam válidos, a senha é alterada",
+	summary="Lista as conquistas destravadas pelo usuário",
+	description="Este endpoint lista todas as conquistas destravadas pelo usuário, trazendo suas informações.",
 	request=ConquistaUsuarioSerializer,
 	responses=ConquistaUsuarioSerializer,
 	tags=['10. Conquistas']

@@ -25,6 +25,8 @@ class SistemaRecomendacaoViewSet(viewsets.ViewSet):
     pagination_class = RecomendacaoPagination
 
     @extend_schema(
+        summary="Lista tutores recomendados para o usuário",
+        description="Este endpoint lista tutores recomendados para o usuário de acordo com os filtros definidos por ele. Os resultados são paginados.",
         parameters=[
             OpenApiParameter(name='area', description='Id de área de pesquisa', type=int, required=False),
             OpenApiParameter(name='especialidade', description='Id de especialidade de pesquisa', type=int, required=False),

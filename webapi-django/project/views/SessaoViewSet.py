@@ -611,8 +611,8 @@ class SessaoViewSet(viewsets.ModelViewSet):
 		return queryset.order_by('-dataSessao', '-horarioInicio')
 
 @extend_schema(
-	summary="Listar todas as sessões de um tutor como Tutor e Aprendiz (Sem Paginação)",
-	description="Endpoint exclusivo para verificação. Retorna a lista completa de sessões onde o Tutor informado participa, seja ensinando ou aprendendo.",
+	summary="Lista todas as sessões de um tutor como Tutor e Aprendiz (Sem Paginação)",
+	description="Este endpoint retorna a lista completa de sessões em que o tutor cujo ID é passado participa, seja como aprendiz ou como tutor.",
 	responses=SessaoSerializer(many=True),
 	tags=['06. Sessões'],
 	parameters=[
@@ -780,7 +780,7 @@ class TodasSolicitacoesUsuarioViewSet(viewsets.ReadOnlyModelViewSet):
 		return queryset.order_by('-dataPretendida', '-agendaId__horarioInicio')
 
 @extend_schema(
-	summary="Listar todas as sessões do usuário autenticado (Sem Paginação)",
+	summary="Lista todas as sessões do usuário autenticado (Sem Paginação)",
 	description="Retorna a lista completa de todas as sessões associadas ao usuário logado, englobando tanto o papel de Tutor quanto o de Aprendiz, sem filtros restritivos ou paginação.",
 	responses=SessaoSerializer(many=True),
 	tags=['06. Sessões']

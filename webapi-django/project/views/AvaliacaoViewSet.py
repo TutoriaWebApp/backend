@@ -50,32 +50,6 @@ class AvaliacaoPagination(PageNumberPagination):
 	page_size_query_param = 'page_size'  
 	max_page_size = 50  
 
-@extend_schema(
-	summary="Avaliação do Aprendiz",
-	description=(
-		"Este endpoint permite gerenciar e listar as avaliações feitas pelos aprendizes sobre as sessões. "
-		"Utilize o parâmetro '?usuario=ID' para filtrar as avaliações e notas recebidas por um aprendiz específico."    
-	),    
-	request=AvaliacaoAprendizSerializer,
-	responses=AvaliacaoAprendizSerializer,
-	tags=['07. Avaliações'],
-	parameters=[
-		OpenApiParameter(
-			name='usuario', 
-			description='ID do Usuário (Aprendiz) para buscar o feedback recebido sobre ele', 
-			required=False, 
-			type=int
-		),
-		OpenApiParameter(
-			name='ordering', 
-			description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
-			required=False, 
-			type=str
-		),
-		OpenApiParameter(name='page', description='Número da página', required=False, type=int),
-		OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
-	]
-)
 class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 	serializer_class = AvaliacaoAprendizSerializer
 	permission_classes = [IsAuthenticated]
@@ -83,6 +57,59 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 	filter_backends = (OrderingFilter,)
 	ordering_fields = ['nota']
 	http_method_names = ['get', 'post']
+
+	@extend_schema(
+        summary="Lista as avaliações de aprendizes",
+        description=(
+            "Este endpoint lista todas as avaliações recebidas por aprendizes cadastradas na plataforma.\n\n"
+            "Permite filtrar por aprendiz específico utilizando '?usuario=ID', ordenar as notas em ordem crescente ou decrescente "
+            "e possui suporte a paginação."
+        ),
+        responses={200: AvaliacaoAprendizSerializer(many=True)},
+        tags=['07. Avaliações'],
+        parameters=[
+            OpenApiParameter(
+                name='usuario', 
+                description='ID do Usuário (Aprendiz) para buscar os feedbacks recebidos sobre ele', 
+                required=False, 
+                type=int
+            ),
+            OpenApiParameter(
+                name='ordering', 
+                description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
+                required=False, 
+                type=str
+            ),
+            OpenApiParameter(name='page', description='Número da página', required=False, type=int),
+            OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
+        ]
+    )
+	def list(self, request, *args, **kwargs):
+		return super().list(request, *args, **kwargs)
+
+	@extend_schema(
+        summary="Detalha uma avaliação de aprendiz por ID",
+        description="Recebe o ID de uma avaliação feita sobre um aprendiz e retorna suas informações detalhadas.",
+        responses={200: AvaliacaoAprendizSerializer},
+        tags=['07. Avaliações'],
+        parameters=[]  # Remove os parâmetros de query da busca geral no GET por ID
+    )
+	def retrieve(self, request, *args, **kwargs):
+		return super().retrieve(request, *args, **kwargs)
+
+	@extend_schema(
+        summary="Cria uma avaliação para um aprendiz",
+        description=(
+            "Permite cadastrar uma nova avaliação sobre a participação de um aprendiz em uma sessão de tutoria.\n\n"
+            "Ao registrar a avaliação, o sistema bonifica o usuário com 50 pontos na plataforma."
+        ),
+        request=AvaliacaoAprendizSerializer,
+        responses={201: AvaliacaoAprendizSerializer},
+        tags=['07. Avaliações'],
+        parameters=[] 
+    )
+	def create(self, request, *args, **kwargs):
+		return super().create(request, *args, **kwargs)
 
 	def get_queryset(self):
 		agora = timezone.now()
@@ -115,7 +142,7 @@ class AvaliacaoAprendizViewSet(viewsets.ModelViewSet):
 		)
 	
 @extend_schema(
-	summary="Todas as Avaliações do Usuário Autenticado",
+	summary="Lista todas as avaliações do usuário autenticado",
 	description=(
 		"Retorna o conjunto completo de avaliações recebidas pelo usuário autenticado (tanto como aprendiz quanto como tutor) sem paginação."
 	),    
@@ -140,41 +167,7 @@ class TodasAvaliacoesUsuarioViewSet(viewsets.ViewSet):
             'comoAprendiz': list(avaliacoes_aprendiz),
             'comoTutor': list(avaliacoes_tutor)
         }, status=status.HTTP_200_OK)
-@extend_schema(
-	summary="Avaliação do Tutor",
-	description="Este endpoint permite gerenciar e listar as avaliações feitas sobre os tutores após as sessões de forma paginada.",
-	request=AvaliacaoTutorSerializer,
-	responses=AvaliacaoTutorSerializer,
-	tags=['07. Avaliações'],
-	parameters=[
-		OpenApiParameter(
-			name='tutor', 
-			description='ID do Tutor para buscar o feedback/reputação recebido por ele', 
-			required=False, 
-			type=int
-		),
-		OpenApiParameter(
-			name='area', 
-			description='ID da Área de Conhecimento vinculada à sessão para filtrar', 
-			required=False, 
-			type=int
-		),
-		OpenApiParameter(
-			name='especialidade', 
-			description='ID da Especialidade vinculada à sessão para filtrar', 
-			required=False, 
-			type=int
-		),
-		OpenApiParameter(
-			name='ordering', 
-			description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
-			required=False, 
-			type=str
-		),
-		OpenApiParameter(name='page', description='Número da página', required=False, type=int),
-		OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
-	]
-)
+
 class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 	serializer_class = AvaliacaoTutorSerializer
 	permission_classes = [IsAuthenticated]
@@ -182,6 +175,71 @@ class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 	filter_backends = (OrderingFilter,)
 	ordering_fields = ['nota']	
 	http_method_names = ['get', 'post']
+
+	@extend_schema(
+        summary="Lista as avaliações de tutores",
+        description=(
+            "Este endpoint lista todas as avaliações recebidas por tutores cadastradas na plataforma.\n\n"
+            "Permite filtrar por ID do tutor, Área de Conhecimento, Especialidade, além de permitir ordenação por nota "
+            "(crescente ou decrescente) e paginação dos resultados."
+        ),
+        responses={200: AvaliacaoTutorSerializer(many=True)},
+        tags=['07. Avaliações'],
+        parameters=[
+            OpenApiParameter(
+                name='tutor', 
+                description='ID do Tutor para buscar o feedback/reputação recebido por ele', 
+                required=False, 
+                type=int
+            ),
+            OpenApiParameter(
+                name='area', 
+                description='ID da Área de Conhecimento vinculada à sessão para filtrar', 
+                required=False, 
+                type=int
+            ),
+            OpenApiParameter(
+                name='especialidade', 
+                description='ID da Especialidade vinculada à sessão para filtrar', 
+                required=False, 
+                type=int
+            ),
+            OpenApiParameter(
+                name='ordering', 
+                description="Ordenação por nota: use 'nota' para crescente (menores notas primeiro) ou '-nota' para decrescente (maiores notas primeiro).", 
+                required=False, 
+                type=str
+            ),
+            OpenApiParameter(name='page', description='Número da página', required=False, type=int),
+            OpenApiParameter(name='page_size', description='Quantidade de comentários por página (ex: 6, 12, 18)', required=False, type=int),
+        ]
+    )
+	def list(self, request, *args, **kwargs):
+		return super().list(request, *args, **kwargs)
+
+	@extend_schema(
+        summary="Detalha uma avaliação de tutor por ID",
+        description="Recebe o ID de uma avaliação de tutor e retorna suas informações detalhadas.",
+        responses={200: AvaliacaoTutorSerializer},
+        tags=['07. Avaliações'],
+        parameters=[]  # Zera os parâmetros de query da busca geral no GET por ID
+    )
+	def retrieve(self, request, *args, **kwargs):
+		return super().retrieve(request, *args, **kwargs)
+
+	@extend_schema(
+        summary="Cria uma avaliação para um tutor",
+        description=(
+            "Permite que um aprendiz registre uma avaliação sobre um tutor após a realização de uma sessão de tutoria.\n\n"
+            "Ao registrar a avaliação, o usuário recebe uma bonificação de 50 pontos na plataforma."
+        ),
+        request=AvaliacaoTutorSerializer,
+        responses={201: AvaliacaoTutorSerializer},
+        tags=['07. Avaliações'],
+        parameters=[]  # Zera os parâmetros de query para o POST
+    )
+	def create(self, request, *args, **kwargs):
+		return super().create(request, *args, **kwargs)
 
 	def get_queryset(self):
 		agora = timezone.now()
@@ -220,8 +278,8 @@ class AvaliacaoTutorViewSet(viewsets.ModelViewSet):
 		)
 
 @extend_schema(
-	summary="Sessões Pendentes de Avaliação",
-	description="Retorna as sessões que o usuário participou (como aprendiz ou tutor) e que ainda não foram avaliadas por ele.",
+	summary="Lista sessões pendentes de avaliação",
+	description="Este endpoint retorna as sessões que o usuário participou (como aprendiz ou tutor) e que ainda não foram avaliadas por ele.",
 	responses={200: SessaoPendenteAvaliacaoSerializer(many=True)},
 	tags=['07. Avaliações']
 )
