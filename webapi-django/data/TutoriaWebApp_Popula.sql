@@ -64,6 +64,7 @@ INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
 ('P', 300, 'Volte Sempre', 'Recebeu sua primeira avaliação 5 estrelas como tutor.', 'volteSempre.png'),
 ('P', 300, 'O prazer foi meu', 'Recebeu sua primeira avaliação 5 estrelas como aprendiz.', 'prazer.png'),
 ('P', 350, 'Fidelidade', 'Realizou 5 ou mais tutorias com o mesmo tutor.', 'fidelidade.png'),
+
 ('P', 500, 'Pau pra Toda Obra', 'Forneceu tutoria em 3 áreas de conhecimento diferentes.', 'todaObra.png'),
 ('P', 350, 'Caminho das Pedras II', 'Participou de 15 sessões de tutoria.', 'caminho2.png'),
 ('P', 600, 'Caminho das Pedras III', 'Participou de 30 sessões de tutoria.', 'caminho3.png'),
@@ -74,6 +75,7 @@ INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
 ('O', 1100, 'Caminho das Pedras IV', 'Participou de 60 sessões de tutoria.', 'caminho4.png'),
 ('O', 1400, 'Caminho das Pedras V', 'Participou de 100 sessões de tutoria.', 'caminho5.png'),
 ('O', 1200, 'O que você quer provar?', 'Conseguiu alcançar o nível 25.', 'oQueVoceQuerProvar.png'),
+
 ('D', 2500, 'Caminho das Pedras VI', 'Participou de 300 sessões de tutoria.', 'caminho6.png'),
 ('D', 3000, 'Lenda', 'Conseguiu alcançar o nível 50.', 'Lenda.png');
 
@@ -86,6 +88,7 @@ INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem, secreta, pist
 ('O', 1000, 'Mestre Bem-Avaliado', 'Manteve uma média maior ou igual a 4.7 como tutor após 20 avaliações.', 'bemAvaliado.png', true, 'A excelência é reconhecida pelos seus aprendizes...'),
 ('O', 800, 'O Nascimento do Conhecimento', 'Participou de uma tutoria no seu aniversário.', 'nascimento.png', true, 'Nesse dia tão especial, seu presente é o conhecimento!'),
 ('D', 1600, 'Mestre das Estrelas', 'Recebeu 50 avaliações 5 estrelas.', 'mestreEstrelas.png', true, 'Seu comprometimento tem uma constelação própria!'),
+
 ('D', 2000, 'Deixando uma Marca', 'Manteve uma média maior ou igual a 4.7 como tutor ou aprendiz após 80 avaliações.', 'marca.png', true, 'Um legado gravado na história da plataforma...');
 
 -- AREAS (Total: 25
@@ -572,4 +575,24 @@ INSERT INTO consegue (usuarioId, conquistaId) VALUES
 (1, 22),
 (1, 23),
 (1, 24),
-(1, 25);
+(1, 25),
+
+(3, 1),
+(3, 2),
+(3, 3),
+(3, 4),
+(3, 5),
+(3, 6),
+(3, 8),
+(3, 9),
+
+(3, 12),
+(3, 13),
+(3, 16),
+(3, 17),
+(3, 18),
+(3, 19),
+
+(3, 21),
+(3, 24),
+(3, 25);
