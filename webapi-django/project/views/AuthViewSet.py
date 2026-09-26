@@ -93,7 +93,7 @@ class LogInView(APIView):
 				'mensagem': {'type': 'string', 'example': 'Token renovado com sucesso'}
 			}
 		},
-		404: {
+		401: {
 			'type': 'object',
 			'properties': {
 				'mensagem': {'type': 'string', 'example': 'Não foi possível encontrar Token de Autenticação'}
