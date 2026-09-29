@@ -290,6 +290,20 @@ INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPrete
 (27,  4,  3,  3, '2026-10-08', '2026-10-05 23:59:59', FALSE, 'PENDENTE');
 
 -- =========================================================================
+-- SOLICITAÇÕES PARA O ADMIN (usuarioId = 1)
+-- =========================================================================
+
+-- Duas solicitações enviadas pelo Admin como ALUNO (usuarioId = 1) para outros tutores
+INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPretendida, validade, recorrente, estado) VALUES
+(1, 3, 2, 2, '2026-10-15', '2026-10-14 23:59:59', FALSE, 'PENDENTE'), -- Para o Tutor 2
+(1, 4, 3, 3, '2026-10-16', '2026-10-15 23:59:59', FALSE, 'PENDENTE'); -- Para o Tutor 3
+
+-- Duas solicitações recebidas pelo Admin como TUTOR (agendaId = 1 ou 2, que pertencem ao tutorId = 1)
+INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPretendida, validade, recorrente, estado) VALUES
+(2, 1, 1, 1, '2026-10-12', '2026-10-11 23:59:59', FALSE, 'PENDENTE'), -- Enviada pela Ana Lima (usuario 2)
+(3, 2, 1, 1, '2026-10-14', '2026-10-13 23:59:59', FALSE, 'PENDENTE'); -- Enviada pelo João Silva (usuario 3)
+
+-- =========================================================================
 -- SESSOES (IDs sequenciais de 1 a 40)
 -- =========================================================================
 
