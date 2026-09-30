@@ -1,11 +1,13 @@
 from django.test import TestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from project.models import TutorModel, UsuarioModel
 from datetime import date
 
 class TutorModelTest(TestCase):
     def setUp(self):
         self.user = UsuarioModel.objects.create_user(
-            email='tutor@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@tutoria.com',
             password='password123',
             nomePerfil='Tutor',
             cidade='City',

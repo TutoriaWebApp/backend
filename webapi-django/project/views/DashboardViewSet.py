@@ -12,10 +12,10 @@ class ProgressoUsuarioView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        summary="Progresso e Estatísticas do Usuário",
-        description="Retorna o consolidado de sessões concluídas, conquistas desbloqueadas e pontuação total.",
+        summary="Estatísticas do Usuário",
+        description="Retorna o ID do usuário, consolidado de sessões concluídas, conquistas desbloqueadas e pontuação total.",
         responses={200: EstatisticaProgressoSerializer},
-        tags=['01. Usuário']
+        tags=['02. Usuário']
     )
     def get(self, request):
         user = request.user
@@ -34,8 +34,8 @@ class ProgressoUsuarioView(APIView):
 
         pontos = getattr(user, 'pontuacao', 0)
 
-
         return Response({
+            "usuarioId": user.pk,
             "sessoesConcluidas": sessoes_concluidas,
             "conquistasDesbloqueadas": conquistas_desbloqueadas,
             "pontos": pontos,

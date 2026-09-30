@@ -4,13 +4,15 @@ from datetime import date
 
 class UsuarioModelTest(TestCase):
     def setUp(self):
+        from project.utils.GeoLocalizacaoUtil import Point
         self.user_data = {
             'email': 'test@tutoria.com',
             'password': 'password123',
             'nomePerfil': 'Teste User',
             'cidade': 'Brasília',
             'estado': 'DF',
-            'aniversario': date(1990, 1, 1)
+            'aniversario': date(1990, 1, 1),
+            'localizacao': Point(-47.882778, -15.793889, srid=4326)
         }
 
     def test_create_user(self):

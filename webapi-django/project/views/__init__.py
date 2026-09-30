@@ -7,6 +7,7 @@ from .AvaliacaoViewSet import *
 from .ChatViewSet import *
 from .SistemaRecomendacaoViewSet import *
 from .DashboardViewSet import *
+from .NotificacoesViewSet import *
 
 __all__ = [
 	'LogInView',
@@ -38,10 +39,13 @@ __all__ = [
 
 	'AvaliacaoAprendizViewSet',
 	'AvaliacaoTutorViewSet',
+    'TodasAvaliacoesUsuarioViewSet',
 	'PendenteAvaliacaoView',
 
 	'ChatViewSet',
 	'MensagemViewSet',
 	'SistemaRecomendacaoViewSet',
-    'ProgressoUsuarioView'
+    'ProgressoUsuarioView',
+
+	'ResumoNotificacoesViewSet'
 ]

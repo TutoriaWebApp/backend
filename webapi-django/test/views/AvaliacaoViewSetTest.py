@@ -1,4 +1,6 @@
 from rest_framework.test import APITestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from rest_framework import status
 from django.urls import reverse
 from project.models import AvaliacaoAprendizModel, AvaliacaoTutorModel, SessaoModel, TutorModel, UsuarioModel, AreaModel, EspecialidadeModel
@@ -9,7 +11,7 @@ class AvaliacaoViewSetTest(APITestCase):
     def setUp(self):
         # Aluno
         self.aluno = UsuarioModel.objects.create_user(
-            email='aluno@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='aluno@tutoria.com',
             password='password123',
             nomePerfil='Aluno',
             cidade='City',
@@ -18,7 +20,7 @@ class AvaliacaoViewSetTest(APITestCase):
         )
         # Tutor (Usuário e Objeto Tutor)
         self.usuario_tutor = UsuarioModel.objects.create_user(
-            email='tutor@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@tutoria.com',
             password='password123',
             nomePerfil='Tutor',
             cidade='City',
@@ -86,9 +88,9 @@ class AvaliacaoViewSetTest(APITestCase):
         self.assertEqual(response.data[0]['tipoPendente'], 'TUTOR')
 
     def test_get_avaliacoes_pendentes_apos_avaliar(self):
-        # Aluno avalia
-        AvaliacaoAprendizModel.objects.create(
-            usuarioId=self.aluno,
+        # Aluno avalia o Tutor
+        AvaliacaoTutorModel.objects.create(
+            tutorId=self.tutor,
             sessaoId=self.sessao_passada,
             nota=5
         )
@@ -100,7 +102,7 @@ class AvaliacaoViewSetTest(APITestCase):
     def test_filter_avaliacao_aprendiz_by_usuario_id(self):
         # Criar outro aluno e avaliação
         outro_aluno = UsuarioModel.objects.create_user(
-            email='outro@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='outro@tutoria.com',
             password='password123',
             nomePerfil='Outro',
             cidade='City',
@@ -108,6 +110,12 @@ class AvaliacaoViewSetTest(APITestCase):
         )
         AvaliacaoAprendizModel.objects.create(
             usuarioId=self.aluno,
+            sessaoId=self.sessao_passada,
+            nota=5
+        )
+        # O tutor precisa avaliar de volta para que a avaliação do aprendiz apareça (se não passou 48h)
+        AvaliacaoTutorModel.objects.create(
+            tutorId=self.tutor,
             sessaoId=self.sessao_passada,
             nota=5
         )
@@ -127,98 +135,45 @@ class AvaliacaoViewSetTest(APITestCase):
         )
 
         url = reverse('avaliacoes-aprendiz-list')
-        response = self.client.get(url, {'usuarioId': self.aluno.id})
+        response = self.client.get(url, {'usuario': self.aluno.id})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # 1 avaliação criada no setUp (pelo pendentes test, mas aqui o setUp só cria sessao, não avaliacao)
-        # Ah, no test_create_avaliacao_aprendiz cria uma. Mas aqui cada teste é isolado.
-        # No meu test_filter_avaliacao_aprendiz_by_usuario_id eu criei 2 avaliações, uma para self.aluno e uma para outro_aluno.
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['usuarioId'], self.aluno.id)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0]['usuarioId'], self.aluno.id)
 
-    def test_update_usuario_rating_every_10_evaluations(self):
+    def test_avaliacao_nao_contabiliza_antes_48h_sem_resposta(self):
         url = reverse('avaliacoes-aprendiz-list')
-        # Criar 9 avaliações manualmente
-        for i in range(9):
-            s = SessaoModel.objects.create(
-                usuarioId=self.aluno,
-                tutorId=self.tutor,
-                areaId=self.area,
-                especialidadeId=self.esp,
-                dataSessao=date.today(),
-                horarioInicio=time(i, 0),
-                horarioFim=time(i, 30)
-            )
-            AvaliacaoAprendizModel.objects.create(
-                usuarioId=self.aluno,
-                sessaoId=s,
-                nota=4
-            )
-            # Como estamos criando via ORM, o perform_create não é chamado.
-            # Não precisamos disparar manual aqui pois queremos ver que no 10º via API funciona.
-        
-        # Verificar se a nota não foi alterada ainda (default 5.0)
-        self.aluno.refresh_from_db()
-        self.assertEqual(self.aluno.notaAvaliacao, 5.0)
-
-        # Criar a 10ª avaliação via POST
-        s10 = SessaoModel.objects.create(
-            usuarioId=self.aluno,
-            tutorId=self.tutor,
-            areaId=self.area,
-            especialidadeId=self.esp,
-            dataSessao=date.today(),
-            horarioInicio=time(10, 0),
-            horarioFim=time(10, 30)
-        )
         data = {
             'usuarioId': self.aluno.id,
-            'sessaoId': s10.id,
+            'sessaoId': self.sessao_passada.id,
             'nota': 2,
-            'comentario': "Final"
+            'comentario': "Ruim"
         }
-        response = self.client.post(url, data, format='json')
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-        # Verificar nota atualizada: (9*4 + 2) / 10 = 38 / 10 = 3.8
-        self.aluno.refresh_from_db()
-        self.assertEqual(self.aluno.notaAvaliacao, 3.8)
-
-    def test_update_usuario_rating_last_100_only(self):
-        url = reverse('avaliacoes-aprendiz-list')
-        
-        # 1. Criar 9 avaliações com nota 1 via POST para disparar no 10
-        # Na verdade, para ser eficiente, vamos criar 9 via ORM e a 10ª via POST.
-        for i in range(9):
-            s = SessaoModel.objects.create(usuarioId=self.aluno, tutorId=self.tutor, areaId=self.area, especialidadeId=self.esp, dataSessao=date.today(), horarioInicio=time(0, i), horarioFim=time(0, i+1))
-            AvaliacaoAprendizModel.objects.create(usuarioId=self.aluno, sessaoId=s, nota=1)
-        
-        s10 = SessaoModel.objects.create(usuarioId=self.aluno, tutorId=self.tutor, areaId=self.area, especialidadeId=self.esp, dataSessao=date.today(), horarioInicio=time(0, 10), horarioFim=time(0, 11))
-        self.client.post(url, {'usuarioId': self.aluno.id, 'sessaoId': s10.id, 'nota': 1}, format='json')
-
-        # Aqui a nota deve ser 1.0
-        self.aluno.refresh_from_db()
-        self.assertEqual(self.aluno.notaAvaliacao, 1.0)
-
-        # 2. Criar mais 89 avaliações com nota 5 via ORM e a 100ª via POST
-        for i in range(10, 99):
-            s = SessaoModel.objects.create(usuarioId=self.aluno, tutorId=self.tutor, areaId=self.area, especialidadeId=self.esp, dataSessao=date.today(), horarioInicio=time(1, i%60), horarioFim=time(1, (i+1)%60))
-            AvaliacaoAprendizModel.objects.create(usuarioId=self.aluno, sessaoId=s, nota=5)
-        
-        s100 = SessaoModel.objects.create(usuarioId=self.aluno, tutorId=self.tutor, areaId=self.area, especialidadeId=self.esp, dataSessao=date.today(), horarioInicio=time(1, 59), horarioFim=time(2, 0))
-        self.client.post(url, {'usuarioId': self.aluno.id, 'sessaoId': s100.id, 'nota': 5}, format='json')
-
-        # No 100, disparou. Média das 100 (10*1 + 90*5) / 100 = 4.6
-        self.aluno.refresh_from_db()
-        self.assertEqual(self.aluno.notaAvaliacao, 4.6)
-
-        # 3. Criar mais 9 avaliações com nota 5 via ORM e a 110ª via POST
-        for i in range(100, 109):
-            s = SessaoModel.objects.create(usuarioId=self.aluno, tutorId=self.tutor, areaId=self.area, especialidadeId=self.esp, dataSessao=date.today(), horarioInicio=time(2, i-100), horarioFim=time(2, i-99))
-            AvaliacaoAprendizModel.objects.create(usuarioId=self.aluno, sessaoId=s, nota=5)
-            
-        s110 = SessaoModel.objects.create(usuarioId=self.aluno, tutorId=self.tutor, areaId=self.area, especialidadeId=self.esp, dataSessao=date.today(), horarioInicio=time(3, 0), horarioFim=time(3, 30))
-        self.client.post(url, {'usuarioId': self.aluno.id, 'sessaoId': s110.id, 'nota': 5}, format='json')
-
-        # As últimas 100 agora ignoram as primeiras 10 nota 1.
+        self.client.post(url, data, format='json')
         self.aluno.refresh_from_db()
         self.assertEqual(self.aluno.notaAvaliacao, 5.0)
+
+    def test_avaliacao_contabiliza_com_resposta(self):
+        url = reverse('avaliacoes-aprendiz-list')
+        data = {
+            'usuarioId': self.aluno.id,
+            'sessaoId': self.sessao_passada.id,
+            'nota': 2,
+            'comentario': "Ruim"
+        }
+        self.client.post(url, data, format='json')
+        
+        # Agora o tutor responde a avaliação
+        url_tutor = reverse('avaliacoes-tutor-list')
+        self.client.force_authenticate(user=self.usuario_tutor)
+        data_tutor = {
+            'tutorId': self.tutor.id,
+            'sessaoId': self.sessao_passada.id,
+            'nota': 4,
+            'comentario': "Boa"
+        }
+        self.client.post(url_tutor, data_tutor, format='json')
+        
+        self.aluno.refresh_from_db()
+        self.assertEqual(self.aluno.notaAvaliacao, 2.0)
+        self.tutor.refresh_from_db()
+        self.assertEqual(self.tutor.notaAvaliacao, 4.0)

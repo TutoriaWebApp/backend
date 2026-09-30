@@ -1,4 +1,5 @@
 from django.test import TestCase, RequestFactory
+from project.utils.GeoLocalizacaoUtil import Point
 from project.models import TutorModel, AreaModel, EspecialidadeModel, UsuarioModel, ContemModel
 from project.serializers import TutorSerializer, AreaSerializer, EspecialidadeSerializer, ContemSerializer
 from datetime import date
@@ -7,7 +8,7 @@ class TutorAreaSerializerTest(TestCase):
     def setUp(self):
         self.factory = RequestFactory()
         self.user = UsuarioModel.objects.create_user(
-            email='tutor_serializer@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor_serializer@tutoria.com',
             password='password123',
             nomePerfil='Tutor Supremo',
             cidade='São Paulo',

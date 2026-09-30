@@ -1,12 +1,15 @@
 from django.test import TestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from project.models import AgendaModel, SolicitacaoModel, SessaoModel, TutorModel, UsuarioModel, AreaModel, EspecialidadeModel
 from datetime import date, time
+from django.utils import timezone
 
 class SessaoSolicitacaoModelTest(TestCase):
     def setUp(self):
         # Aluno
         self.aluno = UsuarioModel.objects.create_user(
-            email='aluno@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='aluno@tutoria.com',
             password='password123',
             nomePerfil='Aluno',
             cidade='City',
@@ -15,7 +18,7 @@ class SessaoSolicitacaoModelTest(TestCase):
         )
         # Tutor
         self.usuario_tutor = UsuarioModel.objects.create_user(
-            email='tutor@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@tutoria.com',
             password='password123',
             nomePerfil='Tutor',
             cidade='City',
@@ -39,14 +42,19 @@ class SessaoSolicitacaoModelTest(TestCase):
         self.assertEqual(str(self.agenda), '[tutor@tutoria.com](SEG 14:00:00)')
 
     def test_solicitacao_creation(self):
+        agora = timezone.now()
         solicitacao = SolicitacaoModel.objects.create(
             usuarioId=self.aluno,
             agendaId=self.agenda,
             areaId=self.area,
             especialidadeId=self.esp,
-            dataPretendida=date(2025, 10, 20)
+            dataPretendida=date(2025, 10, 20),
+            validade=agora,
+            recorrente=True
         )
         self.assertEqual(solicitacao.estado, 'PENDENTE')
+        self.assertEqual(solicitacao.recorrente, True)
+        self.assertEqual(solicitacao.validade, agora)
         self.assertEqual(str(solicitacao), f"Aluno aluno@tutoria.com SOLICITA AGENDA: {self.agenda}")
 
     def test_sessao_creation(self):

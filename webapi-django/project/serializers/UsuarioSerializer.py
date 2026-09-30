@@ -38,7 +38,7 @@ class UsuarioSerializer(serializers.ModelSerializer):
             'perfilTutor',
             'tutorId',
         ]
-        read_only_fields = ['pontuacao', 'fotoURL', 'localziacao',
+        read_only_fields = ['pontuacao', 'fotoURL', 'localizacao',
                             'notaAvaliacao', 'totalAvaliacoes', 'perfilTutor', 'tutorId']
 
     def create(self, validated_data):
@@ -107,22 +107,22 @@ class UsuarioPublicoSerializer(serializers.ModelSerializer):
             'tutorId',
         ]
         read_only_fields = [
-            'id', 
-            'email', 
-            'nomePerfil', 
-            'estado', 
-            'cidade', 
-            'pontuacao', 
-            'fotoURL', 
-            'sobremim', 
-            'notaAvaliacao', 
-            'totalAvaliacoes', 
+            'id',
+            'email',
+            'nomePerfil',
+            'estado',
+            'cidade',
+            'pontuacao',
+            'fotoURL',
+            'sobremim',
+            'notaAvaliacao',
+            'totalAvaliacoes',
             'tutorId'
         ]
 
     def get_fotoURL(self, obj):
         return UsuarioUtils.get_fotoUrl(obj.email, self.context.get('request'))
-    
+
     def get_totalAvaliacoes(self, obj):
         agora = timezone.now()
         limite_48h = agora - datetime.timedelta(hours=48)
@@ -165,6 +165,14 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
             'agendas',
         ]
 
+    def validate_email(self, value):
+        email_formatado = value.strip().lower()
+        if UsuarioModel.objects.filter(email__iexact=email_formatado).exists():
+            raise serializers.ValidationError(
+                "Já existe uma conta cadastrada com esse e-mail!"
+            )
+        return email_formatado
+
     def create(self, validated_data):
         foto_file = validated_data.pop('foto', None)
         especialidades_data = validated_data.pop('especialidades', [])
@@ -175,6 +183,13 @@ class UsuarioRegistroSerializer(serializers.ModelSerializer):
         validated_data['localizacao'] = localizacao
 
         user = UsuarioModel.objects.create_user(**validated_data)
+
+        aniversario = validated_data.get('aniversario')
+        if aniversario:
+            hoje = datetime.date.today()
+            idade = hoje.year - aniversario.year - ((hoje.month, hoje.day) < (aniversario.month, aniversario.day))
+            if idade < 15:
+                raise serializers.ValidationError({"aniversario": "É necessário ter 15 anos ou mais para criar uma conta."})
 
         if foto_file:
             UsuarioUtils.set_fotoUrl(user.email, foto_file)

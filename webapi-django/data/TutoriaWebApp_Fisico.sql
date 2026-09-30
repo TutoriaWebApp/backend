@@ -28,7 +28,7 @@ USUARIO (
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
     localizacao POINT        NOT NULL SRID 4326,
-    nascimento  DATE,
+    aniversario  DATE,
     sobremim    VARCHAR(500),
     notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
 
@@ -53,8 +53,11 @@ CONQUISTA (
     conquistaId INT          NOT NULL AUTO_INCREMENT,
     pontos      INT          NOT NULL,
     titulo      VARCHAR(32)  NOT NULL,
-    descricao   VARCHAR(64),
+    descricao   VARCHAR(128),
     urlImagem   VARCHAR(256) NOT NULL,
+    tier        ENUM('B', 'P', 'O', 'D') NOT NULL DEFAULT 'B',
+    secreta     BOOLEAN      NOT NULL DEFAULT FALSE,
+    pista       VARCHAR(64),
 
     CONSTRAINT CONQUISTA_PK
         PRIMARY KEY (conquistaId),

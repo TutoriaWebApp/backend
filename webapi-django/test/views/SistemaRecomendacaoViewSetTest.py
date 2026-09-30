@@ -1,26 +1,28 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from project.models import *
 
 class SistemaRecomendacaoViewSetTest(APITestCase):
     def setUp(self):
         # Usuário principal (aluno)
         self.aluno = UsuarioModel.objects.create_user(
-            email='aluno@test.com', password='password123',
+            localizacao=Point(0, 0, srid=4326), email='aluno@test.com', password='password123',
             nomePerfil='Aluno Teste', cidade='São Paulo', estado='SP'
         )
 
         # Tutor 1: Mesma cidade, mesma especialidade que o aluno terá interesse
         self.u_tutor1 = UsuarioModel.objects.create_user(
-            email='tutor1@test.com', password='password123',
+            localizacao=Point(0, 0, srid=4326), email='tutor1@test.com', password='password123',
             nomePerfil='Tutor 1', cidade='São Paulo', estado='SP'
         )
         self.tutor1 = TutorModel.objects.create(usuarioId=self.u_tutor1)
 
         # Tutor 2: Outra cidade, mesma especialidade
         self.u_tutor2 = UsuarioModel.objects.create_user(
-            email='tutor2@test.com', password='password123',
+            localizacao=Point(0, 0, srid=4326), email='tutor2@test.com', password='password123',
             nomePerfil='Tutor 2', cidade='Rio de Janeiro', estado='RJ'
         )
         self.tutor2 = TutorModel.objects.create(usuarioId=self.u_tutor2)
@@ -35,7 +37,7 @@ class SistemaRecomendacaoViewSetTest(APITestCase):
 
         # Tutor 3: São Paulo, mas especialidade diferente (Física)
         self.u_tutor3 = UsuarioModel.objects.create_user(
-            email='tutor3@test.com', password='password123',
+            localizacao=Point(0, 0, srid=4326), email='tutor3@test.com', password='password123',
             nomePerfil='Tutor 3', cidade='São Paulo', estado='SP'
         )
         self.tutor3 = TutorModel.objects.create(usuarioId=self.u_tutor3)
@@ -72,9 +74,10 @@ class SistemaRecomendacaoViewSetTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
         # Agora a resposta é paginada
-        self.assertEqual(response.data['count'], 3)
+        # Expected 2 because Tutor 2 is excluded due to having a past session with the user
+        self.assertEqual(response.data['count'], 2)
         results = response.data['results']
-        self.assertEqual(len(results), 3)
+        self.assertEqual(len(results), 2)
 
         # Tutor 1 deve estar em primeiro porque está na mesma cidade (SP)
         # e tem a especialidade de interesse (Matemática).
@@ -83,17 +86,17 @@ class SistemaRecomendacaoViewSetTest(APITestCase):
     def test_recomendacoes_com_filtro_area_e_especialidade(self):
         self.client.force_authenticate(user=self.aluno)
 
-        # Filtro por Área: Deve retornar os 3 tutores (Matemática e Física são Exatas)
+        # Filtro por Área: Deve retornar os 2 tutores (Tutor 1 e Tutor 3)
         response = self.client.get(self.recomendacoes_url, {'area': self.area.id})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 3)
+        self.assertEqual(response.data['count'], 2)
 
-        # Filtro por Especialidade (Matemática): Deve retornar Tutor 1 e Tutor 2
+        # Filtro por Especialidade (Matemática): Deve retornar apenas Tutor 1 (Tutor 2 é excluído)
         response = self.client.get(self.recomendacoes_url, {'area': self.area.id, 'especialidade': self.spec.id})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data['count'], 2)
+        self.assertEqual(response.data['count'], 1)
         results = response.data['results']
-        self.assertIn(results[0]['id'], [self.tutor1.id, self.tutor2.id])
+        self.assertEqual(results[0]['id'], self.tutor1.id)
 
         # Filtro por Especialidade (Física): Deve retornar apenas Tutor 3
         response = self.client.get(self.recomendacoes_url, {'area': self.area.id, 'especialidade': self.spec2.id})

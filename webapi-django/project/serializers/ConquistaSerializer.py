@@ -9,7 +9,7 @@ class ConquistaSerializer(serializers.ModelSerializer):
 class ConquistaUsuarioSerializer(serializers.ModelSerializer):
 	class Meta:
 		model  = ConquistaModel
-		fields = ['titulo', 'descricao', 'urlImagem', 'pontos']
+		fields = ['id', 'titulo', 'descricao', 'urlImagem', 'pontos']
 
 class consegueSerializer(serializers.ModelSerializer):
 	class Meta:

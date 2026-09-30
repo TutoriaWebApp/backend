@@ -5,6 +5,7 @@ from .SessaoSerializer import *
 from .AvaliacaoSerializer import *
 from .ChatSerializer import *
 from .EstatisticaSerializer import *
+from .NotificacoesSerializer import *
 
 __all__ = [
 	'UsuarioSerializer',
@@ -31,5 +32,8 @@ __all__ = [
 	'ChatSerializer',
 	'MensagemSerializer',
 
-	'EstatisticaProgressoSerializer'
+	'EstatisticaProgressoSerializer',
+
+	'SolicitacaoResolvidaItemSerializer',
+    'ResumoNotificacoesResponseSerializer',
 ]

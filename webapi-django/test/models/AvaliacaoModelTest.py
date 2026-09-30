@@ -1,4 +1,6 @@
 from django.test import TestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from django.core.exceptions import ValidationError
 from project.models import AvaliacaoAprendizModel, AvaliacaoTutorModel, UsuarioModel, TutorModel, SessaoModel, AreaModel, EspecialidadeModel
 from datetime import date, time
@@ -7,7 +9,7 @@ class AvaliacaoModelTest(TestCase):
     def setUp(self):
         # Create users
         self.aluno = UsuarioModel.objects.create_user(
-            email='aluno@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='aluno@tutoria.com',
             password='password123',
             nomePerfil='Aluno Avaliador',
             cidade='City',
@@ -15,7 +17,7 @@ class AvaliacaoModelTest(TestCase):
             aniversario=date(1995, 5, 5)
         )
         self.tutor_user = UsuarioModel.objects.create_user(
-            email='tutor@tutoria.com',
+            localizacao=Point(0, 0, srid=4326), email='tutor@tutoria.com',
             password='password123',
             nomePerfil='Tutor Avaliado',
             cidade='City',

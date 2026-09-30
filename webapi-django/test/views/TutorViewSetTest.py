@@ -2,12 +2,14 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
 from project.models import UsuarioModel, TutorModel, AreaModel, EspecialidadeModel, ContemModel
+from project.utils.GeoLocalizacaoUtil import Point
 
 class TutorViewSetTest(APITestCase):
 	def setUp(self):
 		self.usuario = UsuarioModel.objects.create_user(
 			email='test@example.com', password='testpassword123',
-			nomePerfil='Test User', cidade='Test City', estado='TS'
+			nomePerfil='Test User', cidade='Test City', estado='TS',
+			localizacao=Point(0, 0, srid=4326)
 		)
 		self.area = AreaModel.objects.create(nomeArea='Ciências')
 		self.especialidade = EspecialidadeModel.objects.create(areaId=self.area, nomeEspecialidade='Física')
@@ -26,7 +28,8 @@ class TutorViewSetTest(APITestCase):
 	def test_lista_tutores_authenticated(self):
 		outro_usuario = UsuarioModel.objects.create_user(
 			email='outro@example.com', password='testpassword123',
-			nomePerfil='Outro', cidade='Test City', estado='TS'
+			nomePerfil='Outro', cidade='Test City', estado='TS',
+			localizacao=Point(0, 0, srid=4326)
 		)
 		TutorModel.objects.create(usuarioId=outro_usuario)
 
@@ -43,7 +46,8 @@ class TutorViewSetTest(APITestCase):
 	def test_cria_tutor_novo(self):
 		novo_usuario = UsuarioModel.objects.create_user(
 			email='novo@example.com', password='testpassword123',
-			nomePerfil='Novo', cidade='Test City', estado='TS'
+			nomePerfil='Novo', cidade='Test City', estado='TS',
+			localizacao=Point(0, 0, srid=4326)
 		)
 		self.client.force_authenticate(user=novo_usuario)
 		response = self.client.post(self.tutores_url, {})
