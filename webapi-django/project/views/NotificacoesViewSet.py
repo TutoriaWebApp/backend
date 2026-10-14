@@ -36,18 +36,20 @@ class ResumoNotificacoesViewSet(viewsets.ViewSet):
             Q(dataPretendida=agora.date(), agendaId__horarioInicio__gt=agora.time())
         ).count()
 
-        solicitacoes_resolvidas_aprendiz = SolicitacaoModel.objects.filter(
-            usuarioId=user,
-            dataPretendida__gte = agora.date(),
+        solicitacoes_resolvidas = SolicitacaoModel.objects.filter(
+            Q(usuarioId=user) | Q(agendaId__tutorId__usuarioId=user),
+            dataPretendida__gte=agora.date(),
             estado__in=[
                 SolicitacaoModel.EstadoSolicitacao.ACEITO,
                 SolicitacaoModel.EstadoSolicitacao.RECUSADO
             ]
-        ).select_related('agendaId__tutorId__usuarioId', 'areaId').values(
+        ).select_related('agendaId__tutorId__usuarioId', 'areaId', 'usuarioId').values(
             'id',
             'estado',
             'areaId__nomeArea',
-            'agendaId__tutorId__usuarioId__nomePerfil'
+            'agendaId__tutorId__usuarioId__nomePerfil',
+            'usuarioId__nomePerfil', 
+            'usuarioId' 
         )
 
         lista_resolvidas = [
@@ -55,13 +57,13 @@ class ResumoNotificacoesViewSet(viewsets.ViewSet):
                 "id": s['id'],
                 "estado": s['estado'],
                 "nomeArea": s['areaId__nomeArea'],
-                "nomeTutor": s['agendaId__tutorId__usuarioId__nomePerfil'] or "Tutor",
+                "nomeTutor": s['agendaId__tutorId__usuarioId__nomePerfil'] if s['usuarioId'] == user.id else (s['usuarioId__nomePerfil'] or "Usuário"),
             }
-            for s in solicitacoes_resolvidas_aprendiz
+            for s in solicitacoes_resolvidas
         ]
 
         return Response({
             "mensagensNaoLidas": mensagens_nao_lidas,
             "solicitacoesTutorPendentes": solicitacoes_tutor_pendentes,
-            "solicitacoesResolvidasAprendiz": lista_resolvidas
+            "solicitacoesResolvidasAprendiz": lista_resolvidas 
         })
