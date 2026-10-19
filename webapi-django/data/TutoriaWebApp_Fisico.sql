@@ -28,7 +28,7 @@ USUARIO (
     cidade      VARCHAR(80)  NOT NULL,
     estado      CHAR(2)      NOT NULL,
     localizacao POINT        NOT NULL SRID 4326,
-    aniversario  DATE,
+    aniversario  DATE        NOT NULL,
     sobremim    VARCHAR(500),
     notaAvaliacao FLOAT(2,1)  NOT NULL DEFAULT 5.0,
 
@@ -140,7 +140,7 @@ SOLICITACAO (
     usuarioId       INT NOT NULL,
     agendaId        INT NOT NULL,
     areaId          INT NOT NULL,
-    especialidadeId INT,
+    especialidadeId INT NOT NULL,
     dataCriacao     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     dataPretendida  DATE NOT NULL,
     validade        DATETIME NOT NULL,
@@ -175,7 +175,7 @@ SESSAO (
     usuarioId       INT NOT NULL,
     tutorId         INT NOT NULL,
     areaId          INT NOT NULL,
-    especialidadeId INT,
+    especialidadeId INT NOT NULL,
 
     dataSessao    DATE NOT NULL,
     horarioInicio TIME NOT NULL,
