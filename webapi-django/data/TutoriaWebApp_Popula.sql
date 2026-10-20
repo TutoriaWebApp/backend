@@ -19,39 +19,6 @@ USE tutoriadb;
 INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, localizacao, is_active, is_staff, is_superuser) VALUES
 ('admin@tutoria.com', 'pbkdf2_sha256$1000000$zZBLgMtlMlfKvomGWZKEKt$ifR7/CLjG7xZUl6+iFjJ0W3mXON2p3smJGnn2XuBUSY=', 'Admin', 'Não Aplicado', 'NA', '1971-03-15', ST_GeomFromText('POINT(0 0)', 4326), 1, 1, 1);
 
--- Para fins de testes a senha destes usuários será Senha@123456
-INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, localizacao) VALUES
-('webapp.tutoria+teste01@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Ana Lima', 'Curitiba', 'PR', '1985-03-05', ST_GeomFromText('POINT(-49.2733 -25.4284)', 4326)),
-('webapp.tutoria+teste02@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'João Silva', 'São Paulo', 'SP', '1990-01-03', ST_GeomFromText('POINT(-46.6333 -23.5505)', 4326)),
-('webapp.tutoria+teste03@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Maria Oliveira', 'Rio de Janeiro', 'RJ', '1979-03-05', ST_GeomFromText('POINT(-43.1729 -22.9068)', 4326)),
-('webapp.tutoria+teste04@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Carlos Souza', 'Belo Horizonte', 'MG', '1988-02-18', ST_GeomFromText('POINT(-43.9345 -19.9167)', 4326)),
-('webapp.tutoria+teste05@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Paula Mendes', 'Salvador', 'BA', '1988-01-05', ST_GeomFromText('POINT(-38.5016 -12.9777)', 4326)),
-('webapp.tutoria+teste06@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Fernanda Rocha', 'Porto Alegre', 'RS', '1992-07-12', ST_GeomFromText('POINT(-51.2177 -30.0346)', 4326)),
-('webapp.tutoria+teste07@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Ricardo Alves', 'Fortaleza', 'CE', '1983-11-25', ST_GeomFromText('POINT(-38.5267 -3.7319)', 4326)),
-('webapp.tutoria+teste08@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Gabriela Costa', 'Brasília', 'DF', '1995-05-30', ST_GeomFromText('POINT(-47.8919 -15.7975)', 4326)),
-('webapp.tutoria+teste09@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Bruno Ferreira', 'Manaus', 'AM', '1987-09-14', ST_GeomFromText('POINT(-60.0217 -3.1190)', 4326)),
-('webapp.tutoria+teste10@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Juliana Pereira', 'Recife', 'PE', '1991-12-08', ST_GeomFromText('POINT(-34.8770 -8.0476)', 4326)),
-('webapp.tutoria+teste11@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Lucas Martins', 'Florianópolis', 'SC', '1989-04-22', ST_GeomFromText('POINT(-48.5480 -27.5954)', 4326)),
-('webapp.tutoria+teste12@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Amanda Santos', 'Vitória', 'ES', '1994-10-05', ST_GeomFromText('POINT(-40.3128 -20.3155)', 4326)),
-('webapp.tutoria+teste13@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Tiago Gomes', 'Goiânia', 'GO', '1986-01-19', ST_GeomFromText('POINT(-49.2648 -16.6869)', 4326)),
-('webapp.tutoria+teste14@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Patricia Lima', 'Belém', 'PA', '1984-06-27', ST_GeomFromText('POINT(-48.4902 -1.4558)', 4326)),
-('webapp.tutoria+teste15@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Rafael Silva', 'São Luís', 'MA', '1993-08-03', ST_GeomFromText('POINT(-44.3068 -2.5307)', 4326)),
-('webapp.tutoria+teste16@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Larissa Souza', 'Natal', 'RN', '1996-02-15', ST_GeomFromText('POINT(-35.2110 -5.7945)', 4326)),
-('webapp.tutoria+teste17@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Andre Oliveira', 'Teresina', 'PI', '1982-12-20', ST_GeomFromText('POINT(-42.8038 -5.0920)', 4326)),
-('webapp.tutoria+teste18@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Camila Mendes', 'João Pessoa', 'PB', '1990-05-10', ST_GeomFromText('POINT(-34.8450 -7.1195)', 4326)),
-('webapp.tutoria+teste19@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Felipe Alves', 'Maceió', 'AL', '1985-09-02', ST_GeomFromText('POINT(-35.7353 -9.6658)', 4326)),
-('webapp.tutoria+teste20@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Beatriz Costa', 'Aracaju', 'SE', '1994-03-25', ST_GeomFromText('POINT(-37.0731 -10.9472)', 4326)),
-('webapp.tutoria+teste21@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Rodrigo Ferreira', 'Campo Grande', 'MS', '1988-07-08', ST_GeomFromText('POINT(-54.6201 -20.4697)', 4326)),
-('webapp.tutoria+teste22@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Vanessa Pereira', 'Cuiabá', 'MT', '1991-11-14', ST_GeomFromText('POINT(-56.0974 -15.6010)', 4326)),
-('webapp.tutoria+teste23@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Marcelo Martins', 'Porto Velho', 'RO', '1987-04-30', ST_GeomFromText('POINT(-63.9039 -8.7619)', 4326)),
-('webapp.tutoria+teste24@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Elaine Santos', 'Rio Branco', 'AC', '1984-10-18', ST_GeomFromText('POINT(-67.8249 -9.9754)', 4326)),
-('webapp.tutoria+teste25@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Igor Gomes', 'Boa Vista', 'RR', '1993-01-22', ST_GeomFromText('POINT(-60.6758 2.8235)', 4326)),
-('webapp.tutoria+teste26@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Leticia Lima', 'São Paulo', 'SP', '1995-06-05', ST_GeomFromText('POINT(-46.6333 -23.5505)', 4326)),
-('webapp.tutoria+teste27@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Danilo Silva', 'Rio de Janeiro', 'RJ', '1989-08-28', ST_GeomFromText('POINT(-43.1729 -22.9068)', 4326)),
-('webapp.tutoria+teste28@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Monica Souza', 'Belo Horizonte', 'MG', '1992-02-14', ST_GeomFromText('POINT(-43.9345 -19.9167)', 4326)),
-('webapp.tutoria+teste29@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Eduardo Oliveira', 'Salvador', 'BA', '1986-11-09', ST_GeomFromText('POINT(-38.5016 -12.9777)', 4326)),
-('webapp.tutoria+teste30@gmail.com', 'pbkdf2_sha256$1000000$Puno9AlBwFpMzEwmivywLO$MVEGoa7Tl6ss3/SXicru2pzqOI3LV1jne/qcs3XNkGI=', 'Vanderson Silva', 'Recife', 'PE', '2002-08-10', ST_GeomFromText('POINT(-34.8770 -8.0476)', 4326));
-
 -- CONQUISTAS (Total: 31)
 INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
 ('B', 50, 'Olá Mundo!', 'Se cadastrou na plataforma.', 'OlaMundo.png'),
@@ -91,13 +58,12 @@ INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem, secreta, pist
 
 ('D', 2000, 'Deixando uma Marca', 'Manteve uma média maior ou igual a 4.7 como tutor ou aprendiz após 80 avaliações.', 'marca.png', true, 'Um legado gravado na história da plataforma...');
 
--- AREAS (Total: 25
+-- AREAS
 INSERT INTO AREA (nomeArea) VALUES
 ('Matemática'),
 ('Programação'),
 ('Design Gráfico'),
 ('Idiomas'),
-('Ciências Exatas'),
 ('História'),
 ('Geografia'),
 ('Biologia'),
@@ -117,496 +83,291 @@ INSERT INTO AREA (nomeArea) VALUES
 ('Gastronomia'),
 ('Moda'),
 ('Fotografia'),
-('Cinema');
+('Cinema'),
+('Inteligência Artificial'),
+('Segurança da Informação'),
+('Redes de Computadores'),
+('Banco de Dados'),
+('Pedagogia'),
+('Nutrição'),
+('Enfermagem'),
+('Odontologia'),
+('Fisioterapia'),
+('Farmácia'),
+('Estatística'),
+('Dança'),
+('Teatro'),
+('Desenho'),
+('Pintura'),
+('Artesanato'),
+('Marcenaria'),
+('Redação'),
+('Literatura'),
+('Oratória'),
+('Finanças Pessoais'),
+('Investimentos'),
+('Yoga'),
+('Meditação'),
+('Jardinagem'),
+('Xadrez'),
+('Jogos de Tabuleiro'),
+('Edição de Vídeo'),
+('Modelagem 3D'),
+('Animação'),
+('Eletrônica'),
+('Robótica'),
+('Gastronomia');
 
--- ESPECIALIDADES (Total: 25)
+-- ESPECIALIDADES 
+
+-- Especialidades de Matemática
 INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
-(1, 1, 'Cálculo Diferencial'),
-(2, 2, 'Desenvolvimento Web'),
-(3, 3, 'Photoshop Avançado'),
-(4, 4, 'Inglês Intermediário'),
-(5, 5, 'Física Quântica'),
-(6, 6, 'Brasil Colônia'),
-(7, 7, 'Geopolítica Moderna'),
-(8, 8, 'Genética Molecular'),
-(9, 9, 'Termodinâmica Química'),
-(10, 10, 'Mecânica Clássica'),
-(11, 11, 'Existencialismo'),
-(12, 12, 'Teoria Crítica'),
-(13, 13, 'Pintura a Óleo'),
-(14, 14, 'Teoria Musical'),
-(15, 15, 'Fisiologia do Exercício'),
-(16, 16, 'Microeconomia'),
-(17, 17, 'Direito Civil'),
-(18, 18, 'Anatomia Humana'),
-(19, 19, 'Psicologia Cognitiva'),
-(20, 20, 'Urbanismo Sustentável'),
-(21, 21, 'Marketing Digital'),
-(22, 22, 'Culinária Italiana'),
-(23, 23, 'Corte e Costura'),
-(24, 24, 'Iluminação de Estúdio'),
-(25, 25, 'Roteiro Cinematográfico'),
-(26, 2, 'Sistemas Embarcados');
+(1, 1, 'Aritmética e Matemática Básica');
+(2, 1, 'Álgebra e Equações'),
+(3, 1, 'Geometria Plana e Espacial'),
+(4, 1, 'Trigonometria'),
+(5, 1, 'Matemática Financeira'),
+(6, 1, 'Raciocínio Lógico'),
+(7, 1, 'Matemática para ENEM e Vestibulares'),
+--Ensino Superior e Graduação
+(5, 1, 'Cálculo 1'),
+(6, 1, 'Cálculo 2'),
+(7, 1, 'Cálculo 3'),
+(8, 1, 'Geometria Analítica'),
+(9, 1, 'Álgebra Linear'),
+(10, 1, 'Cálculo Numérico');
+(11, 1, 'Equações Diferenciais Ordinárias (EDO)'),
+(12, 1, 'Cálculo Numérico'),
+(13, 1, 'Matemática Discreta'),
+(14, 1, 'Probabilidade e Estatística'),
+(15, 1, 'Análise Real'),
+(16, 1, 'Variáveis Complexas');
 
--- TUTORES (Total: 25)
-INSERT INTO TUTOR (tutorId, usuarioId, notaAvaliacao) VALUES
-(1, 1, 5.0),
-(2, 2, 4.5),
-(3, 3, 4.8),
-(4, 4, 3.5),
-(5, 5, 4.0),
-(6, 6, 2.5),
-(7, 7, 4.2),
-(8, 8, 5.0),
-(9, 9, 3.8),
-(10, 10, 4.7),
-(11, 11, 4.1),
-(12, 12, 1.5), -- Nota bem baixa para testar o 'asc'
-(13, 13, 3.9),
-(14, 14, 4.9),
-(15, 15, 4.3),
-(16, 16, 2.0),
-(17, 17, 4.6),
-(18, 18, 3.7),
-(19, 19, 4.4),
-(20, 20, 5.0),
-(21, 21, 3.2),
-(22, 22, 4.0),
-(23, 23, 2.8),
-(24, 24, 4.9),
-(25, 25, 3.0);
+-- Especialidades de Programação
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+-- Fundamentos e Conceitos
+(17, 2, 'Lógica de Programação'),
+(18, 2, 'Algoritmos e Estruturas de Dados'),
+(19, 2, 'Programação Orientada a Objetos (POO)'),
+(20, 2, 'Programação Funcional'),
 
--- CONTEM (Relacionamento Tutor-Especialidade, Total: 25)
-INSERT INTO contem (tutorId, especialidadeId) VALUES
-(1, 1),
-(1, 2),
-(2, 2),
-(3, 3),
-(3, 2),
-(4, 4),
-(4, 2),
-(5, 5),
-(5, 2),
-(6, 6),
-(6, 2),
-(7, 7),
-(7, 2),
-(8, 8),
-(8, 2),
-(9, 9),
-(9, 2),
-(10, 10),
-(10, 2),
-(11, 11),
-(11, 2),
-(12, 12),
-(12, 2),
-(13, 13),
-(13, 2),
-(14, 14),
-(14, 2),
-(15, 15),
-(15, 2),
-(16, 16),
-(16, 2),
-(17, 17),
-(17, 2),
-(18, 18),
-(18, 2),
-(19, 19),
-(19, 2),
-(20, 20),
-(20, 2),
-(21, 21),
-(21, 2),
-(22, 22),
-(22, 2),
-(23, 23),
-(23, 2),
-(24, 24),
-(24, 2),
-(25, 25),
-(25, 2);
+-- Linguagens de Programação
+(21, 2, 'Python'),
+(22, 2, 'JavaScript e TypeScript'),
+(23, 2, 'Java'),
+(24, 2, 'C'),
+(25, 2, 'C++'),
+(26, 2, 'C#'),
+(27, 2, '.NET'),
+(28, 2, 'PHP'),
+(29, 2, 'Go (Golang)'),
+(30, 2, 'Rust'),
+(31, 2, 'Kotlin'),
+(32, 2, 'Swift'),
+(33, 2, 'Ruby'),
 
--- AGENDAS (Total: 25)
-INSERT INTO AGENDA (tutorId, horarioInicio, horarioFim, dia) VALUES
-(1, '08:00:00', '10:00:00', 'SEG'),
-(1, '14:00:00', '16:00:00', 'QUA'),
-(2, '10:00:00', '12:00:00', 'TER'),
-(3, '09:00:00', '11:00:00', 'QUI'),
-(4, '15:00:00', '17:00:00', 'SEX'),
-(5, '08:00:00', '10:00:00', 'SAB'),
-(6, '13:00:00', '15:00:00', 'SEG'),
-(7, '16:00:00', '18:00:00', 'TER'),
-(8, '09:00:00', '11:00:00', 'QUA'),
-(9, '14:00:00', '16:00:00', 'QUI'),
-(10, '10:00:00', '12:00:00', 'SEX'),
-(11, '08:00:00', '10:00:00', 'DOM'),
-(12, '14:00:00', '16:00:00', 'SEG'),
-(13, '10:00:00', '12:00:00', 'TER'),
-(14, '09:00:00', '11:00:00', 'QUA'),
-(15, '15:00:00', '17:00:00', 'QUI'),
-(16, '16:00:00', '18:00:00', 'SEX'),
-(17, '08:00:00', '10:00:00', 'SAB'),
-(18, '13:00:00', '15:00:00', 'SEG'),
-(19, '10:00:00', '12:00:00', 'TER'),
-(20, '14:00:00', '16:00:00', 'QUA'),
-(21, '09:00:00', '11:00:00', 'QUI'),
-(22, '15:00:00', '17:00:00', 'SEX'),
-(23, '10:00:00', '12:00:00', 'SAB'),
-(24, '08:00:00', '10:00:00', 'DOM'),
-(25, '14:00:00', '16:00:00', 'SEG');
+-- Desenvolvimento de Aplicações
+(34, 2, 'React'),
+(35, 2, 'Vue'),
+(36, 2, 'Angular'),
+(37, 2, 'Node.js'),
+(38, 2, 'Django'),
+(39, 2, 'Spring'),
+(40, 2, 'Flutter'),
+(41, 2, 'React Native'),
 
--- SOLICITACOES (Total: 25)
-INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPretendida, validade, recorrente, estado) VALUES
-(26,  1,  1,  1, '2026-06-01', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(27,  2,  1,  1, '2026-06-03', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(28,  3,  2,  2, '2026-06-02', '2026-10-10 23:59:59', TRUE, 'RECORRENTE'),
-(29,  4,  3,  3, '2026-06-04', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(30,  5,  4,  4, '2026-06-05', '2026-10-10 23:59:59', FALSE, 'RECUSADO'),
-(26,  6,  5,  5, '2026-06-06', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(27,  7,  6,  6, '2026-06-08', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(28,  8,  7,  7, '2026-06-09', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(29,  9,  8,  8, '2026-06-10', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(30, 10,  9,  9, '2026-06-11', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(26, 11, 10, 10, '2026-06-14', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(27, 12, 11, 11, '2026-06-15', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(28, 13, 12, 12, '2026-06-16', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(29, 14, 13, 13, '2026-06-17', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(30, 15, 14, 14, '2026-06-18', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(26, 16, 15, 15, '2026-06-19', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(27, 17, 16, 16, '2026-06-20', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(28, 18, 17, 17, '2026-06-22', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(29, 19, 18, 18, '2026-06-23', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(30, 20, 19, 19, '2026-06-24', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(26, 21, 20, 20, '2026-06-25', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(27, 22, 21, 21, '2026-06-26', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(28, 23, 22, 22, '2026-06-27', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-(29, 24, 23, 23, '2026-06-28', '2026-10-10 23:59:59', FALSE, 'PENDENTE'),
-(30, 25, 24, 24, '2026-06-29', '2026-10-10 23:59:59', FALSE, 'ACEITO'),
-( 3,  3,  2,  2, '2026-09-22', '2026-09-21 23:59:59', FALSE, 'ACEITO'),
-( 3,  3,  2,  2, '2026-09-29', '2026-09-28 23:59:59', FALSE, 'ACEITO'),
-(26,  4,  3,  3, '2026-10-01', '2026-09-28 23:59:59', FALSE, 'PENDENTE'),
-(27,  4,  3,  3, '2026-10-08', '2026-10-05 23:59:59', FALSE, 'PENDENTE');
+-- Engenharia de Software, Arquitetura e Boas Práticas
+(42, 2, 'Padrões de Projeto (Design Patterns)'),
+(43, 2, 'Arquiteturas de Software e Microsserviços'),
+(44, 2, 'Clean Code e Refatoração'),
+(45, 2, 'Testes de Software'),
+(46, 2, 'Git e Controle de Versão'),
+(47, 2, 'DevOps'),
+(48, 2, 'Sistemas Distribuídos');
+(49, 2, 'CSS');
+(50, 2, 'HTML');
 
--- =========================================================================
--- SOLICITAÇÕES PARA O ADMIN (usuarioId = 1)
--- =========================================================================
+-- Especialidades para Design Gráfico (areaId = 3)
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+-- Softwares e Ferramentas
+(51, 3, 'Adobe Photoshop'),
+(52, 3, 'Adobe Illustrator'),
+(53, 3, 'Adobe InDesign'),
+(54, 3, 'Figma'),
+(55, 3, 'Canva'),
+(56, 3, 'CorelDRAW'),
+(57, 3, 'Affinity Designer'),
 
--- Duas solicitações enviadas pelo Admin como ALUNO (usuarioId = 1) para outros tutores
-INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPretendida, validade, recorrente, estado) VALUES
-(1, 3, 2, 2, '2026-10-15', '2026-10-14 23:59:59', FALSE, 'PENDENTE'), -- Para o Tutor 2
-(1, 4, 3, 3, '2026-10-16', '2026-10-15 23:59:59', FALSE, 'PENDENTE'); -- Para o Tutor 3
+-- Fundamentos e Conceitos
+(58, 3, 'Tipografia'),
+(59, 3, 'Teoria das Cores'),
+(60, 3, 'Composição e Grid'),
 
--- Duas solicitações recebidas pelo Admin como TUTOR (agendaId = 1 ou 2, que pertencem ao tutorId = 1)
-INSERT INTO SOLICITACAO (usuarioId, agendaId, areaId, especialidadeId, dataPretendida, validade, recorrente, estado) VALUES
-(2, 1, 1, 1, '2026-10-12', '2026-10-11 23:59:59', FALSE, 'PENDENTE'), -- Enviada pela Ana Lima (usuario 2)
-(3, 2, 1, 1, '2026-10-14', '2026-10-13 23:59:59', FALSE, 'PENDENTE'); -- Enviada pelo João Silva (usuario 3)
+-- Áreas de Atuação e Especialidades
+(61, 3, 'Design de Logotipos'),
+(62, 3, 'Identidade Visual'),
+(63, 3, 'Branding'),
+(64, 3, 'UI Design'),
+(65, 3, 'UX Design'),
+(66, 3, 'Motion Design'),
+(67, 3, 'Design Editorial'),
+(68, 3, 'Diagramação'),
+(69, 3, 'Design para Redes Sociais'),
+(70, 3, 'Design de Embalagens'),
+(71, 3, 'Vetorização'),
+(72, 3, 'Tratamento de Imagem');
 
--- =========================================================================
--- SESSOES (IDs sequenciais de 1 a 40)
--- =========================================================================
+-- Especialidades para Idiomas (areaId = 4)
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+-- Inglês
+(73, 4, 'Inglês Básico'),
+(74, 4, 'Inglês Intermediário'),
+(75, 4, 'Inglês Avançado'),
+(76, 4, 'Conversação em Inglês'),
+(77, 4, 'Inglês para Negócios'),
+(78, 4, 'Preparatório TOEFL e IELTS'),
 
--- Tutor 1 (Nota 5.0): Fez 4 sessões (IDs: 1, 2, 3, 4)
-INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(1, 26, 1, 1, 1, '2026-05-19', '08:00:00', '10:00:00'),
-(2, 27, 1, 1, 1, '2026-05-20', '10:00:00', '12:00:00'),
-(3, 28, 1, 1, 1, '2026-05-21', '09:00:00', '11:00:00'),
-(4, 29, 1, 1, 1, '2026-05-22', '15:00:00', '17:00:00');
+-- Espanhol
+(79, 4, 'Espanhol Básico'),
+(80, 4, 'Espanhol Intermediário'),
+(81, 4, 'Espanhol Avançado'),
+(82, 4, 'Conversação em Espanhol'),
 
--- Tutor 2 (Nota 4.5): Fez 6 sessões (IDs: 5, 6, 7, 8, 9, 10)
-INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(5,  26, 2, 2, 2, '2026-05-20', '10:00:00', '12:00:00'),
-(6,  27, 2, 2, 2, '2026-05-21', '10:00:00', '12:00:00'),
-(7,  28, 2, 2, 2, '2026-05-22', '10:00:00', '12:00:00'),
-(8,  29, 2, 2, 2, '2026-05-23', '10:00:00', '12:00:00'),
-(9,  30, 2, 2, 2, '2026-05-24', '10:00:00', '12:00:00'),
-(10, 26, 2, 2, 2, '2026-05-25', '10:00:00', '12:00:00');
+-- Outros Idiomas
+(83, 4, 'Francês'),
+(84, 4, 'Alemão'),
+(85, 4, 'Italiano'),
+(86, 4, 'Japonês'),
+(87, 4, 'Mandarim'),
+(88, 4, 'Coreano'),
+(89, 4, 'Russo'),
+(90, 4, 'LIBRAS (Língua Brasileira de Sinais)'),
+(91, 4, 'Português para Estrangeiros');
 
--- Tutor 3 (Nota 4.8): Fez 5 sessões (IDs: 11, 12, 13, 14, 15)
-INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(11, 26, 3, 3, 3, '2026-05-19', '09:00:00', '11:00:00'),
-(12, 27, 3, 3, 3, '2026-05-20', '09:00:00', '11:00:00'),
-(13, 28, 3, 3, 3, '2026-05-21', '09:00:00', '11:00:00'),
-(14, 29, 3, 3, 3, '2026-05-22', '09:00:00', '11:00:00'),
-(15, 30, 3, 3, 3, '2026-05-23', '09:00:00', '11:00:00');
+-- Especialidades para História (areaId = 5)
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+-- História do Brasil
+(92, 5, 'História do Brasil Colônia'),
+(93, 5, 'História do Brasil Império'),
+(94, 5, 'História do Brasil República'),
+(95, 5, 'Período Militar no Brasil'),
 
--- Tutor 4 (Nota 3.5): Fez 3 sessões (IDs: 16, 17, 18)
-INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(16, 26, 4, 4, 4, '2026-05-19', '15:00:00', '17:00:00'),
-(17, 27, 4, 4, 4, '2026-05-20', '15:00:00', '17:00:00'),
-(18, 28, 4, 4, 4, '2026-05-21', '15:00:00', '17:00:00');
+-- História Geral
+(96, 5, 'Pré-História'),
+(97, 5, 'História Antiga'),
+(98, 5, 'História Medieval'),
+(99, 5, 'História Moderna'),
+(100, 5, 'História Contemporânea'),
 
--- Tutor 5 (Nota 4.0): Fez 2 sessões (IDs: 19, 20)
-INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(19, 26, 5, 5, 5, '2026-05-19', '08:00:00', '10:00:00'),
-(20, 27, 5, 5, 5, '2026-05-20', '08:00:00', '10:00:00');
+-- História Regional e Temática
+(101, 5, 'História da América'),
+(102, 5, 'História da África'),
+(103, 5, 'História da Europa'),
+(104, 5, 'História da Ásia'),
+(105, 5, 'História das Guerras Mundiais'),
+(106, 5, 'Guerra Fria'),
 
--- Tutor 8 (Nota 5.0): Fez 2 sessões (IDs: 21, 22) -> Perfeito para testar desempate com o Tutor 1!
-INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(21, 26, 8, 8, 8, '2026-05-19', '09:00:00', '11:00:00'),
-(22, 27, 8, 8, 8, '2026-05-20', '09:00:00', '11:00:00');
+-- Ensino Superior e Teoria
+(107, 5, 'Historiografia'),
+(108, 5, 'Teoria da História'),
+(109, 5, 'Patrimônio e Memória');
 
--- Tutor 20 (Nota 5.0): Fez 1 sessão (ID: 23) -> Outro empate de nota máxima!
-INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(23, 26, 20, 20, 20, '2026-05-19', '14:00:00', '16:00:00');
+-- Especialidades para Geografia (areaId = 6)
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+-- Geografia Geral e Física
+(110, 6, 'Geografia Física'),
+(111, 6, 'Geografia Humana'),
+(112, 6, 'Climatologia'),
+(113, 6, 'Geomorfologia'),
+(114, 6, 'Hidrografia'),
+(115, 6, 'Biogeografia'),
 
--- Restante dos tutores (6, 7, 9 ao 19, 21 ao 25): Apenas 1 sessão padrão para não deixar vazio (IDs: 24 a 40)
-INSERT INTO SESSAO (sessaoId, usuarioId, tutorId, areaId, especialidadeId, dataSessao, horarioInicio, horarioFim) VALUES
-(24, 26, 6, 6, 6, '2026-05-19', '13:00:00', '15:00:00'),
-(25, 26, 7, 7, 7, '2026-05-19', '16:00:00', '18:00:00'),
-(26, 26, 9, 9, 9, '2026-05-19', '14:00:00', '16:00:00'),
-(27, 26, 10, 10, 10, '2026-05-19', '10:00:00', '12:00:00'),
-(28, 26, 11, 11, 11, '2026-05-19', '08:00:00', '10:00:00'),
-(29, 26, 12, 12, 12, '2026-05-19', '14:00:00', '16:00:00'),
-(30, 26, 13, 13, 13, '2026-05-19', '10:00:00', '12:00:00'),
-(31, 26, 14, 14, 14, '2026-05-19', '09:00:00', '11:00:00'),
-(32, 26, 15, 15, 15, '2026-05-19', '15:00:00', '17:00:00'),
-(33, 26, 16, 16, 16, '2026-05-19', '16:00:00', '18:00:00'),
-(34, 26, 17, 17, 17, '2026-05-19', '08:00:00', '10:00:00'),
-(35, 26, 18, 18, 18, '2026-05-19', '13:00:00', '15:00:00'),
-(36, 26, 19, 19, 19, '2026-05-19', '10:00:00', '12:00:00'),
-(37, 26, 21, 21, 21, '2026-05-19', '09:00:00', '11:00:00'),
-(38, 26, 22, 22, 22, '2026-05-19', '15:00:00', '17:00:00'),
-(39, 26, 23, 23, 23, '2026-05-19', '10:00:00', '12:00:00'),
-(40, 26, 24, 24, 24, '2026-05-19', '08:00:00', '10:00:00'),
-(41, 26, 25, 25, 25, '2026-05-19', '14:00:00', '16:00:00'),
-(42,  3,  2,  2,  2, '2026-09-23', '12:00:00', '13:00:00' );
+-- Geografia Humana e Econômica
+(116, 6, 'Geopolítica'),
+(117, 6, 'Geografia Urbana'),
+(118, 6, 'Geografia Agrária'),
+(119, 6, 'Geografia Econômica'),
+(120, 6, 'Demografia e População'),
+(121, 6, 'Geografia Ambiental'),
 
-INSERT INTO SESSAO (
-    dataSessao,
-    horarioInicio,
-    horarioFim,
-    usuarioId,
-    tutorId,
-    areaId,
-    especialidadeId
-) VALUES (
-    '2026-07-25',      -- Data passada
-    '14:00:00',
-    '15:00:00',
-    1,                 -- Admin (Aprendiz)
-    2,                 -- Tutor 2 (Quem o Admin precisa avaliar)
-    1,
-    1
-);
+-- Regional
+(122, 6, 'Geografia do Brasil'),
+(123, 6, 'Geografia Mundial'),
 
--------------------------------------------------------------------------
--- 2. Sessão onde o Admin participou como TUTOR (ficou pendente de avaliar o Aprendiz)
--- *Nota: Requer que o Admin possua um registro na tabela TUTOR (ex: tutorId = 1)
--------------------------------------------------------------------------
-INSERT INTO SESSAO (
-    dataSessao,
-    horarioInicio,
-    horarioFim,
-    usuarioId,
-    tutorId,
-    areaId,
-    especialidadeId
-) VALUES (
-    '2026-07-26',      -- Data passada
-    '10:00:00',
-    '11:00:00',
-    2,                 -- Aprendiz 2 (Quem o Admin precisa avaliar)
-    1,                 -- Admin (Tutor)
-    1,                 -- areaId
-    1                  -- especialidadeId
-);                     -- Parêntese e ponto e vírgula fechados corretamente!
+-- Geotecnologias
+(124, 6, 'Cartografia'),
+(125, 6, 'Sistemas de Informação Geográfica (SIG)'),
+(126, 6, 'Sensoriamento Remoto');
 
--- =========================================================================
--- AVALIACOES_APRENDIZ (Total: 41 - Mapeamento 1:1 exato com as sessões)
--- =========================================================================
-INSERT INTO AVALIACAO_APRENDIZ (usuarioId, sessaoId, nota, comentario, dataCriacao) VALUES
-(26, 1, 5, 'Excelente', '2026-05-19 10:05:00'),
-(27, 2, 5, 'Ótimo', '2026-05-20 12:05:00'),
-(28, 3, 4, 'Bom', '2026-05-21 11:05:00'),
-(29, 4, 5, 'Muito bom', '2026-05-22 17:05:00'),
-(26, 5, 4, 'Ok', '2026-05-20 12:05:00'),
-(27, 6, 4, 'Ok', '2026-05-21 12:05:00'),
-(28, 7, 4, 'Ok', '2026-05-22 12:05:00'),
-(29, 8, 4, 'Ok', '2026-05-23 12:05:00'),
-(30, 9, 4, 'Ok', '2026-05-24 12:05:00'),
-(26, 10, 4, 'Ok', '2026-05-25 12:05:00'),
-(26, 11, 5, '', '2026-05-19 11:05:00'),
-(27, 12, 5, '', '2026-05-20 11:05:00'),
-(28, 13, 5, '', '2026-05-21 11:05:00'),
-(29, 14, 4, '', '2026-05-22 11:05:00'),
-(30, 15, 5, '', '2026-05-23 11:05:00'),
-(26, 16, 3, '', '2026-05-19 17:05:00'),
-(27, 17, 3, '', '2026-05-20 17:05:00'),
-(28, 18, 4, '', '2026-05-21 17:05:00'),
-(26, 19, 4, '', '2026-05-19 10:05:00'),
-(27, 20, 4, '', '2026-05-20 10:05:00'),
-(26, 21, 5, '', '2026-05-19 11:05:00'),
-(27, 22, 5, '', '2026-05-20 11:05:00'),
-(26, 23, 5, '', '2026-05-19 16:05:00'),
-(26, 24, 3, '', '2026-05-19 15:05:00'),
-(26, 25, 4, '', '2026-05-19 18:05:00'),
-(26, 26, 4, '', '2026-05-19 16:05:00'),
-(26, 27, 5, '', '2026-05-19 12:05:00'),
-(26, 28, 4, '', '2026-05-19 10:05:00'),
-(26, 29, 2, '', '2026-05-19 16:05:00'),
-(26, 30, 3, '', '2026-05-19 12:05:00'),
-(26, 31, 4, '', '2026-05-19 11:05:00'),
-(26, 32, 4, '', '2026-05-19 17:05:00'),
-(26, 33, 3, '', '2026-05-19 18:05:00'),
-(26, 34, 5, '', '2026-05-19 10:05:00'),
-(26, 35, 4, '', '2026-05-19 15:05:00'),
-(26, 36, 4, '', '2026-05-19 12:05:00'),
-(26, 37, 3, '', '2026-05-19 11:05:00'),
-(26, 38, 4, '', '2026-05-19 17:05:00'),
-(26, 39, 3, '', '2026-05-19 12:05:00'),
-(26, 40, 5, '', '2026-05-19 10:05:00'),
-(26, 41, 3, '', '2026-05-19 16:05:00'),
-( 2, 42, 5, '', '2026-09-22 14:01:11');
+-- Especialidades para Biologia (areaId = 7)
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+(127, 7, 'Citologia'),
+(128, 7, 'Histologia'),
+(129, 7, 'Genética'),
+(130, 7, 'Evolução'),
+(131, 7, 'Ecologia'),
+(132, 7, 'Botânica'),
+(133, 7, 'Zoologia'),
+(134, 7, 'Microbiologia'),
+(135, 7, 'Parasitologia'),
+(136, 7, 'Embriologia'),
+(137, 7, 'Anatomia Humana'),
+(138, 7, 'Fisiologia Humana'),
+(139, 7, 'Biologia Molecular'),
+(140, 7, 'Biotecnologia'),
+(141, 7, 'Bioquímica'),
+(142, 7, 'Imunologia'),
+(143, 7, 'Biologia Marinha');
 
+-- Especialidades para Química (areaId = 8)
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+(144, 8, 'Química Geral'),
+(145, 8, 'Química Inorgânica'),
+(146, 8, 'Química Orgânica'),
+(147, 8, 'Físico-Química'),
+(148, 8, 'Química Analítica'),
+(149, 8, 'Estequiometria'),
+(150, 8, 'Termoquímica'),
+(151, 8, 'Eletroquímica'),
+(152, 8, 'Cinética Química'),
+(153, 8, 'Equilíbrio Químico'),
+(154, 8, 'Química Ambiental'),
+(155, 8, 'Química Quântica'),
+(156, 8, 'Espectroscopia'),
+(157, 8, 'Química Industrial');
 
--- =========================================================================
--- AVALIACOES_TUTOR (Total: 41 - Uma avaliação real casando com cada Sessão)
--- =========================================================================
+-- Especialidades para Física (areaId = 9)
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+(158, 9, 'Cinemática'),
+(159, 9, 'Dinâmica e Leis de Newton'),
+(160, 9, 'Estática e Hidrostática'),
+(161, 9, 'Termodinâmica e Calorimetria'),
+(162, 9, 'Óptica Geométrica'),
+(163, 9, 'Ondulatória'),
+(164, 9, 'Eletrostática'),
+(165, 9, 'Eletrodinâmica'),
+(166, 9, 'Eletromagnetismo'),
+(167, 9, 'Física Moderna'),
+(168, 9, 'Relatividade Restrita'),
+(169, 9, 'Física Quântica'),
+(170, 9, 'Astrofísica'),
+(171, 9, 'Física Nuclear'),
+(172, 9, 'Mecânica Estatística');
 
-INSERT INTO AVALIACAO_TUTOR (tutorId, sessaoId, nota, comentario, dataCriacao) VALUES
-(1, 1, 5, 'Excelente didática.', '2026-05-19 10:05:00'),
-(1, 2, 5, 'Ótimo.', '2026-05-20 12:05:00'),
-(1, 3, 5, 'Muito prestativo.', '2026-05-21 11:05:00'),
-(1, 4, 5, 'Perfeito.', '2026-05-22 17:05:00'),
-(2, 5, 4, '', '2026-05-20 12:05:00'),
-(2, 6, 4, '', '2026-05-21 12:05:00'),
-(2, 7, 5, '', '2026-05-22 12:05:00'),
-(2, 8, 4, '', '2026-05-23 12:05:00'),
-(2, 9, 4, '', '2026-05-24 12:05:00'),
-(2, 10, 5, '', '2026-05-25 12:05:00'),
-(3, 11, 5, '', '2026-05-19 11:05:00'),
-(3, 12, 5, '', '2026-05-20 11:05:00'),
-(3, 13, 4, '', '2026-05-21 11:05:00'),
-(3, 14, 5, '', '2026-05-22 11:05:00'),
-(3, 15, 5, '', '2026-05-23 11:05:00'),
-(4, 16, 3, '', '2026-05-19 17:05:00'),
-(4, 17, 4, '', '2026-05-20 17:05:00'),
-(4, 18, 3, '', '2026-05-21 17:05:00'),
-(5, 19, 4, '', '2026-05-19 10:05:00'),
-(5, 20, 4, '', '2026-05-20 10:05:00'),
-(8, 21, 5, '', '2026-05-19 11:05:00'),
-(8, 22, 5, '', '2026-05-20 11:05:00'),
-(20, 23, 5, '', '2026-05-19 16:05:00'),
-(6, 24, 3, '', '2026-05-19 15:05:00'),
-(7, 25, 4, '', '2026-05-19 18:05:00'),
-(9, 26, 4, '', '2026-05-19 16:05:00'),
-(10, 27, 5, '', '2026-05-19 12:05:00'),
-(11, 28, 4, '', '2026-05-19 10:05:00'),
-(12, 29, 2, '', '2026-05-19 16:05:00'),
-(13, 30, 3, '', '2026-05-19 12:05:00'),
-(14, 31, 4, '', '2026-05-19 11:05:00'),
-(15, 32, 4, '', '2026-05-19 17:05:00'),
-(16, 33, 3, '', '2026-05-19 18:05:00'),
-(17, 34, 5, '', '2026-05-19 10:05:00'),
-(18, 35, 4, '', '2026-05-19 15:05:00'),
-(19, 36, 4, '', '2026-05-19 12:05:00'),
-(21, 37, 3, '', '2026-05-19 11:05:00'),
-(22, 38, 4, '', '2026-05-19 17:05:00'),
-(23, 39, 3, '', '2026-05-19 12:05:00'),
-(24, 40, 5, '', '2026-05-19 10:05:00'),
-(25, 41, 3, '', '2026-05-19 16:05:00'),
-( 3, 42, 5, '', '2026-09-22 14:01:11');
-
-INSERT INTO CHAT (tutorId, usuarioId) VALUES
-(1, 26),
-(1, 27),
-(1, 28),
-(1, 29),
-(1, 30),
-(2, 26),
-(2, 27),
-(2, 28),
-(2, 29),
-(2, 30),
-(3, 26),
-(3, 27),
-(3, 28),
-(3, 29),
-(3, 30),
-(4, 26),
-(4, 27),
-(4, 28),
-(4, 29),
-(4, 30),
-(5, 26),
-(5, 27),
-(5, 28),
-(5, 29),
-(5, 30);
-
-INSERT INTO MENSAGEM (chatId, usuarioId, conteudo) VALUES
-(1, 26, 'Olá, gostaria de tirar dúvidas sobre Cálculo.'),
-(2, 27, 'Poderia revisar o conteúdo de HTML?'),
-(3, 28, 'Como ajustar camadas no Photoshop?'),
-(4, 29, 'Pode corrigir meu texto em inglês?'),
-(5, 30, 'Fiquei com dúvidas na aula de Física.'),
-(6, 26, 'Pode me enviar o material de história?'),
-(7, 27, 'Qual o tema da próxima aula de geografia?'),
-(8, 28, 'Tenho dúvidas sobre DNA.'),
-(9, 29, 'Pode explicar a tabela periódica de novo?'),
-(10, 30, 'O que cai na prova de física?'),
-(11, 26, 'Qual filósofo vamos estudar hoje?'),
-(12, 27, 'Pode me ajudar com o ensaio de sociologia?'),
-(13, 28, 'Quais tintas devo comprar?'),
-(14, 29, 'Como ler partituras mais rápido?'),
-(15, 30, 'Qual o melhor exercício para costas?'),
-(16, 26, 'O que é oferta e demanda?'),
-(17, 27, 'Como funciona o processo civil?'),
-(18, 28, 'Onde fica o fêmur?'),
-(19, 29, 'O que é memória de curto prazo?'),
-(20, 30, 'Como planejar uma praça?'),
-(21, 26, 'Como subir anúncios no Facebook?'),
-(22, 27, 'Qual o ponto do risoto?'),
-(23, 28, 'Como fazer a barra invisível?'),
-(24, 29, 'Qual ISO usar de dia?'),
-(25, 30, 'Como criar um plot twist?');
-
--- CONSEGUE (Relacionamento Usuario-Conquista, Total: 25)
-INSERT INTO consegue (usuarioId, conquistaId) VALUES
-(1, 1),
-(1, 2),
-(1, 3),
-(1, 4),
-(1, 5),
-(1, 6),
-(1, 7),
-(1, 8),
-(1, 9),
-(1, 10),
-(1, 11),
-(1, 12),
-(1, 13),
-(1, 14),
-(1, 15),
-(1, 16),
-(1, 17),
-(1, 18),
-(1, 19),
-(1, 20),
-(1, 21),
-(1, 22),
-(1, 23),
-(1, 24),
-(1, 25),
-
-(3, 1),
-(3, 2),
-(3, 3),
-(3, 4),
-(3, 5),
-(3, 6),
-(3, 8),
-(3, 9),
-
-(3, 12),
-(3, 13),
-(3, 16),
-(3, 17),
-(3, 18),
-(3, 19),
-
-(3, 21),
-(3, 24),
-(3, 25);
+-- Especialidades para Filosofia (areaId = 10)
+INSERT INTO ESPECIALIDADE (especialidadeId, areaId, nomeEspecialidade) VALUES
+(173, 10, 'Ética'),
+(174, 10, 'Estética'),
+(175, 10, 'Lógica'),
+(176, 10, 'Epistemologia'),
+(177, 10, 'Metafísica'),
+(178, 10, 'Filosofia Política'),
+(179, 10, 'Filosofia Antiga'),
+(180, 10, 'Filosofia Medieval'),
+(181, 10, 'Filosofia Moderna'),
+(182, 10, 'Filosofia Contemporânea'),
+(183, 10, 'Filosofia da Mente'),
+(184, 10, 'Filosofia da Linguagem'),
+(185, 10, 'Filosofia da Ciência'),
+(186, 10, 'Existencialismo'),
+(187, 10, 'Fenomenologia');
