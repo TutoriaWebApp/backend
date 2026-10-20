@@ -68,7 +68,7 @@ class LogInView(APIView):
 			value=str(refresh.access_token),
 			httponly=True,
 			#secure=True, ----- Só deixar True quando for HTTPS
-			secure=False,
+			secure=True,
 			samesite='Lax',
 			max_age=access_expiry
 		)
@@ -77,7 +77,7 @@ class LogInView(APIView):
 			key='refresh_token',
 			value=str(refresh),
 			httponly=True,
-			secure=False,
+			secure=True,
 			samesite='Lax',
 			max_age=refresh_expiry
 		)
@@ -119,7 +119,7 @@ class LoginRefreshView(APIView):
 				key='access_token',
 				value=str(refresh.access_token),
 				httponly=True,
-				secure=False,
+				secure=True,
 				samesite='Lax',
 				max_age=access_expiry
 			)
