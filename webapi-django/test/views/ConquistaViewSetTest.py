@@ -1,12 +1,14 @@
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APITestCase
+from project.utils.GeoLocalizacaoUtil import Point
+
 from project.models import UsuarioModel, ConquistaModel, consegueModel
 
 class ConquistaViewSetTest(APITestCase):
 	def setUp(self):
 		self.usuario = UsuarioModel.objects.create_user(
-			email='test@example.com',
+			localizacao=Point(0, 0, srid=4326), email='test@example.com',
 			password='testpassword123',
 			nomePerfil='Test User',
 			cidade='Test City',
