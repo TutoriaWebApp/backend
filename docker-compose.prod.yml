@@ -1,0 +1,69 @@
+services:
+
+    mysql-image:
+        container_name: mysql_db
+        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+        image: mysql:8.0
+        restart: unless-stopped
+        env_file: ./env/.env
+        volumes:
+            - db_data:/var/lib/mysql
+        expose: "3306"
+        environment:
+            LANG: pt_BR.UTF-8
+            LC_ALL: pt_BR.UTF-8
+            TZ: America/Sao_Paulo
+            MYSQL_DATABASE: tutoriadb
+            MYSQL_HOST: mysql-image
+            EMAIL_SENDER: BREVO
+            EMAIL_HOST: smtp-relay.brevo.com
+            EMAIL_PORT: 587
+            EMAIL_USE_TLS: False
+            EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+            EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+            SECRET_DJANGO: ${SECRET_DJANGO}
+
+    django-image:
+        build:
+            context: ./webapi-django
+            dockerfile: Dockerfile
+        container_name: django-api
+        command: [ "./wait-for-db.sh", "mysql-image", "3306", "${MYSQL_ROOT_PASSWORD}", "python", "manage.py", "runserver", "0.0.0.0:8000" ]
+        volumes:
+            - ./webapi-django:/app
+            - ./media:/app/media
+        expose: "8000"
+        depends_on: mysql-image
+        env_file: ./env/.env
+        environment:
+            DATABASE_HOST: 'mysql-image'
+            DATABASE_PORT: '3306'
+            DATABASE_PASSWORD: '${MYSQL_ROOT_PASSWORD}'
+            EMAIL_SENDER: ${EMAIL_SENDER}
+            EMAIL_HOST: smtp-relay.brevo.com
+            EMAIL_PORT: 587
+            EMAIL_USE_TLS: False
+            EMAIL_HOST_USER: ${EMAIL_HOST_USER}
+            EMAIL_HOST_PASSWORD: ${EMAIL_HOST_PASSWORD}
+
+    caddy:
+        image: caddy:2-alpine
+        container_name: caddy-proxy
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+        dns:
+            - "8.8.8.8"
+            - "1.1.1.1"
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile
+            - caddy_data:/data
+            - caddy_config:/config
+        depends_on:
+            - django-image
+
+volumes:
+    db_data:
+    caddy_data:
+    caddy_config:

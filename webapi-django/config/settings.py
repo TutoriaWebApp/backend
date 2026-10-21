@@ -29,51 +29,56 @@ SECRET_KEY = os.environ.get('SECRET_DJANGO')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['*', 'localhost', 'localhost:8000']
+ALLOWED_HOSTS = [
+	'localhost',
+	'localhost:8000',
+	'django-api',
+	os.environ.get('BACKEND_URL'),
+]
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'drf_spectacular',
-	'project.apps.ProjectConfig',
-	'rest_framework',
-	'rest_framework_simplejwt',
-    'corsheaders',
-	'django_filters'
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'drf_spectacular',
+		'project.apps.ProjectConfig',
+		'rest_framework',
+		'rest_framework_simplejwt',
+	'corsheaders',
+		'django_filters'
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'corsheaders.middleware.CorsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [],
+		'APP_DIRS': True,
+		'OPTIONS': {
+			'context_processors': [
+				'django.template.context_processors.request',
+				'django.contrib.auth.context_processors.auth',
+				'django.contrib.messages.context_processors.messages',
+			],
+		},
+	},
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -84,46 +89,46 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 HAS_GIS = False
 try:
-    from django.contrib.gis.gdal import libgdal
-    HAS_GIS = True
+	from django.contrib.gis.gdal import libgdal
+	HAS_GIS = True
 except Exception:
-    pass
+	pass
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.mysql' if HAS_GIS else 'django.db.backends.mysql',
-        'HOST': os.environ.get('DATABASE_HOST') if os.environ.get('DATABASE_HOST') else "localhost",
-        'PORT': os.environ.get('DATABASE_PORT') if os.environ.get('DATABASE_PORT') else "8080",
-        'NAME': 'tutoriadb',
-        'USER': 'root',
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD') if os.environ.get('DATABASE_PASSWORD') else "rootpassword",
-    }
+	'default': {
+		'ENGINE': 'django.contrib.gis.db.backends.mysql' if HAS_GIS else 'django.db.backends.mysql',
+		'HOST': os.environ.get('DATABASE_HOST') if os.environ.get('DATABASE_HOST') else "localhost",
+		'PORT': os.environ.get('DATABASE_PORT') if os.environ.get('DATABASE_PORT') else "8080",
+		'NAME': 'tutoriadb',
+		'USER': 'root',
+		'PASSWORD': os.environ.get('DATABASE_PASSWORD') if os.environ.get('DATABASE_PASSWORD') else "rootpassword",
+	}
 }
 
 if 'test' in sys.argv or 'test_coverage' in sys.argv:
-    DATABASES['default'] = {
-        'ENGINE': 'django.contrib.gis.db.backends.spatialite' if HAS_GIS else 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
-    }
-    if HAS_GIS:
-        SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'
+	DATABASES['default'] = {
+		'ENGINE': 'django.contrib.gis.db.backends.spatialite' if HAS_GIS else 'django.db.backends.sqlite3',
+		'NAME': ':memory:',
+	}
+	if HAS_GIS:
+		SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'
 
 
 if os.environ.get('EMAIL_SENDER') == 'BREVO':
-	EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-	EMAIL_HOST = os.environ.get('EMAIL_HOST')
-	EMAIL_PORT = os.environ.get('EMAIL_PORT')
-	EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
-	EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-	EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-	EMAIL_WEBAPPTUTORIA = os.environ.get('EMAIL_WEBAPPTUTORIA')
-	# print('LOG: E-mails configurados para envio via SMTP.')
+		EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+		EMAIL_HOST = os.environ.get('EMAIL_HOST')
+		EMAIL_PORT = os.environ.get('EMAIL_PORT')
+		EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS')
+		EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+		EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+		EMAIL_WEBAPPTUTORIA = os.environ.get('EMAIL_WEBAPPTUTORIA')
+		# print('LOG: E-mails configurados para envio via SMTP.')
 
 else:
-	EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-	EMAIL_HOST_USER = 'console@mail.com'
-	EMAIL_WEBAPPTUTORIA = 'console@mail.com'
-	# print('LOG: E-mails configurados para exibição no CONSOLE.')
+		EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+		EMAIL_HOST_USER = 'console@mail.com'
+		EMAIL_WEBAPPTUTORIA = 'console@mail.com'
+		# print('LOG: E-mails configurados para exibição no CONSOLE.')
 
 
 
@@ -131,46 +136,46 @@ else:
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-		'OPTIONS': {
-			'min_length': 8,
-		}
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+	{
+		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+				'OPTIONS': {
+						'min_length': 8,
+				}
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+	},
 ]
 
 REST_FRAMEWORK = {
-	'DEFAULT_AUTHENTICATION_CLASSES': (
-        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
-		'config.authenticate.WebTutoriaJWTAuthentication',
-    ),
-	'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
+		'DEFAULT_AUTHENTICATION_CLASSES': (
+		# 'rest_framework_simplejwt.authentication.JWTAuthentication',
+				'config.authenticate.WebTutoriaJWTAuthentication',
+	),
+		'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema'
 }
 
 SPECTACULAR_SETTINGS = {
-    'TITLE': 'Minha API de Tutoria',
-    'DESCRIPTION': 'Documentação das rotas do projeto',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-	'SERVER_AUTHENTICATION': 'config.authenticate.WebTutoriaJWTAuthentication',
-	'SECURITY': [{'WebTutoriaAuth': []},],
-	'SWAGGER_UI_SETTINGS': {
-		'operationsSorter': 'alpha',
-		'tagsSorter': 'alpha',
-	},
+	'TITLE': 'Minha API de Tutoria',
+	'DESCRIPTION': 'Documentação das rotas do projeto',
+	'VERSION': '1.0.0',
+	'SERVE_INCLUDE_SCHEMA': False,
+		'SERVER_AUTHENTICATION': 'config.authenticate.WebTutoriaJWTAuthentication',
+		'SECURITY': [{'WebTutoriaAuth': []},],
+		'SWAGGER_UI_SETTINGS': {
+				'operationsSorter': 'alpha',
+				'tagsSorter': 'alpha',
+		},
 }
 
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
-    "REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
+	"ACCESS_TOKEN_LIFETIME": timedelta(minutes=20),
+	"REFRESH_TOKEN_LIFETIME": timedelta(hours=2),
 }
 
 AUTH_USER_MODEL = 'project.UsuarioModel'
@@ -192,21 +197,37 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = False
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+	os.environ.get('FRONTEND_URL'),
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+CSRF_TRUSTED_ORIGINS = [
+	os.environ.get('BACKEND_URL'),
+	os.environ.get('FRONTEND_URL'),
 ]
 
 CORS_ALLOW_HEADERS = [
-    "content-type",
-    "authorization",
-    "x-csrftoken",
+	"content-type",
+	"authorization",
+	"x-csrftoken",
 ]
+
+# Reconhecimento de HTTPS via Caddy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Cookies padrões de sessão do Django (se utilizar)
+SESSION_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SECURE = True

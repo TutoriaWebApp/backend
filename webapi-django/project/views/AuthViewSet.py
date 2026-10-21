@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import update_last_login
@@ -69,7 +70,7 @@ class LogInView(APIView):
 			httponly=True,
 			#secure=True, ----- Só deixar True quando for HTTPS
 			secure=True,
-			samesite='Lax',
+			samesite='None',
 			max_age=access_expiry
 		)
 
@@ -78,7 +79,7 @@ class LogInView(APIView):
 			value=str(refresh),
 			httponly=True,
 			secure=True,
-			samesite='Lax',
+			samesite='None',
 			max_age=refresh_expiry
 		)
 		return response
@@ -120,7 +121,7 @@ class LoginRefreshView(APIView):
 				value=str(refresh.access_token),
 				httponly=True,
 				secure=True,
-				samesite='Lax',
+				samesite='None',
 				max_age=access_expiry
 			)
 			return response
@@ -145,8 +146,8 @@ class LogOutView(APIView):
 	permission_classes = [AllowAny]
 	def post(self, request):
 		response = Response({"mensagem": "Logout realizado com sucesso"}, status=200)
-		response.delete_cookie('access_token')
-		response.delete_cookie('refresh_token')
+		response.delete_cookie(key='access_token', samesite='None')
+		response.delete_cookie(key='refresh_token', samesite='None')
 		return response
 
 @extend_schema(
@@ -181,7 +182,7 @@ class PasswordResetView(APIView):
 			token = default_token_generator.make_token(user)
 			uid = urlsafe_base64_encode(force_bytes(user.pk))
 
-			reset_url = f"http://localhost:3000/redefinir-senha/{uid}/{token}"
+			reset_url = f"{os.environ.get('FRONTEND_URL')}/redefinir-senha/{uid}/{token}"
 
 			# print(f'De: {EMAIL_HOST_USER}')
 			# print(f'Para: {user.nomePerfil} {email}')

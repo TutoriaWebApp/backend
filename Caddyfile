@@ -1,0 +1,3 @@
+webtutoria.duckdns.org {
+    reverse_proxy django-api:8000
+}
