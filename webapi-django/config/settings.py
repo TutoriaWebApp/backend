@@ -33,7 +33,7 @@ ALLOWED_HOSTS = [
 	'localhost',
 	'localhost:8000',
 	'django-api',
-	os.environ.get('BACKEND_URL'),
+	os.environ.get('BACKEND_URL').removeprefix('https://').removeprefix('http://').removesuffix('/'),
 ]
 
 # Application definition

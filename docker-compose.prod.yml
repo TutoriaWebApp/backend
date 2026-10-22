@@ -8,7 +8,8 @@ services:
         env_file: ./env/.env
         volumes:
             - db_data:/var/lib/mysql
-        expose: "3306"
+        expose:
+            - "3306"
         environment:
             LANG: pt_BR.UTF-8
             LC_ALL: pt_BR.UTF-8
@@ -32,8 +33,10 @@ services:
         volumes:
             - ./webapi-django:/app
             - ./media:/app/media
-        expose: "8000"
-        depends_on: mysql-image
+        expose:
+            - "8000"
+        depends_on:
+            - mysql-image
         env_file: ./env/.env
         environment:
             DATABASE_HOST: 'mysql-image'
