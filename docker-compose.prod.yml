@@ -63,6 +63,8 @@ services:
             - ./Caddyfile:/etc/caddy/Caddyfile
             - caddy_data:/data
             - caddy_config:/config
+            - ./media:/var/www/media
+            - ./webapi-django/staticfiles:/var/www/static
         depends_on:
             - django-image
 
