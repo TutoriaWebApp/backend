@@ -45,13 +45,8 @@ router.register(r'solicitacoes/recusar', RecusarSolicitacaoViewSet, basename='re
 router.register(r'notificacoes-resumo', ResumoNotificacoesViewSet, basename='notificacoes-resumo')
 
 urlpatterns = [
-    path('', include(router.urls)),
-
-	path('avaliacoes/pendentes', PendenteAvaliacaoView.as_view(), name='avaliacoes_pendentes'),
-
 	path('usuarios/novo', UsuarioRegistroView.as_view(), name='criar_novo_usuario'),
 	path('usuarios/altera-senha', UsuarioAlteraSenhaView.as_view(), name='altera_a_senha'),
-
 	path('login', LogInView.as_view(), name='logar_usuario'),
 	path('login/refresh', LoginRefreshView.as_view(), name='refrescar_token_de_acesso'),
 	path('logout', LogOutView.as_view(), name='deslogar_usuario'),
@@ -61,4 +56,7 @@ urlpatterns = [
 	path('estatistica', ProgressoUsuarioView.as_view(), name='estatistica'),
 
 	path('conquistas/usuario/<int:usuarioId>', Usuario_conseguiu_ConquistaView.as_view(), name='conquistas_do_usuario'),
+	path('avaliacoes/pendentes', PendenteAvaliacaoView.as_view(), name='avaliacoes_pendentes'),
+
+    path('', include(router.urls)),
 ]

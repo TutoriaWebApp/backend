@@ -20,33 +20,31 @@ INSERT INTO USUARIO (email, senha, nomePerfil, cidade, estado, aniversario, loca
 ('admin@tutoria.com', 'pbkdf2_sha256$1000000$zZBLgMtlMlfKvomGWZKEKt$ifR7/CLjG7xZUl6+iFjJ0W3mXON2p3smJGnn2XuBUSY=', 'Admin', 'Não Aplicado', 'NA', '1971-03-15', ST_GeomFromText('POINT(0 0)', 4326), 1, 1, 1);
 
 -- CONQUISTAS (Total: 31)
-INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem) VALUES
-('B', 50, 'Olá Mundo!', 'Se cadastrou na plataforma.', 'OlaMundo.png'),
-('B', 50, 'Primeiro Contato', 'Mandou sua primeira mensagem.', 'contato.png'),
-('B', 100, 'Primeiro Passo', 'Realizou a primeira tutoria com sucesso.', 'passo.png'),
-('B', 150, 'Networking Inicial', 'Iniciou uma conversa com 5 usuários diferentes.', 'networking.png'),
-('B', 150, 'Primeira Impressão', 'Recebeu sua primeira avaliação como tutor ou aprendiz.', 'impressao.png'),
-('B', 100, 'Caminho das Pedras I', 'Participou de 5 sessões de tutoria.', 'caminho1.png'),
-('B', 150, 'O que?! Quer uma medalha?', 'Conseguiu alcançar o nível 5.', 'querUmaMedalha.png'),
-('P', 300, 'Volte Sempre', 'Recebeu sua primeira avaliação 5 estrelas como tutor.', 'volteSempre.png'),
-('P', 300, 'O prazer foi meu', 'Recebeu sua primeira avaliação 5 estrelas como aprendiz.', 'prazer.png'),
-('P', 350, 'Fidelidade', 'Realizou 5 ou mais tutorias com o mesmo tutor.', 'fidelidade.png'),
-
-('P', 500, 'Pau pra Toda Obra', 'Forneceu tutoria em 3 áreas de conhecimento diferentes.', 'todaObra.png'),
-('P', 350, 'Caminho das Pedras II', 'Participou de 15 sessões de tutoria.', 'caminho2.png'),
-('P', 600, 'Caminho das Pedras III', 'Participou de 30 sessões de tutoria.', 'caminho3.png'),
-('P', 500, 'Interessante...', 'Conseguiu alcançar o nível 10.', 'interessante.png'),
-('O', 800, 'Feedback de Peso', 'Recebeu 3 avaliações com comentário maior que 100 caracteres.', 'feedback.png'),
-('O', 900, 'Incansável', 'Participou de tutorias por 5 dias seguidos.', 'incansavel.png'),
-('O', 1200, 'Veterano', 'Forneceu 50 tutorias em uma única área.', 'veterano.png'),
-('O', 1100, 'Caminho das Pedras IV', 'Participou de 60 sessões de tutoria.', 'caminho4.png'),
-('O', 1400, 'Caminho das Pedras V', 'Participou de 100 sessões de tutoria.', 'caminho5.png'),
-('O', 1200, 'O que você quer provar?', 'Conseguiu alcançar o nível 25.', 'oQueVoceQuerProvar.png'),
-
-('D', 2500, 'Caminho das Pedras VI', 'Participou de 300 sessões de tutoria.', 'caminho6.png'),
-('D', 3000, 'Lenda', 'Conseguiu alcançar o nível 50.', 'Lenda.png');
-
 INSERT INTO CONQUISTA (tier, pontos, titulo, descricao, urlImagem, secreta, pista) VALUES
+('B', 50, 'Olá Mundo!', 'Se cadastrou na plataforma.', 'OlaMundo.png', false, null),
+('B', 50, 'Primeiro Contato', 'Mandou sua primeira mensagem.', 'contato.png', false, null),
+('B', 100, 'Primeiro Passo', 'Realizou a primeira tutoria com sucesso.', 'passo.png', false, null),
+('B', 150, 'Networking Inicial', 'Iniciou uma conversa com 5 usuários diferentes.', 'networking.png', false, null),
+('B', 150, 'Primeira Impressão', 'Recebeu sua primeira avaliação como tutor ou aprendiz.', 'impressao.png', false, null),
+('B', 100, 'Caminho das Pedras I', 'Participou de 5 sessões de tutoria.', 'caminho1.png', false, null),
+('B', 150, 'O que?! Quer uma medalha?', 'Conseguiu alcançar o nível 5.', 'querUmaMedalha.png', false, null),
+('P', 300, 'Volte Sempre', 'Recebeu sua primeira avaliação 5 estrelas como tutor.', 'volteSempre.png', false, null),
+('P', 300, 'O prazer foi meu', 'Recebeu sua primeira avaliação 5 estrelas como aprendiz.', 'prazer.png', false, null),
+('P', 350, 'Fidelidade', 'Realizou 5 ou mais tutorias com o mesmo tutor.', 'fidelidade.png', false, null),
+
+('P', 500, 'Pau pra Toda Obra', 'Forneceu tutoria em 3 áreas de conhecimento diferentes.', 'todaObra.png', false, null),
+('P', 350, 'Caminho das Pedras II', 'Participou de 15 sessões de tutoria.', 'caminho2.png', false, null),
+('P', 600, 'Caminho das Pedras III', 'Participou de 30 sessões de tutoria.', 'caminho3.png', false, null),
+('P', 500, 'Interessante...', 'Conseguiu alcançar o nível 10.', 'interessante.png', false, null),
+('O', 800, 'Feedback de Peso', 'Recebeu 3 avaliações com comentário maior que 100 caracteres.', 'feedback.png', false, null),
+('O', 900, 'Incansável', 'Participou de tutorias por 5 dias seguidos.', 'incansavel.png', false, null),
+('O', 1200, 'Veterano', 'Forneceu 50 tutorias em uma única área.', 'veterano.png', false, null),
+('O', 1100, 'Caminho das Pedras IV', 'Participou de 60 sessões de tutoria.', 'caminho4.png', false, null),
+('O', 1400, 'Caminho das Pedras V', 'Participou de 100 sessões de tutoria.', 'caminho5.png', false, null),
+('O', 1200, 'O que você quer provar?', 'Conseguiu alcançar o nível 25.', 'oQueVoceQuerProvar.png', false, null),
+
+('D', 2500, 'Caminho das Pedras VI', 'Participou de 300 sessões de tutoria.', 'caminho6.png', false, null),
+('D', 3000, 'Lenda', 'Conseguiu alcançar o nível 50.', 'Lenda.png', false, null),
 ('B', 150, 'Agora é minha vez!', 'Se tornou um tutor.', 'minhavez.png', true, 'Quem aprende também pode ensinar...'),
 ('B', 200, 'Fim de Semana Ativo', 'Realizou uma tutoria em final de semana.', 'fimdesemana.png', true, 'O conhecimento não tira folga no sábado ou domingo...'),
 ('P', 400, 'Coruja', 'Realizou uma tutoria na madrugada (22h às 05h).', 'coruja.png', true, 'Para aqueles cujas mentes brilham sob o luar...'),
@@ -123,10 +121,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (1, 'Matemática Discreta'),
 (1, 'Probabilidade e Estatística'),
 (1, 'Análise Real'),
-(1, 'Variáveis Complexas');
+(1, 'Variáveis Complexas'),
 
 -- Especialidades de Programação
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (2, 'Lógica de Programação'),
 (2, 'Algoritmos e Estruturas de Dados'),
 (2, 'Programação Orientada a Objetos (POO)'),
@@ -152,8 +149,6 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (2, 'Spring'),
 (2, 'Flutter'),
 (2, 'React Native'),
-
--- Engenharia de Software, Arquitetura e Boas Práticas
 (2, 'Padrões de Projeto (Design Patterns)'),
 (2, 'Arquiteturas de Software e Microsserviços'),
 (2, 'Clean Code e Refatoração'),
@@ -166,10 +161,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (2, 'Inteligência Artificial'),
 (2, 'Segurança da Informação'),
 (2, 'Redes de Computadores'),
-(2, 'Banco de Dados');
+(2, 'Banco de Dados'),
 
 -- Especialidades para Design Gráfico (areaId = 3)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (3, 'Adobe Photoshop'),
 (3, 'Adobe Illustrator'),
 (3, 'Adobe InDesign'),
@@ -191,10 +185,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (3, 'Design para Redes Sociais'),
 (3, 'Design de Embalagens'),
 (3, 'Vetorização'),
-(3, 'Tratamento de Imagem');
+(3, 'Tratamento de Imagem'),
 
 -- Especialidades para Idiomas (areaId = 4)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (4, 'Inglês Básico'),
 (4, 'Inglês Intermediário'),
 (4, 'Inglês Avançado'),
@@ -213,10 +206,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (4, 'Coreano'),
 (4, 'Russo'),
 (4, 'LIBRAS (Língua Brasileira de Sinais)'),
-(4, 'Português para Estrangeiros');
+(4, 'Português para Estrangeiros'),
 
 -- Especialidades para História (areaId = 5)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (5, 'História do Brasil Colônia'),
 (5, 'História do Brasil Império'),
 (5, 'História do Brasil República'),
@@ -234,10 +226,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (5, 'Guerra Fria'),
 (5, 'Historiografia'),
 (5, 'Teoria da História'),
-(5, 'Patrimônio e Memória');
+(5, 'Patrimônio e Memória'),
 
 -- Especialidades para Geografia (areaId = 6)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (6, 'Geografia Física'),
 (6, 'Geografia Humana'),
 (6, 'Climatologia'),
@@ -254,10 +245,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (6, 'Geografia Mundial'),
 (6, 'Cartografia'),
 (6, 'Sistemas de Informação Geográfica (SIG)'),
-(6, 'Sensoriamento Remoto');
+(6, 'Sensoriamento Remoto'),
 
 -- Especialidades para Biologia (areaId = 7)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (7, 'Citologia'),
 (7, 'Histologia'),
 (7, 'Genética'),
@@ -274,10 +264,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (7, 'Biotecnologia'),
 (7, 'Bioquímica'),
 (7, 'Imunologia'),
-(7, 'Biologia Marinha');
+(7, 'Biologia Marinha'),
 
 -- Especialidades para Química (areaId = 8)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (8, 'Química Geral'),
 (8, 'Química Inorgânica'),
 (8, 'Química Orgânica'),
@@ -291,10 +280,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (8, 'Química Ambiental'),
 (8, 'Química Quântica'),
 (8, 'Espectroscopia'),
-(8, 'Química Industrial');
+(8, 'Química Industrial'),
 
 -- Especialidades para Física (areaId = 9)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (9, 'Cinemática'),
 (9, 'Dinâmica e Leis de Newton'),
 (9, 'Estática e Hidrostática'),
@@ -309,10 +297,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (9, 'Física Quântica'),
 (9, 'Astrofísica'),
 (9, 'Física Nuclear'),
-(9, 'Mecânica Estatística');
+(9, 'Mecânica Estatística'),
 
 -- Especialidades para Filosofia (areaId = 10)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (10, 'Ética'),
 (10, 'Estética'),
 (10, 'Lógica'),
@@ -327,10 +314,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (10, 'Filosofia da Linguagem'),
 (10, 'Filosofia da Ciência'),
 (10, 'Existencialismo'),
-(10, 'Fenomenologia');
+(10, 'Fenomenologia'),
 
 -- Especialidades para Áudio Visual (areaId = 11)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (11, 'Produção Audiovisual'),
 (11, 'Direção de Cinema e TV'),
 (11, 'Roteiro e Narrativa'),
@@ -345,10 +331,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (11, 'Efeitos Visuais (VFX)'),
 (11, 'Motion Graphics'),
 (11, 'Produção de Documentários'),
-(11, 'Transmissão ao Vivo e Streaming');
+(11, 'Transmissão ao Vivo e Streaming'),
 
 -- Especialidades para Sociologia (areaId = 12)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (12, 'Sociologia Geral'),
 (12, 'Teoria Sociológica Clássica'),
 (12, 'Teoria Sociológica Contemporânea'),
@@ -366,10 +351,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (12, 'Estudos de Gênero e Sexualidade'),
 (12, 'Metodologia de Pesquisa nas Ciências Sociais'),
 (12, 'Antropologia Cultural'),
-(12, 'Ciência Política');
+(12, 'Ciência Política'),
 
 -- Especialidades para Música (areaId = 13)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Teoria e Fundamentos
 (13, 'Teoria Musical'),
 (13, 'Harmonia e Arranjo'),
@@ -417,10 +401,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 
 -- Tecnologia e Produção
 (13, 'Produção Musical'),
-(13, 'Home Studio e Gravação');
+(13, 'Home Studio e Gravação'),
 
 -- Especialidades para Educação Física (areaId = 14)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos e Ciências do Movimento
 (14, 'Anatomia e Cinesiologia'),
 (14, 'Fisiologia do Exercício'),
@@ -453,10 +436,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (14, 'Karaté'),
 (14, 'Jiu-Jitsu'),
 (14, 'Boxe'),
-(14, 'Capoeira');
+(14, 'Capoeira'),
 
 -- Especialidades para Direito (areaId = 15)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Direito Público
 (15, 'Direito Constitucional'),
 (15, 'Direito Administrativo'),
@@ -487,10 +469,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos
 (15, 'Teoria Geral do Direito'),
 (15, 'Filosofia do Direito'),
-(15, 'História do Direito');
+(15, 'História do Direito'),
 
 -- Especialidades para Medicina (areaId = 16)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Ciclo Básico e Fundamentos
 (16, 'Anatomia Humana'),
 (16, 'Fisiologia Médica'),
@@ -529,10 +510,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (16, 'Medicina Intensiva'),
 (16, 'Medicina de Urgência'),
 (16, 'Radiologia e Diagnóstico por Imagem'),
-(16, 'Medicina Legal e Forense');
+(16, 'Medicina Legal e Forense'),
 
 -- Especialidades para Psicologia (areaId = 17)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Abordagens Clínicas e Teóricas
 (17, 'Psicanálise'),
 (17, 'Terapia Cognitivo-Comportamental (TCC)'),
@@ -555,10 +535,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (17, 'Neuropsicologia'),
 (17, 'Psicopatologia'),
 (17, 'Avaliação Psicológica e Psicometria'),
-(17, 'Orientação Vocacional e de Carreira');
+(17, 'Orientação Vocacional e de Carreira'),
 
 -- Especialidades para Arquitetura (areaId = 18)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos e Teoria
 (18, 'Projeto Arquitetônico'),
 (18, 'História da Arquitetura e Urbanismo'),
@@ -581,10 +560,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (18, 'Archicad'),
 (18, 'V-Ray'),
 (18, 'Lumion'),
-(18, 'Corona Renderer');
+(18, 'Corona Renderer'),
 
 -- Especialidades para Marketing (areaId = 19)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos e Estratégia
 (19, 'Marketing Estratégico'),
 (19, 'Pesquisa de Mercado'),
@@ -606,10 +584,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (19, 'E-mail Marketing'),
 (19, 'Copywriting'),
 (19, 'Growth Hacking'),
-(19, 'Web Analytics');
+(19, 'Web Analytics'),
 
 -- Especialidades para Gastronomia (areaId = 20)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos e Técnicas
 (20, 'Técnicas Básicas de Cozinha'),
 (20, 'Higiene e Segurança Alimentar'),
@@ -641,10 +618,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 
 -- Gestão
 (20, 'Gestão de Restauração e Bares'),
-(20, 'Fichas Técnicas e Precificação');
+(20, 'Fichas Técnicas e Precificação'),
 
 -- Especialidades para Pedagogia (areaId = 21)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Áreas de Atuação e Níveis de Ensino
 (21, 'Educação Infantil'),
 (21, 'Anos Iniciais do Ensino Fundamental'),
@@ -667,10 +643,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Teoria e Fundamentos
 (21, 'História da Educação'),
 (21, 'Filosofia da Educação'),
-(21, 'Sociologia da Educação');
+(21, 'Sociologia da Educação'),
 
 -- Especialidades para Nutrição (areaId = 22)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Áreas Clínicas e Ciclos de Vida
 (22, 'Nutrição Clínica'),
 (22, 'Nutrição Materno-Infantil'),
@@ -693,10 +668,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (22, 'Nutrição em Saúde Pública'),
 (22, 'Fitoterapia Aplicada à Nutrição'),
 (22, 'Tecnologia dos Alimentos'),
-(22, 'Gestão de Unidades de Alimentação e Nutrição (UAN)');
+(22, 'Gestão de Unidades de Alimentação e Nutrição (UAN)'),
 
 -- Especialidades para Enfermagem (areaId = 23)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos e Assistência Básica
 (23, 'Fundamentos de Enfermagem'),
 (23, 'Sistematização da Assistência de Enfermagem (SAE)'),
@@ -718,10 +692,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Saúde Coletiva e Gestão
 (23, 'Enfermagem em Saúde Pública e Comunitária'),
 (23, 'Enfermagem do Trabalho'),
-(23, 'Auditoria e Gestão em Enfermagem');
+(23, 'Auditoria e Gestão em Enfermagem'),
 
 -- Especialidades para Odontologia (areaId = 24)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos e Diagnóstico
 (24, 'Anatomia e Escultura Dental'),
 (24, 'Radiologia Odontológica e Imaginologia'),
@@ -747,10 +720,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (24, 'Odontogeriatria'),
 (24, 'Odontologia para Pacientes com Necessidades Especiais'),
 (24, 'Odontologia em Saúde Coletiva'),
-(24, 'Harmonização Orofacial');
+(24, 'Harmonização Orofacial'),
 
 -- Especialidades para Fisioterapia (areaId = 25)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos e Recursos Terapêuticos
 (25, 'Anatomia e Biomecânica Aplicadas'),
 (25, 'Cinesiologia e Cinesioterapia'),
@@ -777,10 +749,9 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 
 -- Saúde Coletiva e Preventiva
 (25, 'Fisioterapia do Trabalho e Ergonomia'),
-(25, 'Fisioterapia Preventiva e Saúde Comunitária');
+(25, 'Fisioterapia Preventiva e Saúde Comunitária'),
 
 -- Especialidades para Farmácia (areaId = 26)
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 -- Fundamentos e Ciências Farmacêuticas
 (26, 'Farmacologia Básica e Clínica'),
 (26, 'Farmacognosia e Botânica Aplicada'),
@@ -807,9 +778,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (26, 'Homeopatia'),
 (26, 'Radiofarmácia'),
 (26, 'Farmácia Estética'),
-(26, 'Assuntos Regulamentares e Legislação Farmacêutica');
+(26, 'Assuntos Regulamentares e Legislação Farmacêutica'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (27, 'Estatística Descritiva'),
 (27, 'Estatística Inferencial'),
 (27, 'Análise de Séries Temporais'),
@@ -824,9 +794,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (27, 'Análise de Sobrevivência'),
 (27, 'Teoria das Probabilidades'),
 (27, 'Estatística Bayesiana'),
-(27, 'Estatística Espacial');
+(27, 'Estatística Espacial'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (28, 'Atuação e Interpretação'),
 (28, 'Direção Teatral'),
 (28, 'Dramaturgia'),
@@ -841,9 +810,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (28, 'Teatro de Rua'),
 (28, 'Expressão Corporal e Mímica'),
 (28, 'Preparação Vocal'),
-(28, 'Teatro-Educação');
+(28, 'Teatro-Educação'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (29, 'Desenho Artístico'),
 (29, 'Desenho Técnico'),
 (29, 'Desenho Arquitetônico'),
@@ -858,9 +826,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (29, 'Desenho de Observação'),
 (29, 'Concept Art e Criação de Personagens'),
 (29, 'Desenho Científico'),
-(29, 'Retrato e Figura Humana');
+(29, 'Retrato e Figura Humana'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (30, 'Pintura a Óleo'),
 (30, 'Pintura Acrílica'),
 (30, 'Aquarela'),
@@ -875,9 +842,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (30, 'Pintura Figurativa'),
 (30, 'Pintura Botânica'),
 (30, 'Pintura em Aquarela'),
-(30, 'Restauração de Pinturas');
+(30, 'Restauração de Pinturas'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (31, 'Cerâmica e Olaria'),
 (31, 'Bordado e Ponto Cruz'),
 (31, 'Crochê e Tricô'),
@@ -892,9 +858,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (31, 'Encadernação Artesanal'),
 (31, 'Velas Artesanais e Aromaterapia'),
 (31, 'Arte em Papel e Origami'),
-(31, 'Modelagem em Biscuit');
+(31, 'Modelagem em Biscuit'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (32, 'Móveis Planejados e Sob Medida'),
 (32, 'Restauração de Móveis Antigos'),
 (32, 'Marcenaria Fina'),
@@ -906,9 +871,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (32, 'Acabamento, Pátina e Lustração'),
 (32, 'Fabricação de Brinquedos de Madeira'),
 (32, 'Marcenaria Estrutural e Telhados'),
-(32, 'Design e Projetos de Mobiliário');
+(32, 'Design e Projetos de Mobiliário'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (33, 'Redação Publicitária e Copywriting'),
 (33, 'Redação Jornalística'),
 (33, 'Redação Técnica'),
@@ -921,9 +885,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (33, 'Storytelling'),
 (33, 'Redação para Redes Sociais'),
 (33, 'Roteiro e Roteirização'),
-(33, 'Revisão e Preparação de Texto');
+(33, 'Revisão e Preparação de Texto'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (34, 'Poesia'),
 (34, 'Romance'),
 (34, 'Conto'),
@@ -937,9 +900,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (34, 'Literatura Dramática'),
 (34, 'Crítica Literária'),
 (34, 'Tradução Literária'),
-(34, 'Literatura Clássica');
+(34, 'Literatura Clássica'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (35, 'Oratória Corporativa e Executiva'),
 (35, 'Comunicação Não-Violenta (CNV)'),
 (35, 'Técnicas de Apresentação e Pitch'),
@@ -952,9 +914,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (35, 'Negociação e Persuasión'),
 (35, 'Locução e Modulação Vocal'),
 (35, 'Moderação de Painéis e Mestres de Cerimônia'),
-(35, 'Debates e Diálogo Estruturado');
+(35, 'Debates e Diálogo Estruturado'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (36, 'Macroeconomia'),
 (36, 'Microeconomia'),
 (36, 'Economia Internacional'),
@@ -968,9 +929,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (36, 'Finanças Corporativas'),
 (36, 'Econometria Aplicada'),
 (36, 'História Econômica'),
-(36, 'Planejamento Estratégico e de Mercado');
+(36, 'Planejamento Estratégico e de Mercado'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (37, 'Teoria de Aberturas'),
 (37, 'Estratégia de Meio-Jogo'),
 (37, 'Técnica de Finais'),
@@ -984,9 +944,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (37, 'Xadrez Educacional e Treinamento'),
 (37, 'Softwares e Motores de Xadrez'),
 (37, 'Variantes de Xadrez'),
-(37, 'Arbitragem e Organização de Torneios');
+(37, 'Arbitragem e Organização de Torneios'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (38, 'Modelagem Orgânica'),
 (38, 'Modelagem Hard Surface'),
 (38, 'Texturização e Shading (Look Development)'),
@@ -1001,9 +960,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (38, 'VFX e Efeitos Visuais'),
 (38, 'Motion Graphics 3D'),
 (38, 'Pré-visualização (Previs)'),
-(38, 'Fotogrametria e Escaneamento 3D');
+(38, 'Fotogrametria e Escaneamento 3D'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (39, 'Animação de Personagens (Character Animation)'),
 (39, 'Animação 2D Tradicional'),
 (39, 'Animação 2D Digital (Cut-out)'),
@@ -1017,9 +975,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (39, 'Storyboarding e Layout Animático'),
 (39, 'Animação Facial e Blendshapes'),
 (39, 'Clean-up e Assistência de Animação'),
-(39, 'Direção de Animação e Produção');
+(39, 'Direção de Animação e Produção'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (40, 'Eletrônica Analógica'),
 (40, 'Eletrônica Digital'),
 (40, 'Circuitos Impressos (PCB Design)'),
@@ -1033,9 +990,8 @@ INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (40, 'Telecomunicações e RF'),
 (40, 'Audioeletrônica e Amplificadores'),
 (40, 'Energia Solar e Fontes Alternativas'),
-(40, 'Prototipagem e Impressão de Circuitos');
+(40, 'Prototipagem e Impressão de Circuitos'),
 
-INSERT INTO ESPECIALIDADE (areaId, nomeEspecialidade) VALUES
 (41, 'Robótica Móvel'),
 (41, 'Robótica Industrial'),
 (41, 'Robótica Humanoide'),
