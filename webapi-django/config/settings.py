@@ -36,6 +36,8 @@ ALLOWED_HOSTS = [
 	os.environ.get('BACKEND_URL').removeprefix('https://').removeprefix('http://').removesuffix('/'),
 ]
 
+APPEND_SLASH = False
+
 # Application definition
 
 INSTALLED_APPS = [
