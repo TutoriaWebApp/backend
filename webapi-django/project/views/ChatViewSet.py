@@ -95,27 +95,6 @@ class ChatViewSet(viewsets.ModelViewSet):
 			Q(usuarioId=user) | Q(tutorId__usuarioId=user)
 		).select_related('usuarioId', 'tutorId__usuarioId')
 
-	def perform_create(self, serializer):
-		user = self.request.user
-		tutor_id = self.request.data.get('tutorId')
-
-		if not tutor_id:
-			raise ValidationError({"mensagem": "O campo tutorId é obrigatório."})
-
-		try:
-			tutor = TutorModel.objects.get(id=tutor_id)
-			if tutor.usuarioId == user:
-				raise ValidationError({"mensagem": "Você não pode iniciar um chat consigo mesmo."})
-		except TutorModel.DoesNotExist:
-			raise ValidationError({"mensagem": "Tutor não encontrado."})
-
-		chat_existente = ChatModel.objects.filter(usuarioId=user, tutorId=tutor).first()
-		if chat_existente:
-			serializer.instance = chat_existente
-			return
-
-		serializer.save(usuarioId=user, tutorId=tutor)
-
 class MensagemPagination(PageNumberPagination):
 	page_size = 20
 	page_size_query_param = 'page_size'
