@@ -62,7 +62,10 @@ class ChatViewSet(viewsets.ModelViewSet):
 			return Response({"mensagem": "Tutor não encontrado."}, status=status.HTTP_404_NOT_FOUND)
 
 		# 2. Verifica se a conversa já existe na base de dados
-		chat_existente = ChatModel.objects.filter(usuarioId=user, tutorId=tutor).first()
+		chat_existente = ChatModel.objects.filter(
+            Q(usuarioId=user, tutorId=tutor) |
+            Q(usuarioId=tutor.usuarioId, tutorId__usuarioId=user)
+        ).first()
 
 		if chat_existente:
 			# Se existir, reaproveita a conversa e retorna código 200 OK
